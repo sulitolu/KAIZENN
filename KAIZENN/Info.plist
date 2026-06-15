@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>KAIZENN reads your health data including steps, heart rate, workouts, sleep, and weight to provide personalized fitness coaching and track your progress toward your goals.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>KAIZENN writes your workout sessions and weight measurements to Apple Health so your data stays in sync across all your apps.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>KAIZENN uses motion data to automatically track your activity and count your steps throughout the day.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>KAIZENN uses your camera to scan food barcodes and quickly log nutrition information.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>processing</string>
+	</array>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>com.kaizenn.logWorkout</string>
+		<string>com.kaizenn.logMeal</string>
+	</array>
+	<key>CFBundleDisplayName</key>
+	<string>KAIZENN</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.0</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>arm64</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+</dict>
+</plist>
