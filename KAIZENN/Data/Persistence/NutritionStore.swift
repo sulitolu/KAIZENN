@@ -2,6 +2,8 @@ import Foundation
 import Combine
 
 class NutritionStore: ObservableObject {
+    static let shared = NutritionStore()
+
     @Published var entries: [MealEntry] = []
     @Published var waterEntries: [WaterEntry] = []
     @Published var customFoods: [FoodItem] = []
@@ -30,6 +32,22 @@ class NutritionStore: ObservableObject {
             .filter { cal.isDate($0.date, inSameDayAs: date) }
             .map(\.amountMl)
             .reduce(0, +)
+    }
+
+    struct DailyMacroSnapshot {
+        let date: Date
+        let calories: Double
+        let proteinG: Double
+        let carbsG: Double
+        let fatG: Double
+    }
+
+    func weeklyNutrition(endingOn date: Date = Date()) -> [DailyMacroSnapshot] {
+        (0..<7).reversed().compactMap { offset -> DailyMacroSnapshot? in
+            guard let d = Calendar.current.date(byAdding: .day, value: -offset, to: date) else { return nil }
+            let n = dailyNutrition(for: d)
+            return DailyMacroSnapshot(date: d, calories: n.totalCalories, proteinG: n.totalProteinG, carbsG: n.totalCarbsG, fatG: n.totalFatG)
+        }
     }
 
     func weeklyCalories(endingOn date: Date = Date()) -> [(Date, Double)] {

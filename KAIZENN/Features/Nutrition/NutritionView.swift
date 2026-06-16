@@ -7,6 +7,24 @@ struct NutritionView: View {
     @State private var showAddFood = false
     @State private var selectedMealType: MealEntry.MealType = .breakfast
     @State private var selectedDate = Date()
+    @State private var chartMetric: ChartMetric = .calories
+
+    enum ChartMetric: String, CaseIterable {
+        case calories = "Calories"
+        case protein  = "Protein"
+        case carbs    = "Carbs"
+        case fat      = "Fat"
+
+        var color: Color {
+            switch self {
+            case .calories: return KTheme.Colors.accentPrimary
+            case .protein:  return KTheme.Colors.accentSecondary
+            case .carbs:    return KTheme.Colors.accentAmber
+            case .fat:      return KTheme.Colors.accentTertiary
+            }
+        }
+        var unit: String { self == .calories ? "kcal" : "g" }
+    }
 
     private var todayNutrition: DailyNutrition { nutritionStore.dailyNutrition(for: selectedDate) }
     private var targets: MacroTargets { appState.userProfile.macroTargets }
@@ -150,35 +168,90 @@ struct NutritionView: View {
     private var weeklyCalorieChart: some View {
         KSection(title: "This Week") {
             KCard {
-                let data = nutritionStore.weeklyCalories()
-                let maxCal = data.map(\.1).max() ?? 2000
+                let data = nutritionStore.weeklyNutrition()
 
                 VStack(alignment: .leading, spacing: KTheme.Spacing.md) {
-                    HStack(alignment: .bottom, spacing: 6) {
-                        ForEach(data, id: \.0) { item in
-                            VStack(spacing: 4) {
-                                let height = CGFloat(item.1 / maxCal) * 80
-                                RoundedRectangle(cornerRadius: 4)
-                                    .fill(Calendar.current.isDateInToday(item.0) ? AnyShapeStyle(KTheme.Colors.brandGradient) : AnyShapeStyle(KTheme.Colors.accentPrimary.opacity(0.3)))
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: max(height, 4))
-                                Text(dayLabel(item.0))
-                                    .font(KTheme.Typography.caption)
-                                    .foregroundColor(KTheme.Colors.textTertiary)
+                    // Metric picker
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: KTheme.Spacing.sm) {
+                            ForEach(ChartMetric.allCases, id: \.self) { metric in
+                                Button { withAnimation(KTheme.Animation.snappy) { chartMetric = metric } } label: {
+                                    Text(metric.rawValue)
+                                        .font(KTheme.Typography.label)
+                                        .foregroundColor(chartMetric == metric ? .white : KTheme.Colors.textSecondary)
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 6)
+                                        .background(chartMetric == metric ? metric.color : KTheme.Colors.border)
+                                        .cornerRadius(KTheme.Radius.pill)
+                                }
                             }
-                            .frame(maxWidth: .infinity)
                         }
                     }
-                    .frame(height: 100)
 
+                    // Bar chart
+                    let values: [Double] = data.map { snap in
+                        switch chartMetric {
+                        case .calories: return snap.calories
+                        case .protein:  return snap.proteinG
+                        case .carbs:    return snap.carbsG
+                        case .fat:      return snap.fatG
+                        }
+                    }
+                    let maxVal = values.max() ?? 1
+                    let target: Double = {
+                        switch chartMetric {
+                        case .calories: return Double(targets.calories)
+                        case .protein:  return Double(targets.proteinG)
+                        case .carbs:    return Double(targets.carbsG)
+                        case .fat:      return Double(targets.fatG)
+                        }
+                    }()
+                    let chartHeight: CGFloat = 90
+
+                    ZStack(alignment: .topLeading) {
+                        // Target dashed line
+                        let targetY = chartHeight - CGFloat(min(target, maxVal) / max(maxVal, 1)) * chartHeight
+                        Rectangle()
+                            .fill(chartMetric.color.opacity(0.4))
+                            .frame(height: 1)
+                            .offset(y: targetY)
+
+                        HStack(alignment: .bottom, spacing: 6) {
+                            ForEach(Array(zip(data, values)), id: \.0.date) { snap, val in
+                                VStack(spacing: 4) {
+                                    let h = CGFloat(val / max(maxVal, 1)) * chartHeight
+                                    RoundedRectangle(cornerRadius: 4)
+                                        .fill(Calendar.current.isDateInToday(snap.date)
+                                              ? AnyShapeStyle(chartMetric.color)
+                                              : AnyShapeStyle(chartMetric.color.opacity(0.35)))
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: max(h, 4))
+                                    Text(dayLabel(snap.date))
+                                        .font(KTheme.Typography.caption)
+                                        .foregroundColor(Calendar.current.isDateInToday(snap.date)
+                                                         ? chartMetric.color
+                                                         : KTheme.Colors.textTertiary)
+                                }
+                                .frame(maxWidth: .infinity)
+                            }
+                        }
+                        .frame(height: chartHeight)
+                    }
+                    .frame(height: chartHeight)
+
+                    // Stats row
+                    let avg = values.reduce(0, +) / max(Double(values.count), 1)
                     HStack {
-                        Text("Avg: \(Int(data.map(\.1).reduce(0,+) / Double(data.count))) cal")
+                        Text("Avg: \(Int(avg)) \(chartMetric.unit)")
                             .font(KTheme.Typography.caption)
                             .foregroundColor(KTheme.Colors.textSecondary)
                         Spacer()
-                        Text("Target: \(targets.calories) cal")
-                            .font(KTheme.Typography.caption)
-                            .foregroundColor(KTheme.Colors.textSecondary)
+                        HStack(spacing: 4) {
+                            Rectangle().fill(chartMetric.color.opacity(0.4)).frame(width: 16, height: 1)
+                            Text("Target: \(Int(target)) \(chartMetric.unit)")
+                                .font(KTheme.Typography.caption)
+                                .foregroundColor(KTheme.Colors.textSecondary)
+                        }
                     }
                 }
             }

@@ -1,6 +1,7 @@
 import SwiftUI
 import HealthKit
 import WatchKit
+import WatchConnectivity
 
 struct ContentView: View {
     @StateObject private var vm = WatchViewModel()
@@ -361,6 +362,10 @@ class WatchViewModel: NSObject, ObservableObject {
     }
 
     func requestAuthorization() {
+        if WCSession.isSupported() {
+            WCSession.default.delegate = self
+            WCSession.default.activate()
+        }
         guard HKHealthStore.isHealthDataAvailable() else { return }
         let read: Set<HKObjectType> = [
             HKQuantityType(.stepCount),
@@ -440,7 +445,15 @@ class WatchViewModel: NSObject, ObservableObject {
 
     func logWater(ml: Int) {
         WKInterfaceDevice.current().play(.click)
-        // Send to phone via WatchConnectivity in full implementation
+        let message: [String: Any] = ["action": "addWater", "ml": Double(ml)]
+        if WCSession.isSupported() {
+            let session = WCSession.default
+            if session.isReachable {
+                session.sendMessage(message, replyHandler: nil, errorHandler: nil)
+            } else {
+                session.transferUserInfo(message)
+            }
+        }
     }
 
     // MARK: Workout Session
@@ -509,6 +522,11 @@ class WatchViewModel: NSObject, ObservableObject {
             coachTip = "Stay hydrated — aim for 2.5L today 💧"
         }
     }
+}
+
+// MARK: — WCSessionDelegate (Watch side — only needs activation callbacks)
+extension WatchViewModel: WCSessionDelegate {
+    nonisolated func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {}
 }
 
 // MARK: — Workout Session Delegates

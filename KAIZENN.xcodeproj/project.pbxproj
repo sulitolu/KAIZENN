@@ -18,6 +18,8 @@
 		6105612DBCF6B316335CE476 /* AddFoodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1505C1567225A39F15208143 /* AddFoodView.swift */; };
 		F5F8306DA9EA43C58185E446 /* OpenFoodFactsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8607429885DD49118322ECBA /* OpenFoodFactsService.swift */; };
 		E122309DF0C240A4AE53BC4F /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6744AA49E02464781C4373C /* BarcodeScannerView.swift */; };
+		626F30D58C3445F29E2F0BDE /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEF3FD01726B46F7ADBE8A4E /* NotificationManager.swift */; };
+		BAFDE2B80D144A5F86AB9282 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F19765D068E4A8698F6FC0F /* WatchConnectivityManager.swift */; };
 		654C21FF9D12EF059A9C835B /* LogWeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C9B84C7FB7A36D458D9FF7 /* LogWeightView.swift */; };
 		70D5940D7218B4D0C2F38E32 /* NutritionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B12905602A54541D803EDE4 /* NutritionView.swift */; };
 		74C12F28F3F5DA47E83164EE /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60BB56C71F6FE206357FBC5B /* MainTabView.swift */; };
@@ -49,6 +51,8 @@
 		1505C1567225A39F15208143 /* AddFoodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodView.swift; sourceTree = "<group>"; };
 		8607429885DD49118322ECBA /* OpenFoodFactsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenFoodFactsService.swift; sourceTree = "<group>"; };
 		C6744AA49E02464781C4373C /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
+		FEF3FD01726B46F7ADBE8A4E /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		9F19765D068E4A8698F6FC0F /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
 		1C226AC67400A8E7FD5F6509 /* WeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightView.swift; sourceTree = "<group>"; };
 		1F3CB7C0CC2324BD1548388D /* ScheduleStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleStore.swift; sourceTree = "<group>"; };
 		2C88617FE27799E67B29F6DF /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
@@ -187,8 +191,26 @@
 			isa = PBXGroup;
 			children = (
 				48460F5E220240C99CD952FC /* DesignSystem */,
+				A3C1F9B2E4D74E8FA0B1C2D3 /* Notifications */,
+				B2D4E6F8A1C34B7D9E0F1A2B /* Connectivity */,
 			);
 			path = Core;
+			sourceTree = "<group>";
+		};
+		A3C1F9B2E4D74E8FA0B1C2D3 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				FEF3FD01726B46F7ADBE8A4E /* NotificationManager.swift */,
+			);
+			path = Notifications;
+			sourceTree = "<group>";
+		};
+		B2D4E6F8A1C34B7D9E0F1A2B /* Connectivity */ = {
+			isa = PBXGroup;
+			children = (
+				9F19765D068E4A8698F6FC0F /* WatchConnectivityManager.swift */,
+			);
+			path = Connectivity;
 			sourceTree = "<group>";
 		};
 		95B6FD6E73934E76A62E32CB /* Resources */ = {
@@ -456,6 +478,8 @@
 				6105612DBCF6B316335CE476 /* AddFoodView.swift in Sources */,
 				F5F8306DA9EA43C58185E446 /* OpenFoodFactsService.swift in Sources */,
 				E122309DF0C240A4AE53BC4F /* BarcodeScannerView.swift in Sources */,
+				626F30D58C3445F29E2F0BDE /* NotificationManager.swift in Sources */,
+				BAFDE2B80D144A5F86AB9282 /* WatchConnectivityManager.swift in Sources */,
 				AC85E981AC82C0214AD3E110 /* ActivityView.swift in Sources */,
 				5188396F2D06A081288DB2CF /* LogWorkoutView.swift in Sources */,
 				DB04D9EC4599B2292D30C061 /* WeightView.swift in Sources */,
