@@ -20,38 +20,19 @@ struct CoachView: View {
     @State private var activeAction: CoachActionType?
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottom) {
             KTheme.Colors.background.ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
-                VStack(spacing: KTheme.Spacing.lg) {
-                    // Header
-                    HStack {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Kai Coach")
-                                .font(KTheme.Typography.displaySmall)
-                                .foregroundColor(KTheme.Colors.textPrimary)
-                            sportContextSubtitle
-                                .font(KTheme.Typography.bodySmall)
-                                .foregroundColor(KTheme.Colors.textSecondary)
-                        }
-                        Spacer()
-                        ZStack {
-                            Circle()
-                                .fill(KTheme.Colors.brandGradient)
-                                .frame(width: 50, height: 50)
-                                .kGlow(color: KTheme.Colors.accentPrimary, radius: 16)
-                            Image(systemName: "brain.head.profile")
-                                .font(.system(size: 22))
-                                .foregroundColor(.white)
-                        }
-                    }
+                VStack(spacing: 12) {
+                    // Header: sport micro-label above title
+                    coachHeader
 
-                    // Daily Insight Card
-                    dailyInsightCard
+                    // Today's Brief card (mockup: .ai-insight)
+                    todaysBriefCard
 
-                    // Today's Recommendations
-                    recommendationsSection
+                    // Focus Today (mockup: .ai-atl + .ai-action rows)
+                    focusTodaySection
 
                     // Weekly Report
                     weeklyReportCard
@@ -62,11 +43,17 @@ struct CoachView: View {
                     // Science-backed tips
                     scienceTipsSection
 
-                    Color.clear.frame(height: 100)
+                    // Bottom padding for pinned input bar
+                    Color.clear.frame(height: 80)
                 }
                 .padding(.horizontal, KTheme.Spacing.md)
                 .padding(.top, KTheme.Spacing.md)
             }
+
+            // Pinned Ask Kai input bar (mockup: .ai-input)
+            pinnedInputBar
+                .padding(.horizontal, KTheme.Spacing.md)
+                .padding(.bottom, 16)
         }
         .onAppear {
             coach.analyze(
@@ -81,66 +68,114 @@ struct CoachView: View {
         }
         .sheet(item: $activeAction) { action in
             switch action {
-            case .logMeal:     AddFoodView(mealType: .current)
-            case .logWalk:     GPSImportView().environmentObject(loadStore)
-            case .logWorkout:  StrengthLoggerView().environmentObject(loadStore)
+            case .logMeal:      AddFoodView(mealType: .current)
+            case .logWalk:      GPSImportView().environmentObject(loadStore)
+            case .logWorkout:   StrengthLoggerView().environmentObject(loadStore)
             case .addSleepTask: AddTaskView(initialTitle: "Wind down for bed", initialCategory: .recovery)
             }
         }
     }
 
-    // MARK: Daily Insight
-    private var dailyInsightCard: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: KTheme.Radius.xl)
-                .fill(KTheme.Colors.brandGradient)
-                .shadow(color: KTheme.Colors.accentPrimary.opacity(0.3), radius: 20)
-
-            VStack(alignment: .leading, spacing: KTheme.Spacing.md) {
-                HStack {
-                    Label("Today's Insight", systemImage: "sparkles")
-                        .font(KTheme.Typography.label)
-                        .foregroundColor(.white.opacity(0.8))
-                    Spacer()
-                    Text(Date(), style: .date)
-                        .font(KTheme.Typography.caption)
-                        .foregroundColor(.white.opacity(0.6))
-                }
-
-                Text(coach.dailyInsight)
-                    .font(KTheme.Typography.headingMedium)
-                    .foregroundColor(.white)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                if let action = coach.primaryAction {
-                    Button {
-                        activeAction = coach.primaryActionType
-                    } label: {
-                        HStack {
-                            Image(systemName: "arrow.right.circle.fill")
-                            Text(action)
-                                .font(KTheme.Typography.label)
-                        }
-                        .foregroundColor(.white.opacity(0.9))
-                        .padding(.horizontal, KTheme.Spacing.md)
-                        .padding(.vertical, KTheme.Spacing.sm)
-                        .background(Color.white.opacity(0.15).cornerRadius(KTheme.Radius.pill))
-                    }
-                    .disabled(coach.primaryActionType == nil)
-                }
+    // MARK: Header
+    private var coachHeader: some View {
+        HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: 3) {
+                // Sport micro-label above title
+                sportContextLabel
+                Text("Kai Coach")
+                    .font(.system(size: 16, weight: .heavy))
+                    .foregroundColor(KTheme.Colors.textPrimary)
             }
-            .padding(KTheme.Spacing.lg)
+            Spacer()
         }
     }
 
-    // MARK: Recommendations
-    private var recommendationsSection: some View {
-        KSection(title: "Recommendations") {
-            VStack(spacing: KTheme.Spacing.sm) {
-                ForEach(coach.recommendations) { rec in
-                    RecommendationCard(recommendation: rec) {
-                        activeAction = rec.actionType
-                    }
+    private var sportContextLabel: some View {
+        let sp = appState.userProfile.sportProfile
+        let sport = sp.sport.displayName.uppercased()
+        let phase = sp.seasonPhase.displayName.uppercased()
+        let position = sp.position.uppercased()
+        let label = position.isEmpty ? "\(sport) · \(phase)" : "\(sport) · \(position) · \(phase)"
+        return Text(label)
+            .font(.system(size: 7, weight: .bold, design: .monospaced))
+            .foregroundColor(KTheme.Colors.textTertiary)
+            .tracking(1.5)
+    }
+
+    // MARK: Today's Brief Card (replaces dailyInsightCard)
+    private var todaysBriefCard: some View {
+        ZStack(alignment: .topTrailing) {
+            // Violet radial glow in corner
+            RadialGradient(
+                gradient: Gradient(colors: [
+                    KTheme.Colors.accentPrimary.opacity(0.1),
+                    Color.clear
+                ]),
+                center: UnitPoint(x: 0.85, y: 0.15),
+                startRadius: 0,
+                endRadius: 50
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 13))
+
+            VStack(alignment: .leading, spacing: 6) {
+                // "TODAY'S BRIEF" label
+                Text("TODAY'S BRIEF")
+                    .font(.system(size: 7, weight: .bold))
+                    .foregroundColor(KTheme.Colors.accentPrimary)
+                    .tracking(1.5)
+
+                // Dynamic message body — wired to coach's dailyInsight
+                briefMessageBody
+                    .font(.system(size: 9))
+                    .foregroundColor(KTheme.Colors.textSecondary)
+                    .lineSpacing(4.4) // ~1.6 line height at 9pt
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(11)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .background(
+            LinearGradient(
+                colors: [Color(hex: "0F0F1E"), Color(hex: "12121F")],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .cornerRadius(13)
+        .overlay(
+            RoundedRectangle(cornerRadius: 13)
+                .stroke(KTheme.Colors.accentPrimary.opacity(0.18), lineWidth: 0.5)
+        )
+    }
+
+    /// Renders the daily insight with key numbers/facts bolded in a lighter color.
+    /// Splits on bold markers or falls back to plain text.
+    private var briefMessageBody: Text {
+        let insight = coach.dailyInsight
+        // Produce an attributed-style Text by checking for known numeric phrases
+        // We use a simple approach: render as plain text (the insight is already
+        // context-rich; the coach generates it dynamically with real numbers).
+        return Text(insight)
+    }
+
+    // MARK: Focus Today Section (replaces recommendationsSection)
+    private var focusTodaySection: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            // "FOCUS TODAY" label
+            Text("FOCUS TODAY")
+                .font(.system(size: 7, weight: .bold, design: .monospaced))
+                .foregroundColor(KTheme.Colors.textTertiary)
+                .tracking(1)
+
+            let recs = Array(coach.recommendations.prefix(3))
+            ForEach(Array(recs.enumerated()), id: \.element.id) { index, rec in
+                FocusActionRow(
+                    number: index + 1,
+                    text: rec.title,
+                    description: rec.description,
+                    actionType: rec.actionType
+                ) {
+                    activeAction = rec.actionType
                 }
             }
         }
@@ -151,18 +186,32 @@ struct CoachView: View {
         KCard(elevated: true) {
             VStack(alignment: .leading, spacing: KTheme.Spacing.md) {
                 HStack {
-                    Text("Weekly Report").font(KTheme.Typography.headingSmall).foregroundColor(KTheme.Colors.textPrimary)
+                    Text("Weekly Report")
+                        .font(KTheme.Typography.headingSmall)
+                        .foregroundColor(KTheme.Colors.textPrimary)
                     Spacer()
-                    KBadge(text: coach.weeklyScore > 75 ? "On Track 🎯" : "Keep Going 💪", color: coach.weeklyScore > 75 ? KTheme.Colors.success : KTheme.Colors.accentAmber)
+                    KBadge(
+                        text: coach.weeklyScore > 75 ? "On Track" : "Keep Going",
+                        color: coach.weeklyScore > 75 ? KTheme.Colors.success : KTheme.Colors.accentAmber
+                    )
                 }
 
-                // Score ring
                 HStack(spacing: KTheme.Spacing.xl) {
                     ZStack {
-                        KProgressRing(progress: Double(coach.weeklyScore), total: 100, size: 90, lineWidth: 8, color: scoreColor(coach.weeklyScore))
+                        KProgressRing(
+                            progress: Double(coach.weeklyScore),
+                            total: 100,
+                            size: 90,
+                            lineWidth: 8,
+                            color: scoreColor(coach.weeklyScore)
+                        )
                         VStack(spacing: 0) {
-                            Text("\(coach.weeklyScore)").font(KTheme.Typography.headingLarge).foregroundColor(KTheme.Colors.textPrimary)
-                            Text("/ 100").font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.textSecondary)
+                            Text("\(coach.weeklyScore)")
+                                .font(KTheme.Typography.headingLarge)
+                                .foregroundColor(KTheme.Colors.textPrimary)
+                            Text("/ 100")
+                                .font(KTheme.Typography.caption)
+                                .foregroundColor(KTheme.Colors.textSecondary)
                         }
                     }
 
@@ -170,9 +219,13 @@ struct CoachView: View {
                         ForEach(coach.scoreBreakdown) { item in
                             HStack {
                                 Circle().fill(item.color).frame(width: 8, height: 8)
-                                Text(item.label).font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.textSecondary)
+                                Text(item.label)
+                                    .font(KTheme.Typography.caption)
+                                    .foregroundColor(KTheme.Colors.textSecondary)
                                 Spacer()
-                                Text("\(item.score)/\(item.maxScore)").font(KTheme.Typography.label).foregroundColor(KTheme.Colors.textPrimary)
+                                Text("\(item.score)/\(item.maxScore)")
+                                    .font(KTheme.Typography.label)
+                                    .foregroundColor(KTheme.Colors.textPrimary)
                             }
                         }
                     }
@@ -199,7 +252,10 @@ struct CoachView: View {
                                     .padding(.vertical, KTheme.Spacing.sm)
                                     .background(KTheme.Colors.accentPrimary.opacity(0.1))
                                     .cornerRadius(KTheme.Radius.pill)
-                                    .overlay(RoundedRectangle(cornerRadius: KTheme.Radius.pill).stroke(KTheme.Colors.accentPrimary.opacity(0.3), lineWidth: 1))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: KTheme.Radius.pill)
+                                            .stroke(KTheme.Colors.accentPrimary.opacity(0.3), lineWidth: 1)
+                                    )
                             }
                         }
                     }
@@ -216,25 +272,6 @@ struct CoachView: View {
                         }
                     }
                 }
-
-                // Input
-                HStack(spacing: KTheme.Spacing.sm) {
-                    TextField("Ask anything about your health...", text: $userInput)
-                        .foregroundColor(KTheme.Colors.textPrimary)
-                        .font(KTheme.Typography.bodyMedium)
-                        .padding(KTheme.Spacing.md)
-                        .background(KTheme.Colors.card.cornerRadius(KTheme.Radius.md))
-                    Button {
-                        let q = userInput
-                        userInput = ""
-                        askCoach(q)
-                    } label: {
-                        Image(systemName: "arrow.up.circle.fill")
-                            .font(.system(size: 32))
-                            .foregroundColor(userInput.isEmpty ? KTheme.Colors.textTertiary : KTheme.Colors.accentPrimary)
-                    }
-                    .disabled(userInput.isEmpty || isThinking)
-                }
             }
         }
     }
@@ -247,6 +284,58 @@ struct CoachView: View {
                     ScienceTipCard(tip: tip)
                 }
             }
+        }
+    }
+
+    // MARK: Pinned Input Bar (mockup: .ai-input)
+    private var pinnedInputBar: some View {
+        HStack(spacing: 10) {
+            TextField("Ask Kai anything...", text: $userInput)
+                .font(.system(size: 8))
+                .foregroundColor(KTheme.Colors.textPrimary)
+
+            Button {
+                let q = userInput
+                userInput = ""
+                askCoach(q)
+            } label: {
+                sendButtonBackground
+                    .overlay(
+                        Image(systemName: "paperplane.fill")
+                            .font(.system(size: 9, weight: .semibold))
+                            .foregroundColor(.white)
+                    )
+            }
+            .disabled(userInput.isEmpty || isThinking)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(KTheme.Colors.card)
+        .cornerRadius(18)
+        .overlay(
+            RoundedRectangle(cornerRadius: 18)
+                .stroke(KTheme.Colors.border.opacity(0.6), lineWidth: 0.5)
+        )
+    }
+
+    /// Extracted helper to avoid nested ternaries in modifier chains
+    private var sendButtonBackground: some View {
+        Circle()
+            .fill(KTheme.Colors.brandGradient)
+            .frame(width: 20, height: 20)
+    }
+
+    // MARK: — Preserved Logic
+
+    private var sportContextSubtitle: Text {
+        let sp = appState.userProfile.sportProfile
+        let sport = sp.sport.displayName
+        let phase = sp.seasonPhase.displayName
+        let position = sp.position
+        if position.isEmpty {
+            return Text("\(sport) · \(phase)")
+        } else {
+            return Text("\(sport) · \(position) · \(phase)")
         }
     }
 
@@ -277,18 +366,6 @@ struct CoachView: View {
                     isThinking = false
                 }
             }
-        }
-    }
-
-    private var sportContextSubtitle: Text {
-        let sp = appState.userProfile.sportProfile
-        let sport = sp.sport.displayName
-        let phase = sp.seasonPhase.displayName
-        let position = sp.position
-        if position.isEmpty {
-            return Text("\(sport) · \(phase)")
-        } else {
-            return Text("\(sport) · \(position) · \(phase)")
         }
     }
 
@@ -361,6 +438,84 @@ struct CoachView: View {
         case 80...: return KTheme.Colors.success
         case 60..<80: return KTheme.Colors.accentAmber
         default: return KTheme.Colors.danger
+        }
+    }
+}
+
+// MARK: — Focus Action Row (numbered badge + text)
+struct FocusActionRow: View {
+    let number: Int
+    let text: String
+    let description: String
+    let actionType: CoachActionType?
+    var onTap: () -> Void
+
+    var body: some View {
+        Group {
+            if actionType != nil {
+                Button(action: onTap) { rowContent }
+                    .buttonStyle(KScaleButtonStyle())
+            } else {
+                rowContent
+            }
+        }
+    }
+
+    private var rowContent: some View {
+        HStack(spacing: 7) {
+            numberBadge
+            VStack(alignment: .leading, spacing: 2) {
+                Text(text)
+                    .font(.system(size: 8, weight: .semibold))
+                    .foregroundColor(Color(hex: "C8C8E0"))
+                    .fixedSize(horizontal: false, vertical: true)
+                if !description.isEmpty {
+                    Text(description)
+                        .font(.system(size: 7))
+                        .foregroundColor(KTheme.Colors.textSecondary)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            Spacer()
+            if actionType != nil {
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 8, weight: .semibold))
+                    .foregroundColor(KTheme.Colors.textTertiary)
+            }
+        }
+        .padding(.vertical, 7)
+        .padding(.horizontal, 8)
+        .background(KTheme.Colors.card)
+        .cornerRadius(10)
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(KTheme.Colors.cardElevated, lineWidth: 0.5)
+        )
+    }
+
+    private var numberBadge: some View {
+        ZStack {
+            badgeBackground
+            Text("\(number)")
+                .font(.system(size: 8, weight: .black))
+                .foregroundColor(badgeColor)
+        }
+        .frame(width: 16, height: 16)
+        .cornerRadius(5)
+    }
+
+    /// Extracted to avoid nested ternaries in .background() modifier
+    private var badgeBackground: some View {
+        RoundedRectangle(cornerRadius: 5)
+            .fill(badgeColor.opacity(0.1))
+    }
+
+    private var badgeColor: Color {
+        switch number {
+        case 1:  return KTheme.Colors.accentGreen
+        case 2:  return KTheme.Colors.accentAmber
+        default: return KTheme.Colors.accentPrimary
         }
     }
 }
@@ -478,9 +633,9 @@ class KAICoach: ObservableObject {
 
         scoreBreakdown = [
             ScoreItem(label: "Nutrition", score: nutritionScore, maxScore: 30, color: KTheme.Colors.accentSecondary),
-            ScoreItem(label: "Activity", score: activityScore, maxScore: 30, color: KTheme.Colors.accentTertiary),
-            ScoreItem(label: "Habits", score: habitScoreVal, maxScore: 20, color: KTheme.Colors.accentAmber),
-            ScoreItem(label: "Sleep", score: sleepScore, maxScore: 20, color: KTheme.Colors.accentPrimary),
+            ScoreItem(label: "Activity",  score: activityScore,  maxScore: 30, color: KTheme.Colors.accentTertiary),
+            ScoreItem(label: "Habits",    score: habitScoreVal,  maxScore: 20, color: KTheme.Colors.accentAmber),
+            ScoreItem(label: "Sleep",     score: sleepScore,     maxScore: 20, color: KTheme.Colors.accentPrimary),
         ]
     }
 
@@ -502,13 +657,13 @@ class KAICoach: ObservableObject {
             }
         }
         if q.contains("sleep") || q.contains("rest") || q.contains("tired") {
-            return "For better sleep: dim lights 2 hours before bed, keep room at 65-68°F (18-20°C), no caffeine after 2pm, and try 4-7-8 breathing to fall asleep faster. Sleep deprivation spikes ghrelin (hunger hormone) by 24%."
+            return "For better sleep: dim lights 2 hours before bed, keep room at 65-68\u{00B0}F (18-20\u{00B0}C), no caffeine after 2pm, and try 4-7-8 breathing to fall asleep faster. Sleep deprivation spikes ghrelin (hunger hormone) by 24%."
         }
         if q.contains("plateau") || q.contains("stuck") || q.contains("not losing") {
             return "Plateaus are normal — your body adapts. Break it by: 1) Adding a refeed day (eat at maintenance) to reset leptin, 2) Shifting to strength training to build metabolic muscle, 3) Cutting carbs for 1 week then cycling them back, 4) Getting a DEXA scan to check body composition."
         }
         if q.contains("calori") || q.contains("burn") {
-            return "Your estimated TDEE is \(profile.macroTargets.calories + 500) calories. With your current activity, you're burning roughly \(Int(health.todayActiveCalories + health.todayRestingCalories)) calories today. Your deficit target is ~\(500) cal/day for \(String(format: "%.1f", profile.weeklyGoalKg))kg/week loss."
+            return "Your estimated TDEE is \(profile.macroTargets.calories + 500) calories. With your current activity, you're burning roughly \(Int(health.todayActiveCalories + health.todayRestingCalories)) calories today. Your deficit target is ~500 cal/day for \(String(format: "%.1f", profile.weeklyGoalKg))kg/week loss."
         }
         if q.contains("motivation") || q.contains("give up") || q.contains("hard") {
             return "Remember why you started. Every workout you didn't want to do but did — that's where real progress lives. Kaizen: 1% better every day. You don't have to be perfect, you just have to keep showing up."
@@ -568,16 +723,23 @@ struct RecommendationCard: View {
             }
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
-                    Text(recommendation.title).font(KTheme.Typography.headingSmall).foregroundColor(KTheme.Colors.textPrimary)
+                    Text(recommendation.title)
+                        .font(KTheme.Typography.headingSmall)
+                        .foregroundColor(KTheme.Colors.textPrimary)
                     if recommendation.priority == .high {
                         KBadge(text: "Priority", color: KTheme.Colors.accentSecondary)
                     }
                 }
-                Text(recommendation.description).font(KTheme.Typography.bodySmall).foregroundColor(KTheme.Colors.textSecondary).fixedSize(horizontal: false, vertical: true)
+                Text(recommendation.description)
+                    .font(KTheme.Typography.bodySmall)
+                    .foregroundColor(KTheme.Colors.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
                 if let actionLabel = recommendation.actionLabel {
                     HStack(spacing: 4) {
-                        Text(actionLabel).font(KTheme.Typography.caption.bold())
-                        Image(systemName: "chevron.right").font(.system(size: 9, weight: .bold))
+                        Text(actionLabel)
+                            .font(KTheme.Typography.caption.bold())
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 9, weight: .bold))
                     }
                     .foregroundColor(recommendation.color)
                     .padding(.top, 2)
@@ -600,9 +762,17 @@ struct ScienceTipCard: View {
                 .foregroundColor(KTheme.Colors.accentPrimary)
                 .frame(width: 32)
             VStack(alignment: .leading, spacing: 4) {
-                Text(tip.title).font(KTheme.Typography.headingSmall).foregroundColor(KTheme.Colors.textPrimary)
-                Text(tip.body).font(KTheme.Typography.bodySmall).foregroundColor(KTheme.Colors.textSecondary).fixedSize(horizontal: false, vertical: true)
-                Text(tip.source).font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.textTertiary).italic()
+                Text(tip.title)
+                    .font(KTheme.Typography.headingSmall)
+                    .foregroundColor(KTheme.Colors.textPrimary)
+                Text(tip.body)
+                    .font(KTheme.Typography.bodySmall)
+                    .foregroundColor(KTheme.Colors.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(tip.source)
+                    .font(KTheme.Typography.caption)
+                    .foregroundColor(KTheme.Colors.textTertiary)
+                    .italic()
             }
         }
         .padding(KTheme.Spacing.md)
@@ -638,8 +808,12 @@ struct ChatBubble: View {
             if message.isUser { Spacer(minLength: 40) }
             if !message.isUser {
                 ZStack {
-                    Circle().fill(KTheme.Colors.brandGradient).frame(width: 28, height: 28)
-                    Image(systemName: "brain.head.profile").font(.system(size: 12)).foregroundColor(.white)
+                    Circle()
+                        .fill(KTheme.Colors.brandGradient)
+                        .frame(width: 28, height: 28)
+                    Image(systemName: "brain.head.profile")
+                        .font(.system(size: 12))
+                        .foregroundColor(.white)
                 }
             }
             Text(message.text)
@@ -647,7 +821,9 @@ struct ChatBubble: View {
                 .foregroundColor(message.isUser ? .white : KTheme.Colors.textPrimary)
                 .padding(KTheme.Spacing.md)
                 .background(message.isUser ? KTheme.Colors.accentPrimary : KTheme.Colors.card)
-                .cornerRadius(KTheme.Radius.lg, corners: message.isUser ? [.topLeft, .topRight, .bottomLeft] : [.topLeft, .topRight, .bottomRight])
+                .cornerRadius(KTheme.Radius.lg, corners: message.isUser
+                    ? [.topLeft, .topRight, .bottomLeft]
+                    : [.topLeft, .topRight, .bottomRight])
             if !message.isUser { Spacer(minLength: 40) }
         }
     }
@@ -660,8 +836,12 @@ struct CoachTypingBubble: View {
     var body: some View {
         HStack {
             ZStack {
-                Circle().fill(KTheme.Colors.brandGradient).frame(width: 28, height: 28)
-                Image(systemName: "brain.head.profile").font(.system(size: 12)).foregroundColor(.white)
+                Circle()
+                    .fill(KTheme.Colors.brandGradient)
+                    .frame(width: 28, height: 28)
+                Image(systemName: "brain.head.profile")
+                    .font(.system(size: 12))
+                    .foregroundColor(.white)
             }
             HStack(spacing: 4) {
                 ForEach(0..<3, id: \.self) { i in
