@@ -17,6 +17,7 @@
 		5188396F2D06A081288DB2CF /* LogWorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9613469ECB2029621E0763 /* LogWorkoutView.swift */; };
 		5B083EA9B8E1A2EDA5DF0690 /* WeightStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A473374B40C1F5DD3B764F6 /* WeightStore.swift */; };
 		6105612DBCF6B316335CE476 /* AddFoodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1505C1567225A39F15208143 /* AddFoodView.swift */; };
+		207B1054BC1640A290B31727 /* FoodPhotoScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32A5E2F875C4A01ABF14654 /* FoodPhotoScanView.swift */; };
 		626F30D58C3445F29E2F0BDE /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEF3FD01726B46F7ADBE8A4E /* NotificationManager.swift */; };
 		654C21FF9D12EF059A9C835B /* LogWeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C9B84C7FB7A36D458D9FF7 /* LogWeightView.swift */; };
 		70D5940D7218B4D0C2F38E32 /* NutritionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B12905602A54541D803EDE4 /* NutritionView.swift */; };
@@ -57,6 +58,7 @@
 		001F0D44BEF7DD9E0ECC9090 /* ScheduleModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleModels.swift; sourceTree = "<group>"; };
 		02B4E9E7F645566F6EC8259C /* AddTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
 		1505C1567225A39F15208143 /* AddFoodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodView.swift; sourceTree = "<group>"; };
+		F32A5E2F875C4A01ABF14654 /* FoodPhotoScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodPhotoScanView.swift; sourceTree = "<group>"; };
 		1C226AC67400A8E7FD5F6509 /* WeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightView.swift; sourceTree = "<group>"; };
 		1F3CB7C0CC2324BD1548388D /* ScheduleStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleStore.swift; sourceTree = "<group>"; };
 		2C88617FE27799E67B29F6DF /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
@@ -378,6 +380,7 @@
 				6B12905602A54541D803EDE4 /* NutritionView.swift */,
 				1505C1567225A39F15208143 /* AddFoodView.swift */,
 				C6744AA49E02464781C4373C /* BarcodeScannerView.swift */,
+				F32A5E2F875C4A01ABF14654 /* FoodPhotoScanView.swift */,
 			);
 			path = Nutrition;
 			sourceTree = "<group>";
@@ -513,6 +516,7 @@
 				E2247B3EBA845E97050D7102 /* DashboardView.swift in Sources */,
 				70D5940D7218B4D0C2F38E32 /* NutritionView.swift in Sources */,
 				6105612DBCF6B316335CE476 /* AddFoodView.swift in Sources */,
+				207B1054BC1640A290B31727 /* FoodPhotoScanView.swift in Sources */,
 				F5F8306DA9EA43C58185E446 /* OpenFoodFactsService.swift in Sources */,
 				E122309DF0C240A4AE53BC4F /* BarcodeScannerView.swift in Sources */,
 				626F30D58C3445F29E2F0BDE /* NotificationManager.swift in Sources */,
