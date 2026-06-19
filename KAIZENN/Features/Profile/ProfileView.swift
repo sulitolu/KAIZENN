@@ -11,29 +11,20 @@ struct ProfileView: View {
     @State private var showEditProfile = false
     @State private var showResetAlert = false
 
+    private let accent = KTheme.Colors.accentPrimary
+
     var body: some View {
         ZStack {
             KTheme.Colors.background.ignoresSafeArea()
             ScrollView(showsIndicators: false) {
                 VStack(spacing: KTheme.Spacing.lg) {
-                    // Profile Header
-                    profileHeader
-
-                    // Stats Overview
-                    statsGrid
-
-                    // Body Metrics
+                    profileHeroHeader
+                    performanceStatsRow
+                    sportProfileCard
                     bodyMetricsCard
-
-                    // Health Permissions
                     healthPermissionsCard
-
-                    // App Settings
                     settingsSection
-
-                    // Danger Zone
                     dangerSection
-
                     Color.clear.frame(height: 100)
                 }
                 .padding(.horizontal, KTheme.Spacing.md)
@@ -51,86 +42,208 @@ struct ProfileView: View {
         }
     }
 
-    // MARK: Profile Header
-    private var profileHeader: some View {
-        ZStack {
+    // MARK: — Hero Profile Header
+    private var profileHeroHeader: some View {
+        ZStack(alignment: .topTrailing) {
             RoundedRectangle(cornerRadius: KTheme.Radius.xl)
                 .fill(KTheme.Colors.brandGradient)
-                .shadow(color: KTheme.Colors.accentPrimary.opacity(0.3), radius: 20)
+                .overlay(
+                    RoundedRectangle(cornerRadius: KTheme.Radius.xl)
+                        .stroke(accent.opacity(0.4), lineWidth: 0.5)
+                )
+                .shadow(color: accent.opacity(0.25), radius: 24, x: 0, y: 0)
 
-            HStack(spacing: KTheme.Spacing.lg) {
-                // Avatar
-                ZStack {
-                    Circle()
-                        .fill(.white.opacity(0.2))
-                        .frame(width: 80, height: 80)
-                    Text(appState.userProfile.name.prefix(1).uppercased())
-                        .font(.system(size: 36, weight: .bold))
-                        .foregroundColor(.white)
-                }
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(appState.userProfile.name.isEmpty ? "Athlete" : appState.userProfile.name)
-                        .font(KTheme.Typography.headingLarge)
-                        .foregroundColor(.white)
-                    Text(appState.userProfile.goal.displayName)
-                        .font(KTheme.Typography.bodyMedium)
-                        .foregroundColor(.white.opacity(0.8))
-                    Text("KAIZENN Member")
-                        .font(KTheme.Typography.caption)
-                        .foregroundColor(.white.opacity(0.6))
-                }
-
-                Spacer()
-
-                Button {
-                    showEditProfile = true
-                } label: {
-                    Image(systemName: "pencil.circle.fill")
-                        .font(.system(size: 28))
-                        .foregroundColor(.white.opacity(0.8))
+            VStack(spacing: KTheme.Spacing.md) {
+                HStack(alignment: .top, spacing: KTheme.Spacing.lg) {
+                    avatarView
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(appState.userProfile.name.isEmpty ? "ATHLETE" : appState.userProfile.name.uppercased())
+                            .font(.system(size: 32, weight: .black, design: .rounded))
+                            .foregroundColor(.white)
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.7)
+                        microLabel(appState.userProfile.goal.displayName.uppercased(), color: .white.opacity(0.85))
+                        microLabel("KAIZENN MEMBER", color: .white.opacity(0.55))
+                    }
+                    Spacer()
+                    Button {
+                        showEditProfile = true
+                    } label: {
+                        Image(systemName: "pencil.circle.fill")
+                            .font(.system(size: 28))
+                            .foregroundColor(.white.opacity(0.8))
+                    }
                 }
             }
             .padding(KTheme.Spacing.lg)
         }
     }
 
-    // MARK: Stats Grid
-    private var statsGrid: some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: KTheme.Spacing.sm) {
-            StatCell(label: "Daily Target", value: "\(appState.userProfile.macroTargets.calories)", unit: "kcal", icon: "flame.fill", color: KTheme.Colors.accentSecondary)
-            StatCell(label: "Protein Target", value: "\(appState.userProfile.macroTargets.proteinG)", unit: "g", icon: "fork.knife", color: KTheme.Colors.accentPrimary)
-            StatCell(label: "Workouts/Week", value: "\(activityStore.totalWorkoutsThisWeek)", unit: "this week", icon: "dumbbell.fill", color: KTheme.Colors.accentTertiary)
-            StatCell(label: "Habit Streak", value: "\(scheduleStore.longestStreak)", unit: "days", icon: "star.fill", color: KTheme.Colors.accentAmber)
+    private var avatarView: some View {
+        ZStack {
+            Circle()
+                .fill(.white.opacity(0.2))
+                .frame(width: 80, height: 80)
+                .overlay(Circle().stroke(.white.opacity(0.35), lineWidth: 1))
+            Text(appState.userProfile.name.prefix(1).uppercased().isEmpty ? "K" : String(appState.userProfile.name.prefix(1)).uppercased())
+                .font(.system(size: 36, weight: .black, design: .rounded))
+                .foregroundColor(.white)
         }
     }
 
-    // MARK: Body Metrics
-    private var bodyMetricsCard: some View {
-        KSection(title: "Body Metrics") {
-            KCard {
-                VStack(spacing: KTheme.Spacing.md) {
-                    MetricRow(label: "Age", value: "\(appState.userProfile.age) years")
-                    Divider().background(KTheme.Colors.border)
-                    MetricRow(label: "Height", value: String(format: "%.0f cm", appState.userProfile.heightCm))
-                    Divider().background(KTheme.Colors.border)
-                    MetricRow(label: "Current Weight", value: String(format: "%.1f kg", weightStore.latestWeight ?? appState.userProfile.currentWeightKg))
-                    Divider().background(KTheme.Colors.border)
-                    MetricRow(label: "Goal Weight", value: String(format: "%.1f kg", appState.userProfile.goalWeightKg))
-                    Divider().background(KTheme.Colors.border)
-                    MetricRow(label: "BMI", value: String(format: "%.1f (\(appState.userProfile.bmiCategory))", appState.userProfile.bmi))
-                    Divider().background(KTheme.Colors.border)
-                    MetricRow(label: "Activity Level", value: appState.userProfile.activityLevel.displayName)
-                    Divider().background(KTheme.Colors.border)
-                    MetricRow(label: "TDEE", value: "\(appState.userProfile.tdee) kcal")
-                }
+    // MARK: — Performance Stats Row (4 mini stat cards)
+    private var performanceStatsRow: some View {
+        VStack(alignment: .leading, spacing: KTheme.Spacing.sm) {
+            premiumSectionHeader("PERFORMANCE")
+            LazyVGrid(
+                columns: [GridItem(.flexible()), GridItem(.flexible())],
+                spacing: KTheme.Spacing.sm
+            ) {
+                PremiumStatCell(
+                    label: "DAILY TARGET",
+                    value: "\(appState.userProfile.macroTargets.calories)",
+                    unit: "kcal",
+                    icon: "flame.fill",
+                    color: KTheme.Colors.accentSecondary
+                )
+                PremiumStatCell(
+                    label: "PROTEIN",
+                    value: "\(appState.userProfile.macroTargets.proteinG)",
+                    unit: "g",
+                    icon: "fork.knife",
+                    color: accent
+                )
+                PremiumStatCell(
+                    label: "WORKOUTS",
+                    value: "\(activityStore.totalWorkoutsThisWeek)",
+                    unit: "this week",
+                    icon: "dumbbell.fill",
+                    color: KTheme.Colors.accentTertiary
+                )
+                PremiumStatCell(
+                    label: "HABIT STREAK",
+                    value: "\(scheduleStore.longestStreak)",
+                    unit: "days",
+                    icon: "star.fill",
+                    color: KTheme.Colors.accentAmber
+                )
             }
         }
     }
 
-    // MARK: Health Permissions
+    // MARK: — Sport Profile Card
+    private var sportProfileCard: some View {
+        let sp = appState.userProfile.sportProfile
+        return VStack(alignment: .leading, spacing: KTheme.Spacing.sm) {
+            premiumSectionHeader("SPORT PROFILE")
+            VStack(spacing: 0) {
+                sportRow(icon: "sportscourt.fill", label: "SPORT", value: sp.sport.displayName)
+                sportDivider
+                sportRow(icon: "person.fill", label: "POSITION", value: sp.position.isEmpty ? "—" : sp.position)
+                sportDivider
+                sportRow(icon: "calendar.badge.clock", label: "SEASON PHASE", value: sp.seasonPhase.displayName)
+                sportDivider
+                sportRow(icon: "applewatch", label: "WEARABLE", value: sp.wearable.displayName)
+                sportDivider
+                sportRow(
+                    icon: "bolt.fill",
+                    label: "NEXT PERFORMANCE",
+                    value: sp.daysUntilPerformance == 0 ? "TODAY" : "\(sp.daysUntilPerformance) days"
+                )
+            }
+            .padding(KTheme.Spacing.md)
+            .background(sportCardBackground)
+        }
+    }
+
+    private var sportCardBackground: some View {
+        RoundedRectangle(cornerRadius: KTheme.Radius.lg)
+            .fill(KTheme.Colors.card)
+            .overlay(
+                RoundedRectangle(cornerRadius: KTheme.Radius.lg)
+                    .stroke(accent.opacity(0.3), lineWidth: 0.5)
+            )
+            .shadow(color: accent.opacity(0.15), radius: 20, x: 0, y: 0)
+    }
+
+    private var sportDivider: some View {
+        Divider().background(KTheme.Colors.border.opacity(0.6))
+    }
+
+    private func sportRow(icon: String, label: String, value: String) -> some View {
+        HStack(spacing: KTheme.Spacing.md) {
+            Image(systemName: icon)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundColor(accent.opacity(0.8))
+                .frame(width: 20)
+            Text(label)
+                .font(.system(size: 10, weight: .bold, design: .monospaced))
+                .foregroundColor(accent.opacity(0.8))
+                .tracking(1.5)
+            Spacer()
+            Text(value)
+                .font(KTheme.Typography.bodyMedium)
+                .foregroundColor(KTheme.Colors.textPrimary)
+        }
+        .padding(.vertical, KTheme.Spacing.sm)
+    }
+
+    // MARK: — Body Metrics Card
+    private var bodyMetricsCard: some View {
+        VStack(alignment: .leading, spacing: KTheme.Spacing.sm) {
+            premiumSectionHeader("BODY METRICS")
+            VStack(spacing: 0) {
+                premiumMetricRow(label: "AGE", value: "\(appState.userProfile.age) yrs")
+                metricDivider
+                premiumMetricRow(label: "HEIGHT", value: String(format: "%.0f cm", appState.userProfile.heightCm))
+                metricDivider
+                premiumMetricRow(label: "WEIGHT", value: String(format: "%.1f kg", weightStore.latestWeight ?? appState.userProfile.currentWeightKg))
+                metricDivider
+                premiumMetricRow(label: "GOAL WEIGHT", value: String(format: "%.1f kg", appState.userProfile.goalWeightKg))
+                metricDivider
+                premiumMetricRow(label: "BMI", value: String(format: "%.1f · \(appState.userProfile.bmiCategory)", appState.userProfile.bmi))
+                metricDivider
+                premiumMetricRow(label: "ACTIVITY LEVEL", value: appState.userProfile.activityLevel.displayName)
+                metricDivider
+                premiumMetricRow(label: "TDEE", value: "\(Int(appState.userProfile.tdee)) kcal")
+            }
+            .padding(KTheme.Spacing.md)
+            .background(metricsCardBackground)
+        }
+    }
+
+    private var metricDivider: some View {
+        Divider().background(KTheme.Colors.border.opacity(0.6))
+    }
+
+    private var metricsCardBackground: some View {
+        RoundedRectangle(cornerRadius: KTheme.Radius.lg)
+            .fill(KTheme.Colors.card)
+            .overlay(
+                RoundedRectangle(cornerRadius: KTheme.Radius.lg)
+                    .stroke(accent.opacity(0.25), lineWidth: 0.5)
+            )
+            .shadow(color: accent.opacity(0.1), radius: 16, x: 0, y: 0)
+    }
+
+    private func premiumMetricRow(label: String, value: String) -> some View {
+        HStack {
+            Text(label)
+                .font(.system(size: 10, weight: .bold, design: .monospaced))
+                .foregroundColor(accent.opacity(0.8))
+                .tracking(1.5)
+            Spacer()
+            Text(value)
+                .font(KTheme.Typography.bodyMedium)
+                .foregroundColor(KTheme.Colors.textPrimary)
+        }
+        .padding(.vertical, KTheme.Spacing.sm)
+    }
+
+    // MARK: — Health Permissions Card
     private var healthPermissionsCard: some View {
-        KSection(title: "Apple Health") {
+        VStack(alignment: .leading, spacing: KTheme.Spacing.sm) {
+            premiumSectionHeader("APPLE HEALTH")
             KCard {
                 VStack(spacing: KTheme.Spacing.md) {
                     HStack {
@@ -138,24 +251,40 @@ struct ProfileView: View {
                             .foregroundColor(.red)
                             .font(.title3)
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("HealthKit Connected").font(KTheme.Typography.headingSmall).foregroundColor(KTheme.Colors.textPrimary)
-                            Text("Steps, heart rate, sleep, workouts").font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.textSecondary)
+                            Text("HealthKit Connected")
+                                .font(KTheme.Typography.headingSmall)
+                                .foregroundColor(KTheme.Colors.textPrimary)
+                            Text("Steps, heart rate, sleep, workouts")
+                                .font(KTheme.Typography.caption)
+                                .foregroundColor(KTheme.Colors.textSecondary)
                         }
                         Spacer()
-                        Circle().fill(KTheme.Colors.success).frame(width: 8, height: 8)
+                        Circle()
+                            .fill(KTheme.Colors.success)
+                            .frame(width: 8, height: 8)
                     }
 
                     Divider().background(KTheme.Colors.border)
 
                     HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Today's Steps").font(KTheme.Typography.label).foregroundColor(KTheme.Colors.textSecondary)
-                            Text("\(healthKitManager.todaySteps)").font(KTheme.Typography.headingSmall).foregroundColor(KTheme.Colors.textPrimary)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("TODAY'S STEPS")
+                                .font(.system(size: 10, weight: .bold, design: .monospaced))
+                                .foregroundColor(KTheme.Colors.accentTertiary.opacity(0.8))
+                                .tracking(1.5)
+                            Text("\(healthKitManager.todaySteps)")
+                                .font(KTheme.Typography.headingSmall)
+                                .foregroundColor(KTheme.Colors.textPrimary)
                         }
                         Spacer()
-                        VStack(alignment: .trailing, spacing: 2) {
-                            Text("Heart Rate").font(KTheme.Typography.label).foregroundColor(KTheme.Colors.textSecondary)
-                            Text("\(Int(healthKitManager.heartRateCurrent ?? 0)) bpm").font(KTheme.Typography.headingSmall).foregroundColor(KTheme.Colors.textPrimary)
+                        VStack(alignment: .trailing, spacing: 4) {
+                            Text("HEART RATE")
+                                .font(.system(size: 10, weight: .bold, design: .monospaced))
+                                .foregroundColor(KTheme.Colors.accentSecondary.opacity(0.8))
+                                .tracking(1.5)
+                            Text("\(Int(healthKitManager.heartRateCurrent ?? 0)) bpm")
+                                .font(KTheme.Typography.headingSmall)
+                                .foregroundColor(KTheme.Colors.textPrimary)
                         }
                     }
 
@@ -164,25 +293,26 @@ struct ProfileView: View {
                     } label: {
                         Label("Re-authorize Health Access", systemImage: "arrow.clockwise")
                             .font(KTheme.Typography.label)
-                            .foregroundColor(KTheme.Colors.accentPrimary)
+                            .foregroundColor(accent)
                     }
                 }
             }
         }
     }
 
-    // MARK: Settings
+    // MARK: — Settings Section
     private var settingsSection: some View {
-        KSection(title: "Preferences") {
+        VStack(alignment: .leading, spacing: KTheme.Spacing.sm) {
+            premiumSectionHeader("PREFERENCES")
             KCard {
                 VStack(spacing: 0) {
-                    SettingsRow(icon: "bell.fill", color: KTheme.Colors.accentPrimary, title: "Notifications") {
+                    SettingsRow(icon: "bell.fill", color: accent, title: "Notifications") {
                         if let url = URL(string: UIApplication.openSettingsURLString) {
                             UIApplication.shared.open(url)
                         }
                     }
                     Divider().background(KTheme.Colors.border)
-                    SettingsRow(icon: "moon.fill", color: KTheme.Colors.accentPrimary, title: "Dark Mode") {}
+                    SettingsRow(icon: "moon.fill", color: accent, title: "Dark Mode") {}
                     Divider().background(KTheme.Colors.border)
                     SettingsRow(icon: "scalemass.fill", color: KTheme.Colors.accentTertiary, title: "Units: Metric (kg / cm)") {}
                     Divider().background(KTheme.Colors.border)
@@ -192,9 +322,10 @@ struct ProfileView: View {
         }
     }
 
-    // MARK: Danger Zone
+    // MARK: — Danger Zone
     private var dangerSection: some View {
-        KSection(title: "Account") {
+        VStack(alignment: .leading, spacing: KTheme.Spacing.sm) {
+            premiumSectionHeader("ACCOUNT")
             VStack(spacing: KTheme.Spacing.sm) {
                 KButton(title: "Edit Profile", style: .secondary) {
                     showEditProfile = true
@@ -206,8 +337,22 @@ struct ProfileView: View {
         }
     }
 
+    // MARK: — Helpers
+    private func premiumSectionHeader(_ title: String) -> some View {
+        Text(title)
+            .font(.system(size: 11, weight: .bold, design: .monospaced))
+            .foregroundColor(accent)
+            .tracking(2)
+    }
+
+    private func microLabel(_ text: String, color: Color) -> some View {
+        Text(text)
+            .font(.system(size: 10, weight: .bold, design: .monospaced))
+            .foregroundColor(color)
+            .tracking(1.5)
+    }
+
     private func resetData() {
-        // Clear all data — only call this if explicitly confirmed
         appState.hasCompletedOnboarding = false
         UserDefaults.standard.removeObject(forKey: "kaizenn_nutrition_entries")
         UserDefaults.standard.removeObject(forKey: "kaizenn_water_entries")
@@ -306,8 +451,8 @@ struct EditProfileView: View {
     }
 }
 
-// MARK: — Small Components
-struct StatCell: View {
+// MARK: — Premium Stat Cell
+struct PremiumStatCell: View {
     let label: String
     let value: String
     let unit: String
@@ -315,33 +460,41 @@ struct StatCell: View {
     let color: Color
 
     var body: some View {
-        KCard {
-            VStack(alignment: .leading, spacing: KTheme.Spacing.sm) {
-                Image(systemName: icon).foregroundColor(color).font(.title3)
-                Text(value).font(KTheme.Typography.headingLarge).foregroundColor(KTheme.Colors.textPrimary)
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(unit).font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.textSecondary)
-                    Text(label).font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.textTertiary)
-                }
+        VStack(alignment: .leading, spacing: KTheme.Spacing.sm) {
+            Image(systemName: icon)
+                .foregroundColor(color)
+                .font(.system(size: 16, weight: .semibold))
+            Text(value)
+                .font(.system(size: 28, weight: .black, design: .rounded))
+                .foregroundColor(KTheme.Colors.textPrimary)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(unit)
+                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .foregroundColor(KTheme.Colors.textSecondary)
+                    .tracking(1.0)
+                Text(label)
+                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .foregroundColor(color.opacity(0.8))
+                    .tracking(1.5)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(KTheme.Spacing.md)
+        .background(premiumStatBackground(color: color))
+    }
+
+    private func premiumStatBackground(color: Color) -> some View {
+        RoundedRectangle(cornerRadius: KTheme.Radius.lg)
+            .fill(KTheme.Colors.card)
+            .overlay(
+                RoundedRectangle(cornerRadius: KTheme.Radius.lg)
+                    .stroke(color.opacity(0.3), lineWidth: 0.5)
+            )
+            .shadow(color: color.opacity(0.12), radius: 16, x: 0, y: 0)
     }
 }
 
-struct MetricRow: View {
-    let label: String
-    let value: String
-
-    var body: some View {
-        HStack {
-            Text(label).font(KTheme.Typography.bodyMedium).foregroundColor(KTheme.Colors.textSecondary)
-            Spacer()
-            Text(value).font(KTheme.Typography.bodyMedium).foregroundColor(KTheme.Colors.textPrimary)
-        }
-    }
-}
-
+// MARK: — Settings Row (unchanged)
 struct SettingsRow: View {
     let icon: String
     let color: Color

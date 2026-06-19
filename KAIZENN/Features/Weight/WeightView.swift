@@ -18,21 +18,18 @@ struct WeightView: View {
 
                     // Header
                     HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Weight")
-                                .font(KTheme.Typography.displaySmall)
-                                .foregroundColor(KTheme.Colors.textPrimary)
-                            if let latest = weightStore.latestWeight {
-                                Text(String(format: "%.1f kg", latest))
-                                    .font(KTheme.Typography.headingMedium)
-                                    .foregroundColor(KTheme.Colors.accentPrimary)
-                            }
-                        }
+                        Text("WEIGHT")
+                            .font(.system(size: 11, weight: .bold, design: .monospaced))
+                            .foregroundColor(KTheme.Colors.accentPrimary)
+                            .tracking(2)
                         Spacer()
                         KButton(title: "Log Weight", style: .primary, size: .small) {
                             showLogWeight = true
                         }
                     }
+
+                    // Hero current weight
+                    heroWeightCard
 
                     // Current Stats Row
                     currentStatsRow
@@ -63,14 +60,86 @@ struct WeightView: View {
         }
     }
 
+    // MARK: Hero
+
+    /// Color for a delta value (down = success, up = danger, none = secondary).
+    private func deltaColor(_ change: Double?) -> Color {
+        guard let change = change else { return KTheme.Colors.textSecondary }
+        return change <= 0 ? KTheme.Colors.success : KTheme.Colors.danger
+    }
+
+    private func deltaIcon(_ change: Double?) -> String {
+        guard let change = change else { return "minus" }
+        return change <= 0 ? "arrow.down.right" : "arrow.up.right"
+    }
+
+    private var heroWeightCard: some View {
+        let latest = weightStore.latestWeight
+        let change7 = weightStore.weightChange(lastDays: 7)
+
+        return KCard(elevated: true) {
+            VStack(alignment: .leading, spacing: KTheme.Spacing.sm) {
+                Text("CURRENT WEIGHT")
+                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .foregroundColor(KTheme.Colors.accentPrimary.opacity(0.8))
+                    .tracking(1.5)
+
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Text(latest.map { String(format: "%.1f", $0) } ?? "—")
+                        .font(.system(size: 64, weight: .black, design: .rounded))
+                        .foregroundColor(KTheme.Colors.textPrimary)
+                    Text("kg")
+                        .font(.system(size: 22, weight: .semibold, design: .rounded))
+                        .foregroundColor(KTheme.Colors.textSecondary)
+                    Spacer()
+                    deltaChip(change7)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .overlay(
+            RoundedRectangle(cornerRadius: KTheme.Radius.lg)
+                .stroke(KTheme.Colors.accentPrimary.opacity(0.3), lineWidth: 0.5)
+        )
+        .shadow(color: KTheme.Colors.accentPrimary.opacity(0.15), radius: 20, x: 0, y: 0)
+    }
+
+    private func deltaChip(_ change: Double?) -> some View {
+        let color = deltaColor(change)
+        let label = change.map { String(format: "%+.1f kg", $0) } ?? "—"
+        return HStack(spacing: 4) {
+            Image(systemName: deltaIcon(change))
+                .font(.system(size: 10, weight: .bold))
+            Text(label)
+                .font(.system(size: 12, weight: .bold, design: .rounded))
+        }
+        .foregroundColor(color)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(color.opacity(0.15))
+        .cornerRadius(KTheme.Radius.sm)
+        .overlay(
+            RoundedRectangle(cornerRadius: KTheme.Radius.sm)
+                .stroke(color.opacity(0.3), lineWidth: 0.5)
+        )
+    }
+
+    // MARK: Section header helper
+    private func sectionHeader(_ title: String) -> some View {
+        Text(title)
+            .font(.system(size: 11, weight: .bold, design: .monospaced))
+            .foregroundColor(KTheme.Colors.accentPrimary)
+            .tracking(2)
+    }
+
     // MARK: Stats Row
     private var currentStatsRow: some View {
         let change7 = weightStore.weightChange(lastDays: 7)
         let change30 = weightStore.weightChange(lastDays: 30)
 
         return HStack(spacing: KTheme.Spacing.sm) {
-            WeightStatMini(label: "7 days", value: change7.map { String(format: "%+.1f kg", $0) } ?? "—", color: change7.map { $0 <= 0 ? KTheme.Colors.success : KTheme.Colors.danger } ?? KTheme.Colors.textSecondary)
-            WeightStatMini(label: "30 days", value: change30.map { String(format: "%+.1f kg", $0) } ?? "—", color: change30.map { $0 <= 0 ? KTheme.Colors.success : KTheme.Colors.danger } ?? KTheme.Colors.textSecondary)
+            WeightStatMini(label: "7 DAYS", value: change7.map { String(format: "%+.1f kg", $0) } ?? "—", color: deltaColor(change7))
+            WeightStatMini(label: "30 DAYS", value: change30.map { String(format: "%+.1f kg", $0) } ?? "—", color: deltaColor(change30))
             WeightStatMini(label: "BMI", value: String(format: "%.1f", appState.userProfile.bmi), color: KTheme.Colors.accentPrimary)
         }
     }
@@ -80,7 +149,7 @@ struct WeightView: View {
         KCard(elevated: true) {
             VStack(alignment: .leading, spacing: KTheme.Spacing.md) {
                 HStack {
-                    Text("Weight History").font(KTheme.Typography.headingSmall).foregroundColor(KTheme.Colors.textPrimary)
+                    sectionHeader("WEIGHT HISTORY")
                     Spacer()
                     // Range picker
                     HStack(spacing: 4) {
@@ -89,7 +158,7 @@ struct WeightView: View {
                                 withAnimation(KTheme.Animation.smooth) { selectedRange = days }
                             } label: {
                                 Text("\(days)D")
-                                    .font(KTheme.Typography.caption)
+                                    .font(.system(size: 11, weight: .bold, design: .monospaced))
                                     .foregroundColor(selectedRange == days ? .white : KTheme.Colors.textSecondary)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 4)
@@ -121,6 +190,11 @@ struct WeightView: View {
                 }
             }
         }
+        .overlay(
+            RoundedRectangle(cornerRadius: KTheme.Radius.lg)
+                .stroke(KTheme.Colors.accentPrimary.opacity(0.3), lineWidth: 0.5)
+        )
+        .shadow(color: KTheme.Colors.accentPrimary.opacity(0.15), radius: 20, x: 0, y: 0)
     }
 
     // MARK: Goal Progress
@@ -136,7 +210,7 @@ struct WeightView: View {
         return KCard {
             VStack(alignment: .leading, spacing: KTheme.Spacing.md) {
                 HStack {
-                    Text("Goal Progress").font(KTheme.Typography.headingSmall).foregroundColor(KTheme.Colors.textPrimary)
+                    sectionHeader("GOAL PROGRESS")
                     Spacer()
                     KBadge(text: "\(Int(progress * 100))%", color: KTheme.Colors.success)
                 }
@@ -152,18 +226,24 @@ struct WeightView: View {
                 }.frame(height: 10)
 
                 HStack {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Start").font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.textSecondary)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("START")
+                            .font(.system(size: 10, weight: .bold, design: .monospaced))
+                            .foregroundColor(KTheme.Colors.textSecondary).tracking(1.5)
                         Text(String(format: "%.1f kg", start)).font(KTheme.Typography.headingSmall).foregroundColor(KTheme.Colors.textPrimary)
                     }
                     Spacer()
-                    VStack(alignment: .center, spacing: 2) {
-                        Text("Lost").font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.textSecondary)
+                    VStack(alignment: .center, spacing: 4) {
+                        Text("LOST")
+                            .font(.system(size: 10, weight: .bold, design: .monospaced))
+                            .foregroundColor(KTheme.Colors.textSecondary).tracking(1.5)
                         Text(String(format: "%.1f kg", lost)).font(KTheme.Typography.headingSmall).foregroundColor(KTheme.Colors.success)
                     }
                     Spacer()
-                    VStack(alignment: .trailing, spacing: 2) {
-                        Text("Goal").font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.textSecondary)
+                    VStack(alignment: .trailing, spacing: 4) {
+                        Text("GOAL")
+                            .font(.system(size: 10, weight: .bold, design: .monospaced))
+                            .foregroundColor(KTheme.Colors.textSecondary).tracking(1.5)
                         Text(String(format: "%.1f kg", goal)).font(KTheme.Typography.headingSmall).foregroundColor(KTheme.Colors.accentPrimary)
                     }
                 }
@@ -178,34 +258,44 @@ struct WeightView: View {
                 }
             }
         }
+        .overlay(
+            RoundedRectangle(cornerRadius: KTheme.Radius.lg)
+                .stroke(KTheme.Colors.accentPrimary.opacity(0.3), lineWidth: 0.5)
+        )
+        .shadow(color: KTheme.Colors.accentPrimary.opacity(0.15), radius: 20, x: 0, y: 0)
     }
 
     // MARK: BMI
+    private var bmiColor: Color {
+        let bmi = appState.userProfile.bmi
+        switch bmi {
+        case ..<18.5: return KTheme.Colors.warning
+        case 18.5..<25: return KTheme.Colors.success
+        case 25..<30: return KTheme.Colors.warning
+        default: return KTheme.Colors.danger
+        }
+    }
+
     private var bmiCard: some View {
         let bmi = appState.userProfile.bmi
-        let bmiColor: Color = {
-            switch bmi {
-            case ..<18.5: return KTheme.Colors.warning
-            case 18.5..<25: return KTheme.Colors.success
-            case 25..<30: return KTheme.Colors.warning
-            default: return KTheme.Colors.danger
-            }
-        }()
+        let color = bmiColor
 
         return KCard {
             HStack {
                 VStack(alignment: .leading, spacing: KTheme.Spacing.xs) {
-                    Text("BMI").font(KTheme.Typography.headingSmall).foregroundColor(KTheme.Colors.textPrimary)
+                    sectionHeader("BMI")
                     HStack(alignment: .lastTextBaseline, spacing: 4) {
-                        Text(String(format: "%.1f", bmi)).font(KTheme.Typography.displaySmall).foregroundColor(bmiColor)
-                        Text(appState.userProfile.bmiCategory).font(KTheme.Typography.caption).foregroundColor(bmiColor)
+                        Text(String(format: "%.1f", bmi))
+                            .font(.system(size: 40, weight: .black, design: .rounded))
+                            .foregroundColor(color)
+                        Text(appState.userProfile.bmiCategory).font(KTheme.Typography.caption).foregroundColor(color)
                     }
                     Text("Healthy range: 18.5 – 24.9").font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.textTertiary)
                 }
                 Spacer()
                 ZStack {
-                    KProgressRing(progress: min(bmi, 40), total: 40, size: 70, lineWidth: 6, color: bmiColor)
-                    Text(String(format: "%.1f", bmi)).font(KTheme.Typography.headingSmall).foregroundColor(bmiColor)
+                    KProgressRing(progress: min(bmi, 40), total: 40, size: 70, lineWidth: 6, color: color)
+                    Text(String(format: "%.1f", bmi)).font(KTheme.Typography.headingSmall).foregroundColor(color)
                 }
             }
         }
@@ -213,7 +303,9 @@ struct WeightView: View {
 
     // MARK: History
     private var historySection: some View {
-        KSection(title: "Weight Log") {
+        VStack(alignment: .leading, spacing: KTheme.Spacing.sm) {
+            sectionHeader("WEIGHT LOG")
+
             let sorted = weightStore.measurements.sorted { $0.date > $1.date }.prefix(20)
             if sorted.isEmpty {
                 KEmptyState(icon: "scalemass", title: "No entries yet", subtitle: "Tap 'Log Weight' to start tracking")
@@ -227,7 +319,9 @@ struct WeightView: View {
                                     Text(m.date, style: .time).font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.textSecondary)
                                 }
                                 Spacer()
-                                Text(String(format: "%.1f kg", m.weightKg)).font(KTheme.Typography.headingMedium).foregroundColor(KTheme.Colors.textPrimary)
+                                Text(String(format: "%.1f kg", m.weightKg))
+                                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                                    .foregroundColor(KTheme.Colors.textPrimary)
                                 if let fat = m.bodyFatPercentage {
                                     Text(String(format: "%.1f%%", fat)).font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.textSecondary).padding(.leading, 8)
                                 }
@@ -319,9 +413,19 @@ struct WeightStatMini: View {
 
     var body: some View {
         KCard {
-            VStack(spacing: 4) {
-                Text(value).font(KTheme.Typography.headingMedium).foregroundColor(color)
-                Text(label).font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.textSecondary)
+            VStack(spacing: 6) {
+                Text(value)
+                    .font(.system(size: 17, weight: .bold, design: .rounded))
+                    .foregroundColor(color)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+                Text(label)
+                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .foregroundColor(KTheme.Colors.textSecondary)
+                    .tracking(1.5)
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(color.opacity(0.6))
+                    .frame(height: 3)
             }
             .frame(maxWidth: .infinity)
         }

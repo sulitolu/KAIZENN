@@ -80,240 +80,359 @@ struct DashboardView: View {
         }.count
     }
 
+    // MARK: - Computed header strings
+    private var greetingLabel: String {
+        let weekday = Date().formatted(.dateTime.weekday(.wide)).uppercased()
+        let phase = sport.seasonPhase.displayName.uppercased()
+        return "\(weekday) · \(phase)"
+    }
+
+    private var athleteName: String {
+        appState.userProfile.name.isEmpty ? "Athlete" : appState.userProfile.name
+    }
+
+    // MARK: - HRV display
+    private var hrvDisplay: String { "+4ms" }
+
     // MARK: - Body
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: KTheme.Spacing.lg) {
+            VStack(spacing: 10) {
                 headerSection
                 scoreHeroCard
-                statRow
-                edgeCard
+                statsRow
                 Color.clear.frame(height: 100)
             }
-            .padding(.horizontal, KTheme.Spacing.md)
-            .padding(.top, KTheme.Spacing.md)
+            .padding(.horizontal, 14)
+            .padding(.top, 14)
         }
-        .background(Color(hex: "080810").ignoresSafeArea())
+        .background(KTheme.Colors.background.ignoresSafeArea())
         .task { await healthKitManager.fetchAllTodayData() }
     }
 
     // MARK: - Header
     private var headerSection: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(sport.seasonPhase.displayName.uppercased())
-                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
-                    .foregroundColor(Color(hex: "7C6FFF"))
-                    .tracking(1.5)
-
-                Text("Hi, \(appState.userProfile.name.isEmpty ? "Athlete" : appState.userProfile.name)")
-                    .font(KTheme.Typography.displaySmall)
+        HStack(alignment: .center) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(greetingLabel)
+                    .font(.system(size: 9, weight: .medium, design: .monospaced))
+                    .foregroundColor(KTheme.Colors.textTertiary)
+                    .tracking(1)
+                Text(athleteName)
+                    .font(.system(size: 16, weight: .heavy))
                     .foregroundColor(KTheme.Colors.textPrimary)
+                    .tracking(-0.3)
             }
             Spacer()
-            if sport.daysUntilPerformance <= 7 {
-                matchCountdownChip(days: sport.daysUntilPerformance)
-            }
+            avatarCircle
         }
     }
 
-    private func matchCountdownChip(days: Int) -> some View {
-        Text("\(days)D TO MATCH")
-            .font(.system(size: 11, weight: .bold, design: .monospaced))
-            .foregroundColor(Color(hex: "FF6B8A"))
-            .tracking(1)
-            .padding(.horizontal, KTheme.Spacing.sm)
-            .padding(.vertical, KTheme.Spacing.xs)
-            .background(
-                Capsule()
-                    .fill(Color(hex: "FF6B8A").opacity(0.15))
-                    .overlay(Capsule().stroke(Color(hex: "FF6B8A").opacity(0.4), lineWidth: 1))
-            )
+    private var avatarCircle: some View {
+        ZStack {
+            Circle()
+                .fill(KTheme.Colors.brandGradient)
+                .frame(width: 32, height: 32)
+                .shadow(color: KTheme.Colors.accentPrimary.opacity(0.4), radius: 7, x: 0, y: 0)
+            Image(systemName: "person.fill")
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(.white)
+        }
     }
 
     // MARK: - Score Hero Card
     private var scoreHeroCard: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 24)
-                .fill(Color(hex: "0C0C16"))
-                .shadow(color: readinessColor.opacity(0.25), radius: 20, x: 0, y: 8)
-
-            VStack(spacing: KTheme.Spacing.lg) {
-                scoreDisplay
-                pillarsRow
+        VStack(spacing: 11) {
+            // Top row: left column + ring
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 2) {
+                    readinessMicroLabel
+                    scoreGradientNumber
+                    Text(readinessLabel)
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundColor(readinessColor)
+                        .tracking(0.3)
+                }
+                Spacer()
+                scoreRingEcho
             }
-            .padding(KTheme.Spacing.lg)
+            // Pillar tiles row
+            pillarsRow
         }
+        .padding(14)
+        .background(scoreHeroBackground)
+        .overlay(scoreHeroBorder)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
-    private var scoreDisplay: some View {
-        VStack(spacing: KTheme.Spacing.xs) {
-            HStack(alignment: .lastTextBaseline, spacing: 4) {
-                Text("\(readinessScore)")
-                    .font(.system(size: 80, weight: .black))
-                    .foregroundColor(readinessColor)
-                Text("/100")
-                    .font(.system(size: 22, weight: .semibold))
-                    .foregroundColor(KTheme.Colors.textSecondary)
-            }
-            Text(readinessLabel)
-                .font(.system(size: 13, weight: .bold, design: .monospaced))
-                .foregroundColor(readinessColor)
-                .tracking(2)
-        }
+    private var readinessMicroLabel: some View {
+        Text("READINESS")
+            .font(.system(size: 8, weight: .bold, design: .monospaced))
+            .foregroundColor(KTheme.Colors.textTertiary)
+            .tracking(1.5)
     }
 
-    private var pillarsRow: some View {
-        HStack(spacing: KTheme.Spacing.md) {
-            PillarBlock(
-                label: "SLEEP",
-                value: String(format: "%.1fh", sleepHours),
-                score: sleepScore,
-                color: Color(hex: "7C6FFF")
-            )
-            PillarBlock(
-                label: "LOAD",
-                value: String(format: "%.0f", acuteLoad),
-                score: loadScore,
-                color: Color(hex: "4ECDC4")
-            )
-            PillarBlock(
-                label: "FUEL",
-                value: "\(Int(consumedCalories))kcal",
-                score: fuelScore,
-                color: Color(hex: "FFB347")
-            )
-            PillarBlock(
-                label: "ACWR",
-                value: String(format: "%.2f", acwr),
-                score: acwr == 0 ? 75 : (0.8...1.3).contains(acwr) ? 100 : max(0, 100 - (abs(acwr < 0.8 ? 0.8 - acwr : acwr - 1.3) * 100)),
-                color: Color(hex: "FF6B8A")
-            )
-        }
-    }
-
-    // MARK: - Stat Row
-    private var statRow: some View {
-        HStack(spacing: KTheme.Spacing.sm) {
-            StatMiniCard(
-                icon: "bolt.fill",
-                label: "GPS LOAD",
-                value: String(format: "%.0f", acuteLoad),
-                color: Color(hex: "4ECDC4")
-            )
-            StatMiniCard(
-                icon: "calendar",
-                label: "SESSIONS",
-                value: "\(sessionsThisWeek)",
-                color: Color(hex: "7C6FFF")
-            )
-            StatMiniCard(
-                icon: "fork.knife",
-                label: "CALORIES",
-                value: "\(Int(consumedCalories))",
-                color: Color(hex: "FFB347")
-            )
-        }
-    }
-
-    // MARK: - Edge Card
-    private var edgeCard: some View {
-        HStack(spacing: KTheme.Spacing.md) {
-            Image(systemName: "bolt.fill")
-                .font(.system(size: 20, weight: .bold))
-                .foregroundColor(readinessColor)
-                .frame(width: 36, height: 36)
-                .background(
-                    Circle().fill(readinessColor.opacity(0.15))
+    private var scoreGradientNumber: some View {
+        Text("\(readinessScore)")
+            .font(.system(size: 54, weight: .black))
+            .tracking(-2)
+            .foregroundStyle(
+                LinearGradient(
+                    colors: [Color(hex: "A89FFF"), KTheme.Colors.accentSecondary],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
                 )
+            )
+    }
 
-            Text(edgePrompt)
-                .font(KTheme.Typography.bodyMedium)
-                .foregroundColor(KTheme.Colors.textPrimary)
-                .fixedSize(horizontal: false, vertical: true)
-
-            Spacer(minLength: 0)
+    private var scoreRingEcho: some View {
+        ZStack {
+            Circle()
+                .fill(Color(hex: "0F0F1E"))
+                .frame(width: 50, height: 50)
+            Circle()
+                .stroke(
+                    LinearGradient(
+                        colors: [KTheme.Colors.accentPrimary, KTheme.Colors.accentSecondary],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 2.5
+                )
+                .frame(width: 50, height: 50)
+            Text("\(readinessScore)")
+                .font(.system(size: 14, weight: .black))
+                .foregroundColor(Color(hex: "A89FFF"))
         }
-        .padding(KTheme.Spacing.md)
+    }
+
+    private var scoreHeroBackground: some View {
+        LinearGradient(
+            colors: [Color(hex: "0F0F1E"), Color(hex: "12121F")],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+
+    private var scoreHeroBorder: some View {
+        RoundedRectangle(cornerRadius: 16)
+            .stroke(KTheme.Colors.accentPrimary.opacity(0.12), lineWidth: 0.5)
+    }
+
+    // MARK: - Pillar Tiles
+    private var pillarsRow: some View {
+        HStack(spacing: 5) {
+            PillarTile(
+                iconSystemName: "moon.fill",
+                iconColor: KTheme.Colors.accentPrimary,
+                value: String(format: "%.1fh", sleepHours),
+                name: "SLEEP"
+            )
+            PillarTile(
+                iconSystemName: "bolt.fill",
+                iconColor: KTheme.Colors.accentTertiary,
+                value: String(format: "%.1f", acwr),
+                name: "LOAD"
+            )
+            PillarTile(
+                iconSystemName: "fork.knife",
+                iconColor: KTheme.Colors.accentAmber,
+                value: "\(Int(fuelScore))%",
+                name: "FUEL"
+            )
+            PillarTile(
+                iconSystemName: "waveform.path.ecg",
+                iconColor: KTheme.Colors.accentSecondary,
+                value: hrvDisplay,
+                name: "HRV"
+            )
+        }
+    }
+
+    // MARK: - Stats Row
+    private var statsRow: some View {
+        HStack(spacing: 5) {
+            gpsLoadCard
+            restHRCard
+            matchCard
+        }
+    }
+
+    private var gpsLoadCard: some View {
+        StatCard {
+            HStack(alignment: .firstTextBaseline, spacing: 1) {
+                Text(String(format: "%.1f", acuteLoad / 1000))
+                    .font(.system(size: 13, weight: .heavy))
+                    .foregroundColor(KTheme.Colors.textPrimary)
+                Text("km")
+                    .font(.system(size: 7, weight: .semibold))
+                    .foregroundColor(KTheme.Colors.textTertiary)
+                    .textCase(.uppercase)
+            }
+            Text("GPS Load")
+                .font(.system(size: 7, weight: .regular))
+                .foregroundColor(KTheme.Colors.textTertiary)
+            miniBar(
+                fill: LinearGradient(
+                    colors: [KTheme.Colors.accentPrimary, KTheme.Colors.accentSecondary],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                ),
+                fraction: 0.78
+            )
+        }
+    }
+
+    private var restHRCard: some View {
+        StatCard {
+            HStack(alignment: .firstTextBaseline, spacing: 1) {
+                Text(healthKitManager.heartRateResting.map { "\(Int($0))" } ?? "--")
+                    .font(.system(size: 13, weight: .heavy))
+                    .foregroundColor(KTheme.Colors.textPrimary)
+                Text("bpm")
+                    .font(.system(size: 7, weight: .semibold))
+                    .foregroundColor(KTheme.Colors.textTertiary)
+                    .textCase(.uppercase)
+            }
+            Text("Rest HR")
+                .font(.system(size: 7, weight: .regular))
+                .foregroundColor(KTheme.Colors.textTertiary)
+            miniBar(
+                fill: LinearGradient(
+                    colors: [KTheme.Colors.accentTertiary, KTheme.Colors.accentTertiary],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                ),
+                fraction: 0.55
+            )
+        }
+    }
+
+    private var matchCard: some View {
+        StatCard {
+            Text("MATCH")
+                .font(.system(size: 8, weight: .bold))
+                .foregroundColor(KTheme.Colors.accentSecondary)
+            Text(matchDayName)
+                .font(.system(size: 11, weight: .heavy))
+                .foregroundColor(KTheme.Colors.textPrimary)
+            Text("\(sport.daysUntilPerformance) days out")
+                .font(.system(size: 7, weight: .regular))
+                .foregroundColor(KTheme.Colors.textTertiary)
+            miniBar(
+                fill: LinearGradient(
+                    colors: [KTheme.Colors.accentSecondary, KTheme.Colors.accentSecondary],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                ),
+                fraction: matchBarFraction
+            )
+        }
+    }
+
+    private var matchDayName: String {
+        let weekday = Calendar.current.component(.weekday, from: Date())
+        let target = sport.performanceDayOfWeek
+        guard let date = Calendar.current.date(
+            bySetting: .weekday,
+            value: target,
+            of: Date()
+        ) else { return "Sat" }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE"
+        return formatter.string(from: date)
+    }
+
+    private var matchBarFraction: Double {
+        let days = sport.daysUntilPerformance
+        guard days > 0 else { return 1.0 }
+        return 1.0 - (Double(days) / 7.0)
+    }
+
+    // MARK: - Mini bar helper
+    @ViewBuilder
+    private func miniBar<F: ShapeStyle>(fill: F, fraction: Double) -> some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                Capsule()
+                    .fill(KTheme.Colors.cardElevated)
+                    .frame(height: 2)
+                Capsule()
+                    .fill(fill)
+                    .frame(width: geo.size.width * CGFloat(min(max(fraction, 0), 1)), height: 2)
+            }
+        }
+        .frame(height: 2)
+        .padding(.top, 5)
+    }
+}
+
+// MARK: - PillarTile
+private struct PillarTile: View {
+    let iconSystemName: String
+    let iconColor: Color
+    let value: String
+    let name: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(iconColor.opacity(0.2))
+                    .frame(width: 14, height: 14)
+                Image(systemName: iconSystemName)
+                    .font(.system(size: 7, weight: .medium))
+                    .foregroundColor(iconColor)
+            }
+            .padding(.bottom, 4)
+
+            Text(value)
+                .font(.system(size: 10, weight: .heavy))
+                .foregroundColor(KTheme.Colors.textPrimary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+
+            Text(name)
+                .font(.system(size: 6, weight: .medium))
+                .foregroundColor(KTheme.Colors.textTertiary)
+                .tracking(0.7)
+                .padding(.top, 1)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 4)
+        .padding(.vertical, 6)
         .background(
-            RoundedRectangle(cornerRadius: KTheme.Radius.md)
-                .fill(Color(hex: "1A1A28"))
+            RoundedRectangle(cornerRadius: 9)
+                .fill(Color.white.opacity(0.02))
                 .overlay(
-                    RoundedRectangle(cornerRadius: KTheme.Radius.md)
-                        .stroke(readinessColor.opacity(0.25), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 9)
+                        .stroke(Color.white.opacity(0.04), lineWidth: 0.5)
                 )
         )
     }
 }
 
-// MARK: - PillarBlock
-private struct PillarBlock: View {
-    let label: String
-    let value: String
-    let score: Double
-    let color: Color
+// MARK: - StatCard container
+private struct StatCard<Content: View>: View {
+    let content: Content
 
-    var body: some View {
-        VStack(spacing: 6) {
-            // Vertical bar
-            GeometryReader { geo in
-                ZStack(alignment: .bottom) {
-                    RoundedRectangle(cornerRadius: 3)
-                        .fill(Color(hex: "1A1A28"))
-                        .frame(width: 6)
-                    RoundedRectangle(cornerRadius: 3)
-                        .fill(color)
-                        .frame(width: 6, height: geo.size.height * CGFloat(min(score, 100) / 100))
-                }
-                .frame(maxWidth: .infinity)
-            }
-            .frame(height: 40)
-
-            Text(value)
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundColor(KTheme.Colors.textPrimary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-
-            Text(label)
-                .font(.system(size: 9, weight: .medium, design: .monospaced))
-                .foregroundColor(KTheme.Colors.textSecondary)
-                .tracking(0.5)
-        }
-        .frame(maxWidth: .infinity)
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
     }
-}
-
-// MARK: - StatMiniCard
-private struct StatMiniCard: View {
-    let icon: String
-    let label: String
-    let value: String
-    let color: Color
 
     var body: some View {
-        VStack(alignment: .leading, spacing: KTheme.Spacing.xs) {
-            HStack(spacing: 5) {
-                Image(systemName: icon)
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundColor(color)
-                Text(label)
-                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
-                    .foregroundColor(KTheme.Colors.textSecondary)
-                    .tracking(0.5)
-            }
-            Text(value)
-                .font(.system(size: 20, weight: .bold))
-                .foregroundColor(KTheme.Colors.textPrimary)
+        VStack(alignment: .leading, spacing: 1) {
+            content
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(KTheme.Spacing.sm)
+        .padding(.horizontal, 7)
+        .padding(.vertical, 8)
         .background(
-            RoundedRectangle(cornerRadius: KTheme.Radius.sm)
-                .fill(Color(hex: "0C0C16"))
+            RoundedRectangle(cornerRadius: 11)
+                .fill(KTheme.Colors.card)
                 .overlay(
-                    RoundedRectangle(cornerRadius: KTheme.Radius.sm)
-                        .stroke(Color(hex: "1A1A28"), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 11)
+                        .stroke(KTheme.Colors.cardElevated, lineWidth: 0.5)
                 )
         )
     }

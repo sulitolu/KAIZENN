@@ -29,61 +29,49 @@ struct NutritionView: View {
 
     private var todayNutrition: DailyNutrition { nutritionStore.dailyNutrition(for: selectedDate) }
     private var targets: MacroTargets { appState.userProfile.macroTargets }
+    private var sport: SportProfile { appState.userProfile.sportProfile }
+
+    // MARK: Helpers
+
+    private var weekdayLabel: String {
+        let f = DateFormatter()
+        f.dateFormat = "EEE"
+        return f.string(from: selectedDate).uppercased()
+    }
+
+    private var phaseLabel: String {
+        sport.seasonPhase.displayName.uppercased().replacingOccurrences(of: "-", with: " ")
+    }
+
+    private var calProgress: Double {
+        let cal = todayNutrition.totalCalories
+        let target = Double(targets.calories)
+        guard target > 0 else { return 0 }
+        return min(cal / target, 1.0)
+    }
+
+    // MARK: Body
 
     var body: some View {
         ZStack {
             KTheme.Colors.background.ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
-                VStack(spacing: KTheme.Spacing.lg) {
+                VStack(spacing: KTheme.Spacing.md) {
 
-                    // Page Header
-                    HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Nutrition")
-                                .font(KTheme.Typography.displaySmall)
-                                .foregroundColor(KTheme.Colors.textPrimary)
-                            dateNavigator
-                        }
-                        Spacer()
-                        HStack(spacing: KTheme.Spacing.sm) {
-                            Button {
-                                showFoodScan = true
-                            } label: {
-                                HStack(spacing: 5) {
-                                    Image(systemName: "camera.viewfinder")
-                                    Text("Scan")
-                                }
-                                .font(KTheme.Typography.label)
-                                .foregroundColor(KTheme.Colors.accentPrimary)
-                                .padding(.horizontal, KTheme.Spacing.md)
-                                .padding(.vertical, KTheme.Spacing.sm)
-                                .background(KTheme.Colors.accentPrimary.opacity(0.12))
-                                .cornerRadius(KTheme.Radius.pill)
-                            }
-                            Button {
-                                showAddFood = true
-                            } label: {
-                                HStack(spacing: 6) {
-                                    Image(systemName: "plus")
-                                    Text("Log Food")
-                                }
-                                .font(KTheme.Typography.label)
-                                .foregroundColor(.white)
-                                .padding(.horizontal, KTheme.Spacing.md)
-                                .padding(.vertical, KTheme.Spacing.sm)
-                                .background(KTheme.Colors.brandGradient.cornerRadius(KTheme.Radius.pill))
-                            }
-                        }
-                    }
+                    // ── Header Row ──────────────────────────────────────────
+                    nutritionHeader
 
-                    // Calorie Ring + Macros
-                    calorieRingCard
+                    // ── Calories Hero Card ───────────────────────────────────
+                    caloriesHeroCard
 
-                    // Water tracker
+                    // ── Scan Your Meal Card ──────────────────────────────────
+                    scanMealCard
+
+                    // ── Water Tracker ────────────────────────────────────────
                     waterTracker
 
-                    // Meal sections
+                    // ── Meal Sections ────────────────────────────────────────
                     ForEach(MealEntry.MealType.allCases, id: \.self) { mealType in
                         MealSectionView(
                             mealType: mealType,
@@ -96,7 +84,7 @@ struct NutritionView: View {
                         )
                     }
 
-                    // Weekly chart
+                    // ── Weekly Chart ─────────────────────────────────────────
                     weeklyCalorieChart
 
                     Color.clear.frame(height: 100)
@@ -113,42 +101,220 @@ struct NutritionView: View {
         }
     }
 
-    // MARK: Calorie Ring Card
-    private var calorieRingCard: some View {
-        KCard(elevated: true) {
-            HStack(spacing: KTheme.Spacing.xl) {
-                ZStack {
-                    KProgressRing(
-                        progress: todayNutrition.totalCalories,
-                        total: Double(targets.calories),
-                        size: 120,
-                        lineWidth: 10,
-                        color: KTheme.Colors.accentPrimary
-                    )
-                    VStack(spacing: 2) {
-                        Text("\(Int(todayNutrition.totalCalories))")
-                            .font(KTheme.Typography.displaySmall)
-                            .foregroundColor(KTheme.Colors.textPrimary)
-                        Text("of \(targets.calories)")
-                            .font(KTheme.Typography.caption)
-                            .foregroundColor(KTheme.Colors.textSecondary)
-                        Text("kcal")
-                            .font(KTheme.Typography.caption)
-                            .foregroundColor(KTheme.Colors.textTertiary)
-                    }
-                }
+    // MARK: — Header Row
 
-                VStack(spacing: KTheme.Spacing.md) {
-                    MacroBar(label: "Protein", current: todayNutrition.totalProteinG, target: Double(targets.proteinG), color: KTheme.Colors.accentSecondary)
-                    MacroBar(label: "Carbs", current: todayNutrition.totalCarbsG, target: Double(targets.carbsG), color: KTheme.Colors.accentAmber)
-                    MacroBar(label: "Fat", current: todayNutrition.totalFatG, target: Double(targets.fatG), color: KTheme.Colors.accentTertiary)
-                    MacroBar(label: "Fiber", current: todayNutrition.totalFiberG, target: 30, color: KTheme.Colors.success)
+    private var nutritionHeader: some View {
+        HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: 3) {
+                // Micro-label: "MATCH WEEK · THU" or phase + weekday
+                Text("\(phaseLabel) · \(weekdayLabel)")
+                    .font(.system(size: 8, weight: .bold, design: .monospaced))
+                    .foregroundColor(KTheme.Colors.textTertiary)
+                    .tracking(1)
+
+                // Title
+                Text("Fuel")
+                    .font(.system(size: 15, weight: .heavy))
+                    .foregroundColor(KTheme.Colors.textPrimary)
+                    .tracking(-0.3)
+
+                // Date navigator inline
+                dateNavigator
+            }
+
+            Spacer()
+
+            VStack(alignment: .trailing, spacing: 8) {
+                // Amber "N DAYS OUT" chip
+                daysOutChip
+
+                // Log Food button (preserved)
+                Button {
+                    showAddFood = true
+                } label: {
+                    HStack(spacing: 5) {
+                        Image(systemName: "plus")
+                            .font(.system(size: 10, weight: .bold))
+                        Text("Log Food")
+                            .font(.system(size: 10, weight: .bold))
+                    }
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(KTheme.Colors.brandGradient)
+                    .clipShape(Capsule())
                 }
             }
         }
     }
 
-    // MARK: Water
+    // MARK: — Days Out Chip
+
+    private var daysOutChip: some View {
+        let days = sport.daysUntilPerformance
+        let label = days == 0 ? "MATCH DAY" : "\(days) DAYS OUT"
+        return Text(label)
+            .font(.system(size: 7, weight: .bold))
+            .foregroundColor(KTheme.Colors.accentAmber)
+            .tracking(0.5)
+            .padding(.horizontal, 7)
+            .padding(.vertical, 4)
+            .background(KTheme.Colors.accentAmber.opacity(0.1))
+            .overlay(
+                Capsule()
+                    .stroke(KTheme.Colors.accentAmber.opacity(0.2), lineWidth: 0.5)
+            )
+            .clipShape(Capsule())
+    }
+
+    // MARK: — Calories Hero Card
+
+    private var caloriesHeroCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+
+            // Micro-label
+            Text("CALORIES TODAY")
+                .font(.system(size: 8, weight: .bold, design: .monospaced))
+                .foregroundColor(KTheme.Colors.textTertiary)
+                .tracking(1)
+
+            // Big number row
+            calorieNumberRow
+
+            // Progress bar (3pt)
+            calorieProgressBar
+
+            // Macros row: Protein / Carbs / Fat
+            macrosRow
+        }
+        .padding(KTheme.Spacing.md)
+        .background(cardBackground)
+    }
+
+    // Split into helpers to avoid type-checker complexity
+    private var calorieNumberRow: some View {
+        HStack(alignment: .lastTextBaseline, spacing: 4) {
+            Text(formattedCalories(todayNutrition.totalCalories))
+                .font(.system(size: 30, weight: .black))
+                .foregroundColor(KTheme.Colors.textPrimary)
+                .tracking(-1)
+
+            Text("/ \(targets.calories)")
+                .font(.system(size: 13, weight: .bold))
+                .foregroundColor(KTheme.Colors.textTertiary)
+        }
+    }
+
+    private var calorieProgressBar: some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(KTheme.Colors.background)
+                    .frame(height: 3)
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(
+                        LinearGradient(
+                            colors: [Color(hex: "FFB347"), Color(hex: "FF6B8A")],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .frame(width: geo.size.width * CGFloat(calProgress), height: 3)
+            }
+        }
+        .frame(height: 3)
+    }
+
+    private var macrosRow: some View {
+        HStack(spacing: 0) {
+            MacroCell(
+                value: "\(Int(todayNutrition.totalProteinG))g",
+                label: "PROTEIN",
+                color: KTheme.Colors.accentSecondary
+            )
+            Spacer()
+            MacroCell(
+                value: "\(Int(todayNutrition.totalCarbsG))g",
+                label: "CARBS",
+                color: KTheme.Colors.accentAmber
+            )
+            Spacer()
+            MacroCell(
+                value: "\(Int(todayNutrition.totalFatG))g",
+                label: "FAT",
+                color: KTheme.Colors.accentTertiary
+            )
+        }
+    }
+
+    // MARK: — Card Background Helper (avoids nested ternaries in .background)
+
+    private var cardBackground: some View {
+        RoundedRectangle(cornerRadius: 13)
+            .fill(KTheme.Colors.card)
+            .overlay(
+                RoundedRectangle(cornerRadius: 13)
+                    .stroke(KTheme.Colors.border.opacity(0.5), lineWidth: 0.5)
+            )
+    }
+
+    // MARK: — Scan Your Meal Card
+
+    private var scanMealCard: some View {
+        Button {
+            showFoodScan = true
+        } label: {
+            scanMealCardContent
+        }
+        .buttonStyle(KScaleButtonStyle())
+    }
+
+    private var scanMealCardContent: some View {
+        HStack(spacing: 9) {
+            // Icon: 26pt rounded square with brandGradient + violet glow
+            ZStack {
+                RoundedRectangle(cornerRadius: 7)
+                    .fill(KTheme.Colors.brandGradient)
+                    .frame(width: 26, height: 26)
+                    .kGlow(color: KTheme.Colors.accentPrimary, radius: 10)
+
+                Image(systemName: "camera.fill")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundColor(.white)
+            }
+
+            // Text block
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Scan Your Meal")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundColor(KTheme.Colors.textPrimary)
+
+                Text("AI reads your plate — auto-logged")
+                    .font(.system(size: 7, weight: .regular))
+                    .foregroundColor(KTheme.Colors.textTertiary)
+            }
+
+            Spacer()
+
+            // Chevron
+            Image(systemName: "chevron.right")
+                .font(.system(size: 10, weight: .semibold))
+                .foregroundColor(KTheme.Colors.textTertiary)
+        }
+        .padding(9)
+        .background(scanMealBackground)
+    }
+
+    private var scanMealBackground: some View {
+        RoundedRectangle(cornerRadius: 11)
+            .fill(KTheme.Colors.accentPrimary.opacity(0.05))
+            .overlay(
+                RoundedRectangle(cornerRadius: 11)
+                    .stroke(KTheme.Colors.accentPrimary.opacity(0.18), lineWidth: 0.5)
+            )
+    }
+
+    // MARK: Water Tracker
     private var waterTracker: some View {
         let consumed = nutritionStore.waterConsumedMl(for: selectedDate)
         let target: Double = 2500
@@ -229,7 +395,6 @@ struct NutritionView: View {
                     let chartHeight: CGFloat = 90
 
                     ZStack(alignment: .topLeading) {
-                        // Target dashed line
                         let targetY = chartHeight - CGFloat(min(target, maxVal) / max(maxVal, 1)) * chartHeight
                         Rectangle()
                             .fill(chartMetric.color.opacity(0.4))
@@ -259,7 +424,6 @@ struct NutritionView: View {
                     }
                     .frame(height: chartHeight)
 
-                    // Stats row
                     let avg = values.reduce(0, +) / max(Double(values.count), 1)
                     HStack {
                         Text("Avg: \(Int(avg)) \(chartMetric.unit)")
@@ -278,9 +442,19 @@ struct NutritionView: View {
         }
     }
 
+    // MARK: Helpers
+
     private func dayLabel(_ date: Date) -> String {
         let f = DateFormatter(); f.dateFormat = "EE"
         return f.string(from: date)
+    }
+
+    private func formattedCalories(_ value: Double) -> String {
+        let n = Int(value)
+        if n >= 1000 {
+            return "\(n / 1000),\(String(format: "%03d", n % 1000))"
+        }
+        return "\(n)"
     }
 
     // MARK: Date Navigator
@@ -322,7 +496,27 @@ struct NutritionView: View {
     }
 }
 
-// MARK: — Macro Bar
+// MARK: — Macro Cell (mockup-style: colored value + uppercase micro-label)
+
+struct MacroCell: View {
+    let value: String
+    let label: String
+    let color: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(value)
+                .font(.system(size: 11, weight: .heavy))
+                .foregroundColor(color)
+            Text(label)
+                .font(.system(size: 6, weight: .bold))
+                .foregroundColor(KTheme.Colors.textTertiary)
+                .tracking(0.7)
+        }
+    }
+}
+
+// MARK: — Macro Bar (kept for legacy use in waterTracker area if needed)
 struct MacroBar: View {
     let label: String
     let current: Double
@@ -355,6 +549,15 @@ struct MealSectionView: View {
 
     private var mealCalories: Double { entries.map(\.calories).reduce(0, +) }
     @State private var isExpanded = true
+
+    // Dot colors cycling: amber, teal, violet
+    private func dotColor(for index: Int) -> Color {
+        switch index % 3 {
+        case 0: return KTheme.Colors.accentAmber
+        case 1: return KTheme.Colors.accentTertiary
+        default: return KTheme.Colors.accentPrimary
+        }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -391,8 +594,10 @@ struct MealSectionView: View {
 
             if isExpanded {
                 VStack(spacing: 0) {
-                    ForEach(entries) { entry in
-                        FoodEntryRow(entry: entry) { onDelete(entry.id) }
+                    ForEach(Array(entries.enumerated()), id: \.element.id) { index, entry in
+                        FoodEntryRow(entry: entry, dotColor: dotColor(for: index)) {
+                            onDelete(entry.id)
+                        }
                         if entry.id != entries.last?.id {
                             Divider().background(KTheme.Colors.border).padding(.horizontal, KTheme.Spacing.md)
                         }
@@ -417,34 +622,60 @@ struct MealSectionView: View {
     }
 }
 
+// MARK: — Food Entry Row (mockup style: colored glowing dot + name + grams + kcal)
+
 struct FoodEntryRow: View {
     let entry: MealEntry
+    let dotColor: Color
     let onDelete: () -> Void
 
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(entry.food.name).font(KTheme.Typography.bodyMedium).foregroundColor(KTheme.Colors.textPrimary)
-                Text(String(format: "%.0fg", entry.gramsConsumed)).font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.textSecondary)
-            }
+        HStack(spacing: 7) {
+            // Colored glowing dot
+            Circle()
+                .fill(dotColor)
+                .frame(width: 6, height: 6)
+                .shadow(color: dotColor.opacity(0.5), radius: 3)
+
+            // Name
+            Text(entry.food.name)
+                .font(.system(size: 8, weight: .semibold))
+                .foregroundColor(Color(hex: "C8C8E0"))
+                .lineLimit(1)
+
             Spacer()
-            VStack(alignment: .trailing, spacing: 2) {
-                Text("\(Int(entry.calories)) kcal").font(KTheme.Typography.headingSmall).foregroundColor(KTheme.Colors.textPrimary)
-                HStack(spacing: 6) {
-                    Text("P:\(Int(entry.proteinG))").font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.accentSecondary)
-                    Text("C:\(Int(entry.carbsG))").font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.accentAmber)
-                    Text("F:\(Int(entry.fatG))").font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.accentTertiary)
-                }
-            }
+
+            // Grams
+            Text(String(format: "%.0fg", entry.gramsConsumed))
+                .font(.system(size: 7, weight: .regular))
+                .foregroundColor(KTheme.Colors.textTertiary)
+                .padding(.trailing, 3)
+
+            // kcal
+            Text("\(Int(entry.calories)) kcal")
+                .font(.system(size: 8, weight: .bold))
+                .foregroundColor(Color(hex: "4A4A6A"))
+
+            // Delete
             Button(action: onDelete) {
                 Image(systemName: "trash")
-                    .font(.caption)
+                    .font(.system(size: 10))
                     .foregroundColor(KTheme.Colors.textTertiary)
-                    .padding(8)
+                    .padding(6)
             }
         }
-        .padding(.horizontal, KTheme.Spacing.md)
-        .padding(.vertical, KTheme.Spacing.sm)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 6)
+        .background(entryBackground)
+    }
+
+    private var entryBackground: some View {
+        RoundedRectangle(cornerRadius: 9)
+            .fill(KTheme.Colors.card)
+            .overlay(
+                RoundedRectangle(cornerRadius: 9)
+                    .stroke(Color(hex: "1A1A28"), lineWidth: 0.5)
+            )
     }
 }
 
