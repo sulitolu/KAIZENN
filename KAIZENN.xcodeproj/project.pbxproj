@@ -34,6 +34,7 @@
 		BAFDE2B80D144A5F86AB9282 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F19765D068E4A8698F6FC0F /* WatchConnectivityManager.swift */; };
 		7039CE9C1C224420879389AE /* GPSSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43746BB905634F97B3497D38 /* GPSSession.swift */; };
 		BC4B7FB8C7494662906B4E4F /* StrengthSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0A0AEA590D4DB0BD445B4C /* StrengthSession.swift */; };
+		8C2832FA151648DE8EF36451 /* LoadStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E868E1A4C35548A0AF1BF44F /* LoadStore.swift */; };
 		BB22CC33DD44EE55FF667788 /* ClaudeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF66 /* ClaudeService.swift */; };
 		BC770D61FF67FBCBA603E094 /* CoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3F9E0C64F4C07C0341E24D /* CoachView.swift */; };
 		C2657B3BF636AA7FDAF9CCC6 /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B4E9E7F645566F6EC8259C /* AddTaskView.swift */; };
@@ -82,6 +83,7 @@
 		9F19765D068E4A8698F6FC0F /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
 		43746BB905634F97B3497D38 /* GPSSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSSession.swift; sourceTree = "<group>"; };
 		9D0A0AEA590D4DB0BD445B4C /* StrengthSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthSession.swift; sourceTree = "<group>"; };
+		E868E1A4C35548A0AF1BF44F /* LoadStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadStore.swift; sourceTree = "<group>"; };
 		2B3C4D5E6F7A8B9C0D1E2F3A /* SportProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportProfile.swift; sourceTree = "<group>"; };
 		A0021C5C2956990173B6D091 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		A083F1897FE65BA0360D927A /* KTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KTheme.swift; sourceTree = "<group>"; };
@@ -341,6 +343,7 @@
 				6A473374B40C1F5DD3B764F6 /* WeightStore.swift */,
 				1F3CB7C0CC2324BD1548388D /* ScheduleStore.swift */,
 				454E071F81DB7F28A76C3D8F /* ActivityStore.swift */,
+				E868E1A4C35548A0AF1BF44F /* LoadStore.swift */,
 			);
 			path = Persistence;
 			sourceTree = "<group>";
@@ -491,6 +494,7 @@
 				5B083EA9B8E1A2EDA5DF0690 /* WeightStore.swift in Sources */,
 				D708C9FCD82AAD29C288DCB2 /* ScheduleStore.swift in Sources */,
 				A0CCA717A90BC88D63EAB5E8 /* ActivityStore.swift in Sources */,
+				8C2832FA151648DE8EF36451 /* LoadStore.swift in Sources */,
 				74C12F28F3F5DA47E83164EE /* MainTabView.swift in Sources */,
 				E2247B3EBA845E97050D7102 /* DashboardView.swift in Sources */,
 				70D5940D7218B4D0C2F38E32 /* NutritionView.swift in Sources */,
