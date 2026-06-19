@@ -32,6 +32,8 @@
 		B5E83DAB5D740CAC794E2370 /* KAIZENNWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657D6919B2ABE2F8B5FEB5AC /* KAIZENNWatchApp.swift */; };
 		B80BAD722FE4DDE100269068 /* File.txt in Resources */ = {isa = PBXBuildFile; fileRef = B80BAD712FE4DDE100269068 /* File.txt */; };
 		BAFDE2B80D144A5F86AB9282 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F19765D068E4A8698F6FC0F /* WatchConnectivityManager.swift */; };
+		7039CE9C1C224420879389AE /* GPSSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43746BB905634F97B3497D38 /* GPSSession.swift */; };
+		BC4B7FB8C7494662906B4E4F /* StrengthSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0A0AEA590D4DB0BD445B4C /* StrengthSession.swift */; };
 		BB22CC33DD44EE55FF667788 /* ClaudeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF66 /* ClaudeService.swift */; };
 		BC770D61FF67FBCBA603E094 /* CoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3F9E0C64F4C07C0341E24D /* CoachView.swift */; };
 		C2657B3BF636AA7FDAF9CCC6 /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B4E9E7F645566F6EC8259C /* AddTaskView.swift */; };
@@ -78,6 +80,8 @@
 		93877A8ED2CE9EBE2CD5B717 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
 		9E6C56295BB4682F8D01931C /* NutritionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionStore.swift; sourceTree = "<group>"; };
 		9F19765D068E4A8698F6FC0F /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
+		43746BB905634F97B3497D38 /* GPSSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSSession.swift; sourceTree = "<group>"; };
+		9D0A0AEA590D4DB0BD445B4C /* StrengthSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthSession.swift; sourceTree = "<group>"; };
 		2B3C4D5E6F7A8B9C0D1E2F3A /* SportProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportProfile.swift; sourceTree = "<group>"; };
 		A0021C5C2956990173B6D091 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		A083F1897FE65BA0360D927A /* KTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KTheme.swift; sourceTree = "<group>"; };
@@ -313,6 +317,8 @@
 			children = (
 				A0021C5C2956990173B6D091 /* UserProfile.swift */,
 				2B3C4D5E6F7A8B9C0D1E2F3A /* SportProfile.swift */,
+				43746BB905634F97B3497D38 /* GPSSession.swift */,
+				9D0A0AEA590D4DB0BD445B4C /* StrengthSession.swift */,
 				3486F76CEDC4116165842329 /* NutritionModels.swift */,
 				91BF6A101ADB86CED296D47B /* ActivityModels.swift */,
 				001F0D44BEF7DD9E0ECC9090 /* ScheduleModels.swift */,
@@ -503,6 +509,8 @@
 				15A12CC83C82EA541FC21539 /* OnboardingFlowView.swift in Sources */,
 				F7DFD454952E7A4E13CAE607 /* ProfileView.swift in Sources */,
 				BB22CC33DD44EE55FF667788 /* ClaudeService.swift in Sources */,
+				7039CE9C1C224420879389AE /* GPSSession.swift in Sources */,
+				BC4B7FB8C7494662906B4E4F /* StrengthSession.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
