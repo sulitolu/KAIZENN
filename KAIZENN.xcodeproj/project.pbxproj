@@ -50,6 +50,7 @@
 		F5F8306DA9EA43C58185E446 /* OpenFoodFactsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8607429885DD49118322ECBA /* OpenFoodFactsService.swift */; };
 		F7DFD454952E7A4E13CAE607 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0503B9E1CF593DA0A19DA4 /* ProfileView.swift */; };
 		FDCBD33150BD2B4CBE73FBB2 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C88617FE27799E67B29F6DF /* HealthKit.framework */; };
+		B6C7D8E9F0A1B2C3D4E5F6A7 /* SportProfileSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B6C7D8E9F0A1B2C3D4E5F6 /* SportProfileSetupView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +69,7 @@
 		4A3F9E0C64F4C07C0341E24D /* CoachView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachView.swift; sourceTree = "<group>"; };
 		4D815DD2BB41FEA1DA45DC65 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		60B3AAC2E60EF20542835FBA /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
+		A5B6C7D8E9F0A1B2C3D4E5F6 /* SportProfileSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportProfileSetupView.swift; sourceTree = "<group>"; };
 		60BB56C71F6FE206357FBC5B /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		657D6919B2ABE2F8B5FEB5AC /* KAIZENNWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KAIZENNWatchApp.swift; sourceTree = "<group>"; };
 		6A473374B40C1F5DD3B764F6 /* WeightStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightStore.swift; sourceTree = "<group>"; };
@@ -190,6 +192,7 @@
 			isa = PBXGroup;
 			children = (
 				60B3AAC2E60EF20542835FBA /* OnboardingFlowView.swift */,
+				A5B6C7D8E9F0A1B2C3D4E5F6 /* SportProfileSetupView.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -523,6 +526,7 @@
 				BC770D61FF67FBCBA603E094 /* CoachView.swift in Sources */,
 				A1B2C3D4E5F6A7B8C9D0E1F2 /* WearableHubPlaceholderView.swift in Sources */,
 				15A12CC83C82EA541FC21539 /* OnboardingFlowView.swift in Sources */,
+				B6C7D8E9F0A1B2C3D4E5F6A7 /* SportProfileSetupView.swift in Sources */,
 				F7DFD454952E7A4E13CAE607 /* ProfileView.swift in Sources */,
 				BB22CC33DD44EE55FF667788 /* ClaudeService.swift in Sources */,
 				7039CE9C1C224420879389AE /* GPSSession.swift in Sources */,
