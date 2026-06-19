@@ -38,7 +38,6 @@
 		8C2832FA151648DE8EF36451 /* LoadStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E868E1A4C35548A0AF1BF44F /* LoadStore.swift */; };
 		BB22CC33DD44EE55FF667788 /* ClaudeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF66 /* ClaudeService.swift */; };
 		BC770D61FF67FBCBA603E094 /* CoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3F9E0C64F4C07C0341E24D /* CoachView.swift */; };
-		A1B2C3D4E5F6A7B8C9D0E1F2 /* WearableHubPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7B8C9D0E1F2A3 /* WearableHubPlaceholderView.swift */; };
 		D1E2F3A4B5C6D7E8F9A0B1C2 /* WearableHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F3A4B5C6D7E8F9A0B1C2D3 /* WearableHubView.swift */; };
 		F3A4B5C6D7E8F9A0B1C2D3E4 /* GPSImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B5C6D7E8F9A0B1C2D3E4F5 /* GPSImportView.swift */; };
 		B5C6D7E8F9A0B1C2D3E4F5A6 /* StrengthLoggerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D7E8F9A0B1C2D3E4F5A6B7 /* StrengthLoggerView.swift */; };
@@ -110,7 +109,6 @@
 		F6C9B84C7FB7A36D458D9FF7 /* LogWeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogWeightView.swift; sourceTree = "<group>"; };
 		FC4FC53957394ECAB54AE795 /* KAIZENN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KAIZENN.entitlements; sourceTree = "<group>"; };
 		FEF3FD01726B46F7ADBE8A4E /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
-		B2C3D4E5F6A7B8C9D0E1F2A3 /* WearableHubPlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WearableHubPlaceholderView.swift; sourceTree = "<group>"; };
 		E2F3A4B5C6D7E8F9A0B1C2D3 /* WearableHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WearableHubView.swift; sourceTree = "<group>"; };
 		A4B5C6D7E8F9A0B1C2D3E4F5 /* GPSImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSImportView.swift; sourceTree = "<group>"; };
 		C6D7E8F9A0B1C2D3E4F5A6B7 /* StrengthLoggerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthLoggerView.swift; sourceTree = "<group>"; };
@@ -157,7 +155,6 @@
 		C3D4E5F6A7B8C9D0E1F2A3B4 /* Hub */ = {
 			isa = PBXGroup;
 			children = (
-				B2C3D4E5F6A7B8C9D0E1F2A3 /* WearableHubPlaceholderView.swift */,
 				E2F3A4B5C6D7E8F9A0B1C2D3 /* WearableHubView.swift */,
 				A4B5C6D7E8F9A0B1C2D3E4F5 /* GPSImportView.swift */,
 				C6D7E8F9A0B1C2D3E4F5A6B7 /* StrengthLoggerView.swift */,
@@ -543,7 +540,6 @@
 				A385AEA5DE38382CD65DAC61 /* ScheduleView.swift in Sources */,
 				C2657B3BF636AA7FDAF9CCC6 /* AddTaskView.swift in Sources */,
 				BC770D61FF67FBCBA603E094 /* CoachView.swift in Sources */,
-				A1B2C3D4E5F6A7B8C9D0E1F2 /* WearableHubPlaceholderView.swift in Sources */,
 				D1E2F3A4B5C6D7E8F9A0B1C2 /* WearableHubView.swift in Sources */,
 				F3A4B5C6D7E8F9A0B1C2D3E4 /* GPSImportView.swift in Sources */,
 				B5C6D7E8F9A0B1C2D3E4F5A6 /* StrengthLoggerView.swift in Sources */,

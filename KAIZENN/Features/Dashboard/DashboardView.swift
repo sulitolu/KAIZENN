@@ -30,9 +30,12 @@ struct DashboardView: View {
     }
 
     private var fuelScore: Double {
-        guard calorieTarget > 0 else { return 50 }
-        let ratio = consumedCalories / Double(calorieTarget)
-        return min(ratio, 1.0) * 100
+        let proteinTarget = Double(appState.userProfile.macroTargets.proteinG)
+        guard calorieTarget > 0, proteinTarget > 0 else { return 50 }
+        let calorieRatio = min(consumedCalories / Double(calorieTarget), 1.0)
+        let proteinConsumed = nutritionStore.dailyNutrition(for: Date()).totalProteinG
+        let proteinRatio = min(proteinConsumed / proteinTarget, 1.0)
+        return (calorieRatio * 0.5 + proteinRatio * 0.5) * 100
     }
 
     // MARK: - Readiness
