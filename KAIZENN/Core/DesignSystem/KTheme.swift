@@ -7,22 +7,24 @@ enum KTheme {
 
     // MARK: Colors
     enum Colors {
-        static let background       = Color(hex: "0A0A0F")
-        static let surface          = Color(hex: "12121A")
-        static let card             = Color(hex: "1A1A26")
-        static let cardElevated     = Color(hex: "20202E")
-        static let border           = Color(hex: "2A2A3A")
+        // Near-black depth layers — matched to the approved premium mockup
+        static let background       = Color(hex: "080810")  // pure near-black screen bg
+        static let surface          = Color(hex: "0F0F1E")
+        static let card             = Color(hex: "0C0C16")  // near-black floating card
+        static let cardElevated     = Color(hex: "1A1A28")  // lighter surface / unselected
+        static let border           = Color(hex: "3A3A5A")  // visible bluish hairline
 
         static let accentPrimary    = Color(hex: "7C6FFF")  // Electric violet
         static let accentSecondary  = Color(hex: "FF6B8A")  // Coral pink
-        static let accentTertiary   = Color(hex: "4ECDC4")  // Teal
-        static let accentAmber      = Color(hex: "FFB347")  // Warm amber
+        static let accentTertiary   = Color(hex: "4ECDC4")  // Teal — GPS/load
+        static let accentAmber      = Color(hex: "FFB347")  // Warm amber — nutrition
+        static let accentGreen      = Color(hex: "5EFFB7")  // Peak / optimal / connected
 
-        static let textPrimary      = Color(hex: "F2F2FF")
-        static let textSecondary    = Color(hex: "8888AA")
-        static let textTertiary     = Color(hex: "55556A")
+        static let textPrimary      = Color(hex: "E8E8F0")
+        static let textSecondary    = Color(hex: "8888A8")
+        static let textTertiary     = Color(hex: "6B6B8A")
 
-        static let success          = Color(hex: "4ECDC4")
+        static let success          = Color(hex: "5EFFB7")  // green for optimal states
         static let warning          = Color(hex: "FFB347")
         static let danger           = Color(hex: "FF6B8A")
 
@@ -43,7 +45,7 @@ enum KTheme {
             endPoint: .bottomTrailing
         )
         static let darkGradient = LinearGradient(
-            colors: [Color(hex: "12121A"), Color(hex: "0A0A0F")],
+            colors: [Color(hex: "0F0F1E"), Color(hex: "080810")],
             startPoint: .top,
             endPoint: .bottom
         )
