@@ -42,9 +42,10 @@ class NotificationManager: ObservableObject {
 
     func rescheduleAll(habits: [Habit]) {
         let habitIds = habits.map { "habit-\($0.id.uuidString)" }
-        center.getPendingNotificationRequests { pending in
+        Task {
+            let pending = await center.pendingNotificationRequests()
             let toRemove = pending.map(\.identifier).filter { $0.hasPrefix("habit-") && !habitIds.contains($0) }
-            self.center.removePendingNotificationRequests(withIdentifiers: toRemove)
+            center.removePendingNotificationRequests(withIdentifiers: toRemove)
         }
         habits.filter { $0.reminderTime != nil }.forEach { scheduleHabitReminder(for: $0) }
     }

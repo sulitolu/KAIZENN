@@ -16,10 +16,7 @@
 		5188396F2D06A081288DB2CF /* LogWorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9613469ECB2029621E0763 /* LogWorkoutView.swift */; };
 		5B083EA9B8E1A2EDA5DF0690 /* WeightStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A473374B40C1F5DD3B764F6 /* WeightStore.swift */; };
 		6105612DBCF6B316335CE476 /* AddFoodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1505C1567225A39F15208143 /* AddFoodView.swift */; };
-		F5F8306DA9EA43C58185E446 /* OpenFoodFactsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8607429885DD49118322ECBA /* OpenFoodFactsService.swift */; };
-		E122309DF0C240A4AE53BC4F /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6744AA49E02464781C4373C /* BarcodeScannerView.swift */; };
 		626F30D58C3445F29E2F0BDE /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEF3FD01726B46F7ADBE8A4E /* NotificationManager.swift */; };
-		BAFDE2B80D144A5F86AB9282 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F19765D068E4A8698F6FC0F /* WatchConnectivityManager.swift */; };
 		654C21FF9D12EF059A9C835B /* LogWeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C9B84C7FB7A36D458D9FF7 /* LogWeightView.swift */; };
 		70D5940D7218B4D0C2F38E32 /* NutritionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B12905602A54541D803EDE4 /* NutritionView.swift */; };
 		74C12F28F3F5DA47E83164EE /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60BB56C71F6FE206357FBC5B /* MainTabView.swift */; };
@@ -32,6 +29,9 @@
 		AE25D2ADB9303051068EFB7C /* WatchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA5063ABCB9D6C330FDC0C81 /* WatchKit.framework */; };
 		B3B1E2166CCE182C164F3526 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1926D9960C83E0D3B20705E /* HealthKitManager.swift */; };
 		B5E83DAB5D740CAC794E2370 /* KAIZENNWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657D6919B2ABE2F8B5FEB5AC /* KAIZENNWatchApp.swift */; };
+		B80BAD722FE4DDE100269068 /* File.txt in Resources */ = {isa = PBXBuildFile; fileRef = B80BAD712FE4DDE100269068 /* File.txt */; };
+		BAFDE2B80D144A5F86AB9282 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F19765D068E4A8698F6FC0F /* WatchConnectivityManager.swift */; };
+		BB22CC33DD44EE55FF667788 /* ClaudeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF66 /* ClaudeService.swift */; };
 		BC770D61FF67FBCBA603E094 /* CoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3F9E0C64F4C07C0341E24D /* CoachView.swift */; };
 		C2657B3BF636AA7FDAF9CCC6 /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B4E9E7F645566F6EC8259C /* AddTaskView.swift */; };
 		CB061155EB874F821416F33C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C55399A23DBC7E16DBC1841 /* ContentView.swift */; };
@@ -39,8 +39,10 @@
 		CFD96B9274C1DF3C0C34E74E /* KTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A083F1897FE65BA0360D927A /* KTheme.swift */; };
 		D708C9FCD82AAD29C288DCB2 /* ScheduleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3CB7C0CC2324BD1548388D /* ScheduleStore.swift */; };
 		DB04D9EC4599B2292D30C061 /* WeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C226AC67400A8E7FD5F6509 /* WeightView.swift */; };
+		E122309DF0C240A4AE53BC4F /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6744AA49E02464781C4373C /* BarcodeScannerView.swift */; };
 		E2247B3EBA845E97050D7102 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917FF61075306FED050C78AC /* DashboardView.swift */; };
 		E31920300A97E130DA9FE108 /* NutritionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3486F76CEDC4116165842329 /* NutritionModels.swift */; };
+		F5F8306DA9EA43C58185E446 /* OpenFoodFactsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8607429885DD49118322ECBA /* OpenFoodFactsService.swift */; };
 		F7DFD454952E7A4E13CAE607 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0503B9E1CF593DA0A19DA4 /* ProfileView.swift */; };
 		FDCBD33150BD2B4CBE73FBB2 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C88617FE27799E67B29F6DF /* HealthKit.framework */; };
 /* End PBXBuildFile section */
@@ -49,10 +51,6 @@
 		001F0D44BEF7DD9E0ECC9090 /* ScheduleModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleModels.swift; sourceTree = "<group>"; };
 		02B4E9E7F645566F6EC8259C /* AddTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
 		1505C1567225A39F15208143 /* AddFoodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodView.swift; sourceTree = "<group>"; };
-		8607429885DD49118322ECBA /* OpenFoodFactsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenFoodFactsService.swift; sourceTree = "<group>"; };
-		C6744AA49E02464781C4373C /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
-		FEF3FD01726B46F7ADBE8A4E /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
-		9F19765D068E4A8698F6FC0F /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
 		1C226AC67400A8E7FD5F6509 /* WeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightView.swift; sourceTree = "<group>"; };
 		1F3CB7C0CC2324BD1548388D /* ScheduleStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleStore.swift; sourceTree = "<group>"; };
 		2C88617FE27799E67B29F6DF /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
@@ -71,22 +69,29 @@
 		6B12905602A54541D803EDE4 /* NutritionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionView.swift; sourceTree = "<group>"; };
 		70027590D58C8F57E6524260 /* KComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KComponents.swift; sourceTree = "<group>"; };
 		7B0503B9E1CF593DA0A19DA4 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		8607429885DD49118322ECBA /* OpenFoodFactsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenFoodFactsService.swift; sourceTree = "<group>"; };
 		8C55399A23DBC7E16DBC1841 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8D562B3E40B6C9EC53F38F07 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		917FF61075306FED050C78AC /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		91BF6A101ADB86CED296D47B /* ActivityModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityModels.swift; sourceTree = "<group>"; };
 		93877A8ED2CE9EBE2CD5B717 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
 		9E6C56295BB4682F8D01931C /* NutritionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionStore.swift; sourceTree = "<group>"; };
+		9F19765D068E4A8698F6FC0F /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
 		A0021C5C2956990173B6D091 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		A083F1897FE65BA0360D927A /* KTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KTheme.swift; sourceTree = "<group>"; };
 		A1926D9960C83E0D3B20705E /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE55FF66 /* ClaudeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeService.swift; sourceTree = "<group>"; };
+		B80BAD712FE4DDE100269068 /* File.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = File.txt; sourceTree = "<group>"; };
 		BA5063ABCB9D6C330FDC0C81 /* WatchKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchKit.framework; path = System/Library/Frameworks/WatchKit.framework; sourceTree = SDKROOT; };
 		BB3876B349BED91B0D93DAFF /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		C666607A8ABE9C541089D071 /* KAIZENNWatch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "KAIZENNWatch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6744AA49E02464781C4373C /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
+		CC33DD44EE55FF6677889900 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		DBDA3236A3DD82FE4245CA7E /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		EB54E0BFBC218ED98D4267EC /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
 		F6C9B84C7FB7A36D458D9FF7 /* LogWeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogWeightView.swift; sourceTree = "<group>"; };
 		FC4FC53957394ECAB54AE795 /* KAIZENN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KAIZENN.entitlements; sourceTree = "<group>"; };
+		FEF3FD01726B46F7ADBE8A4E /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,14 +167,6 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
-		C157EB0D083C46568A7AF404 /* Network */ = {
-			isa = PBXGroup;
-			children = (
-				8607429885DD49118322ECBA /* OpenFoodFactsService.swift */,
-			);
-			path = Network;
-			sourceTree = "<group>";
-		};
 		75FB77641E054F81ADC184B3 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
@@ -197,22 +194,6 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
-		A3C1F9B2E4D74E8FA0B1C2D3 /* Notifications */ = {
-			isa = PBXGroup;
-			children = (
-				FEF3FD01726B46F7ADBE8A4E /* NotificationManager.swift */,
-			);
-			path = Notifications;
-			sourceTree = "<group>";
-		};
-		B2D4E6F8A1C34B7D9E0F1A2B /* Connectivity */ = {
-			isa = PBXGroup;
-			children = (
-				9F19765D068E4A8698F6FC0F /* WatchConnectivityManager.swift */,
-			);
-			path = Connectivity;
-			sourceTree = "<group>";
-		};
 		95B6FD6E73934E76A62E32CB /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -235,9 +216,26 @@
 			children = (
 				657D6919B2ABE2F8B5FEB5AC /* KAIZENNWatchApp.swift */,
 				8C55399A23DBC7E16DBC1841 /* ContentView.swift */,
+				B80BAD712FE4DDE100269068 /* File.txt */,
 				3A8F2C1D9E4B5067A1C2D3E4 /* KAIZENNWatch.entitlements */,
 			);
 			path = "KAIZENNWatch Watch App";
+			sourceTree = "<group>";
+		};
+		A3C1F9B2E4D74E8FA0B1C2D3 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				FEF3FD01726B46F7ADBE8A4E /* NotificationManager.swift */,
+			);
+			path = Notifications;
+			sourceTree = "<group>";
+		};
+		B2D4E6F8A1C34B7D9E0F1A2B /* Connectivity */ = {
+			isa = PBXGroup;
+			children = (
+				9F19765D068E4A8698F6FC0F /* WatchConnectivityManager.swift */,
+			);
+			path = Connectivity;
 			sourceTree = "<group>";
 		};
 		B85152D62FDF93D9002044DD /* Recovered References */ = {
@@ -256,6 +254,15 @@
 				C666607A8ABE9C541089D071 /* KAIZENNWatch Watch App.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		C157EB0D083C46568A7AF404 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				8607429885DD49118322ECBA /* OpenFoodFactsService.swift */,
+				AA11BB22CC33DD44EE55FF66 /* ClaudeService.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 		C18162A1A58447A7B36A086D /* Profile */ = {
@@ -285,6 +292,7 @@
 				95B6FD6E73934E76A62E32CB /* Resources */,
 				4D815DD2BB41FEA1DA45DC65 /* Info.plist */,
 				FC4FC53957394ECAB54AE795 /* KAIZENN.entitlements */,
+				CC33DD44EE55FF6677889900 /* Config.xcconfig */,
 			);
 			path = KAIZENN;
 			sourceTree = "<group>";
@@ -439,6 +447,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B80BAD722FE4DDE100269068 /* File.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -489,6 +498,7 @@
 				BC770D61FF67FBCBA603E094 /* CoachView.swift in Sources */,
 				15A12CC83C82EA541FC21539 /* OnboardingFlowView.swift in Sources */,
 				F7DFD454952E7A4E13CAE607 /* ProfileView.swift in Sources */,
+				BB22CC33DD44EE55FF667788 /* ClaudeService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -574,6 +584,7 @@
 		};
 		B24F1730DC60687245C21FE3 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CC33DD44EE55FF6677889900 /* Config.xcconfig */;
 			buildSettings = {
 				ASSET_CATALOG_COMPILER_OPTIMIZATION = space;
 				CODE_SIGN_ENTITLEMENTS = KAIZENN/KAIZENN.entitlements;
@@ -660,6 +671,7 @@
 		};
 		E0FA9E38B29999CDCAED7CD9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CC33DD44EE55FF6677889900 /* Config.xcconfig */;
 			buildSettings = {
 				ASSET_CATALOG_COMPILER_OPTIMIZATION = space;
 				CODE_SIGN_ENTITLEMENTS = KAIZENN/KAIZENN.entitlements;

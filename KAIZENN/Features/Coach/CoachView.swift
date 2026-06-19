@@ -76,6 +76,7 @@ struct CoachView: View {
                 health: healthKitManager,
                 schedule: scheduleStore
             )
+            loadChatHistory()
         }
         .sheet(item: $activeAction) { action in
             switch action {
@@ -251,15 +252,82 @@ struct CoachView: View {
     private func askCoach(_ question: String) {
         guard !question.isEmpty else { return }
         chatMessages.append(ChatMessage(text: question, isUser: true))
+        saveChatHistory()
         isThinking = true
-        // Generate contextual response using the coach's knowledge base
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-            let response = coach.answer(question: question, profile: appState.userProfile,
-                                         nutrition: nutritionStore, weight: weightStore,
-                                         activity: activityStore, health: healthKitManager)
-            chatMessages.append(ChatMessage(text: response, isUser: false))
-            isThinking = false
+
+        Task {
+            do {
+                let reply = try await ClaudeService.chat(
+                    messages: chatMessages,
+                    systemPrompt: buildSystemPrompt()
+                )
+                await MainActor.run {
+                    chatMessages.append(ChatMessage(text: reply, isUser: false))
+                    saveChatHistory()
+                    isThinking = false
+                }
+            } catch {
+                await MainActor.run {
+                    chatMessages.append(ChatMessage(
+                        text: "I couldn't connect right now. Check your internet and try again.",
+                        isUser: false
+                    ))
+                    saveChatHistory()
+                    isThinking = false
+                }
+            }
         }
+    }
+
+    private func buildSystemPrompt() -> String {
+        let profile = appState.userProfile
+        let todayNutrition = nutritionStore.dailyNutrition(for: Date())
+        let caloriesLeft = profile.macroTargets.calories - Int(todayNutrition.totalCalories)
+        let stepsToday = healthKitManager.todaySteps
+        let workoutsThisWeek = activityStore.totalWorkoutsThisWeek
+        let sleepHours = healthKitManager.sleepHoursLast
+
+        return """
+        You are KAI, a personal health and fitness coach inside the KAIZENN app. \
+        You are science-backed, motivating, and concise. \
+        Always give practical, actionable advice tailored to the user's real data below.
+
+        User Profile:
+        - Name: \(profile.name.isEmpty ? "User" : profile.name)
+        - Goal: \(profile.goal.rawValue)
+        - Daily calorie target: \(profile.macroTargets.calories) kcal
+        - Protein target: \(profile.macroTargets.proteinG)g
+        - Weekly weight goal: \(String(format: "%.1f", profile.weeklyGoalKg)) kg/week
+
+        Today's Stats (use these to personalise every reply):
+        - Calories remaining today: \(caloriesLeft) kcal
+        - Protein consumed: \(Int(todayNutrition.totalProteinG))g of \(profile.macroTargets.proteinG)g target
+        - Steps today: \(stepsToday)
+        - Workouts this week: \(workoutsThisWeek)
+        - Sleep last night: \(String(format: "%.1f", sleepHours)) hours
+
+        Keep replies under 150 words. Be direct, warm, and encouraging. \
+        Reference the user's actual numbers when relevant.
+        """
+    }
+
+    private static let chatHistoryURL: URL? =
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
+            .appendingPathComponent("kai_chat_history.json")
+
+    private func loadChatHistory() {
+        guard let url = CoachView.chatHistoryURL,
+              let data = try? Data(contentsOf: url),
+              let messages = try? JSONDecoder().decode([ChatMessage].self, from: data)
+        else { return }
+        chatMessages = messages
+    }
+
+    private func saveChatHistory() {
+        guard let url = CoachView.chatHistoryURL,
+              let data = try? JSONEncoder().encode(Array(chatMessages.suffix(50)))
+        else { return }
+        try? data.write(to: url, options: .atomic)
     }
 
     private func scoreColor(_ score: Int) -> Color {
@@ -522,11 +590,18 @@ enum CoachActionType: Int, Identifiable {
     var id: Int { rawValue }
 }
 
-struct ChatMessage: Identifiable {
-    let id = UUID()
+struct ChatMessage: Identifiable, Codable {
+    let id: UUID
     let text: String
     let isUser: Bool
-    let timestamp = Date()
+    let timestamp: Date
+
+    init(text: String, isUser: Bool) {
+        self.id = UUID()
+        self.text = text
+        self.isUser = isUser
+        self.timestamp = Date()
+    }
 }
 
 struct ChatBubble: View {

@@ -24,6 +24,9 @@ Pods/
 # macOS
 .DS_Store
 
+# API keys — never commit
+KAIZENN/Config.xcconfig
+
 # Obj-C/Swift specific
 *.hmap
 

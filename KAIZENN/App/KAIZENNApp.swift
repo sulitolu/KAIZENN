@@ -30,7 +30,7 @@ struct KAIZENNApp: App {
                 .environmentObject(activityStore)
                 .preferredColorScheme(.dark)
                 .task { await notifications.requestPermission() }
-                .onChange(of: scheduleStore.habits) { habits in
+                .onChange(of: scheduleStore.habits) { _, habits in
                     notifications.rescheduleAll(habits: habits)
                 }
         }
