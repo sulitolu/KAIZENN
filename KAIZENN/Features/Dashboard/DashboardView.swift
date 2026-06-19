@@ -5,6 +5,12 @@ struct DashboardView: View {
     @EnvironmentObject var healthKitManager: HealthKitManager
     @EnvironmentObject var nutritionStore: NutritionStore
     @EnvironmentObject var loadStore: LoadStore
+    @EnvironmentObject var weightStore: WeightStore
+
+    // MARK: - Sheet state
+    @State private var showLogMeal = false
+    @State private var showLogSession = false
+    @State private var showLogWeight = false
 
     // MARK: - Raw values
     private var sleepHours: Double { healthKitManager.sleepHoursLast }
@@ -115,20 +121,44 @@ struct DashboardView: View {
         return String(format: "%.0fms", latest)
     }
 
+    // MARK: - Tab navigation helper
+    private func navigate(to tab: AppState.Tab) {
+        withAnimation(KTheme.Animation.snappy) {
+            appState.selectedTab = tab
+        }
+    }
+
     // MARK: - Body
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 14) {
                 headerSection
+                quickActionRow
                 scoreHeroCard
                 statsRow
-                Color.clear.frame(height: 100)
+                edgeCard
             }
             .padding(.horizontal, 18)
             .padding(.top, 14)
+            .padding(.bottom, 100)
         }
         .background(KTheme.Colors.background.ignoresSafeArea())
         .task { await healthKitManager.fetchAllTodayData() }
+        .refreshable { await healthKitManager.fetchAllTodayData() }
+        .sheet(isPresented: $showLogMeal) {
+            FoodPhotoScanView(mealType: .snack)
+                .environmentObject(appState)
+                .environmentObject(nutritionStore)
+        }
+        .sheet(isPresented: $showLogSession) {
+            StrengthLoggerView()
+                .environmentObject(loadStore)
+        }
+        .sheet(isPresented: $showLogWeight) {
+            LogWeightView()
+                .environmentObject(weightStore)
+                .environmentObject(healthKitManager)
+        }
     }
 
     // MARK: - Header
@@ -161,29 +191,96 @@ struct DashboardView: View {
         }
     }
 
+    // MARK: - Quick Action Row
+    private var quickActionRow: some View {
+        HStack(spacing: 8) {
+            quickActionButton(
+                icon: "camera.viewfinder",
+                label: "Log Meal",
+                tint: KTheme.Colors.accentAmber,
+                action: { showLogMeal = true }
+            )
+            quickActionButton(
+                icon: "dumbbell.fill",
+                label: "Log Session",
+                tint: KTheme.Colors.accentPrimary,
+                action: { showLogSession = true }
+            )
+            quickActionButton(
+                icon: "scalemass.fill",
+                label: "Log Weight",
+                tint: KTheme.Colors.accentTertiary,
+                action: { showLogWeight = true }
+            )
+        }
+    }
+
+    private func quickActionButton(
+        icon: String,
+        label: String,
+        tint: Color,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            VStack(spacing: 6) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(tint.opacity(0.18))
+                        .frame(width: 40, height: 40)
+                    Image(systemName: icon)
+                        .font(.system(size: 20, weight: .medium))
+                        .foregroundColor(tint)
+                }
+                Text(label)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(KTheme.Colors.textSecondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
+            .background(quickActionBackground)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var quickActionBackground: some View {
+        RoundedRectangle(cornerRadius: 14)
+            .fill(KTheme.Colors.card)
+            .overlay(
+                RoundedRectangle(cornerRadius: 14)
+                    .stroke(KTheme.Colors.cardElevated, lineWidth: 0.5)
+            )
+    }
+
     // MARK: - Score Hero Card
     private var scoreHeroCard: some View {
-        VStack(spacing: 11) {
-            // Top row: left column + ring
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 2) {
-                    readinessMicroLabel
-                    scoreGradientNumber
-                    Text(readinessLabel)
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundColor(readinessColor)
-                        .tracking(0.3)
+        Button {
+            navigate(to: .coach)
+        } label: {
+            VStack(spacing: 11) {
+                // Top row: left column + ring
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        readinessMicroLabel
+                        scoreGradientNumber
+                        Text(readinessLabel)
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundColor(readinessColor)
+                            .tracking(0.3)
+                    }
+                    Spacer()
+                    scoreRingEcho
                 }
-                Spacer()
-                scoreRingEcho
+                // Pillar tiles row
+                pillarsRow
             }
-            // Pillar tiles row
-            pillarsRow
+            .padding(18)
+            .background(scoreHeroBackground)
+            .overlay(scoreHeroBorder)
+            .clipShape(RoundedRectangle(cornerRadius: 18))
         }
-        .padding(18)
-        .background(scoreHeroBackground)
-        .overlay(scoreHeroBorder)
-        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .buttonStyle(.plain)
     }
 
     private var readinessMicroLabel: some View {
@@ -243,39 +340,57 @@ struct DashboardView: View {
     // MARK: - Pillar Tiles
     private var pillarsRow: some View {
         HStack(spacing: 5) {
-            PillarTile(
-                iconSystemName: "moon.fill",
-                iconColor: KTheme.Colors.accentPrimary,
-                value: String(format: "%.1fh", sleepHours),
-                name: "SLEEP"
-            )
-            PillarTile(
-                iconSystemName: "bolt.fill",
-                iconColor: KTheme.Colors.accentTertiary,
-                value: String(format: "%.1f", acwr),
-                name: "LOAD"
-            )
-            PillarTile(
-                iconSystemName: "fork.knife",
-                iconColor: KTheme.Colors.accentAmber,
-                value: "\(Int(fuelScore))%",
-                name: "FUEL"
-            )
-            PillarTile(
-                iconSystemName: "waveform.path.ecg",
-                iconColor: KTheme.Colors.accentSecondary,
-                value: hrvDisplay,
-                name: "HRV"
-            )
+            Button { navigate(to: .coach) } label: {
+                PillarTile(
+                    iconSystemName: "moon.fill",
+                    iconColor: KTheme.Colors.accentPrimary,
+                    value: String(format: "%.1fh", sleepHours),
+                    name: "SLEEP"
+                )
+            }
+            .buttonStyle(.plain)
+
+            Button { navigate(to: .hub) } label: {
+                PillarTile(
+                    iconSystemName: "bolt.fill",
+                    iconColor: KTheme.Colors.accentTertiary,
+                    value: String(format: "%.1f", acwr),
+                    name: "LOAD"
+                )
+            }
+            .buttonStyle(.plain)
+
+            Button { navigate(to: .nutrition) } label: {
+                PillarTile(
+                    iconSystemName: "fork.knife",
+                    iconColor: KTheme.Colors.accentAmber,
+                    value: "\(Int(fuelScore))%",
+                    name: "FUEL"
+                )
+            }
+            .buttonStyle(.plain)
+
+            Button { navigate(to: .coach) } label: {
+                PillarTile(
+                    iconSystemName: "waveform.path.ecg",
+                    iconColor: KTheme.Colors.accentSecondary,
+                    value: hrvDisplay,
+                    name: "HRV"
+                )
+            }
+            .buttonStyle(.plain)
         }
     }
 
     // MARK: - Stats Row
     private var statsRow: some View {
         HStack(spacing: 5) {
-            gpsLoadCard
-            restHRCard
-            matchCard
+            Button { navigate(to: .hub) } label: { gpsLoadCard }
+                .buttonStyle(.plain)
+            Button { navigate(to: .hub) } label: { restHRCard }
+                .buttonStyle(.plain)
+            Button { navigate(to: .schedule) } label: { matchCard }
+                .buttonStyle(.plain)
         }
     }
 
@@ -370,6 +485,40 @@ struct DashboardView: View {
         return 1.0 - (Double(days) / 7.0)
     }
 
+    // MARK: - Edge Card
+    private var edgeCard: some View {
+        Button {
+            navigate(to: .coach)
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: "bolt.fill")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(KTheme.Colors.accentPrimary)
+                Text(edgePrompt)
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundColor(KTheme.Colors.textPrimary)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(KTheme.Colors.textTertiary)
+            }
+            .padding(16)
+            .background(edgeCardBackground)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var edgeCardBackground: some View {
+        RoundedRectangle(cornerRadius: 16)
+            .fill(KTheme.Colors.card)
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(KTheme.Colors.cardElevated, lineWidth: 0.5)
+            )
+    }
+
     // MARK: - Mini bar helper
     @ViewBuilder
     private func miniBar<F: ShapeStyle>(fill: F, fraction: Double) -> some View {
@@ -422,14 +571,16 @@ private struct PillarTile: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 4)
         .padding(.vertical, 12)
-        .background(
-            RoundedRectangle(cornerRadius: 10)
-                .fill(Color.white.opacity(0.02))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.white.opacity(0.04), lineWidth: 0.5)
-                )
-        )
+        .background(pillarTileBackground)
+    }
+
+    private var pillarTileBackground: some View {
+        RoundedRectangle(cornerRadius: 10)
+            .fill(Color.white.opacity(0.02))
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color.white.opacity(0.04), lineWidth: 0.5)
+            )
     }
 }
 
@@ -448,14 +599,16 @@ private struct StatCard<Content: View>: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 12)
         .padding(.vertical, 12)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(KTheme.Colors.card)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(KTheme.Colors.cardElevated, lineWidth: 0.5)
-                )
-        )
+        .background(statCardBackground)
+    }
+
+    private var statCardBackground: some View {
+        RoundedRectangle(cornerRadius: 16)
+            .fill(KTheme.Colors.card)
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(KTheme.Colors.cardElevated, lineWidth: 0.5)
+            )
     }
 }
 
