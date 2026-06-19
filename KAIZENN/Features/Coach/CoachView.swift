@@ -82,8 +82,8 @@ struct CoachView: View {
         .sheet(item: $activeAction) { action in
             switch action {
             case .logMeal:     AddFoodView(mealType: .current)
-            case .logWalk:     LogWorkoutView(initialType: .walking)
-            case .logWorkout:  LogWorkoutView(initialType: .weightTraining)
+            case .logWalk:     GPSImportView().environmentObject(loadStore)
+            case .logWorkout:  StrengthLoggerView().environmentObject(loadStore)
             case .addSleepTask: AddTaskView(initialTitle: "Wind down for bed", initialCategory: .recovery)
             }
         }
