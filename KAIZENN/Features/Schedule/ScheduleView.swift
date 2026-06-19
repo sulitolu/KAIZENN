@@ -7,6 +7,8 @@ struct ScheduleView: View {
     @State private var showAddHabit = false
     @State private var selectedSegment: SegmentTab = .tasks
 
+    private let accent = KTheme.Colors.accentTertiary
+
     enum SegmentTab: String, CaseIterable {
         case tasks = "Tasks", habits = "Habits"
     }
@@ -19,9 +21,15 @@ struct ScheduleView: View {
                 // Header
                 VStack(spacing: KTheme.Spacing.md) {
                     HStack {
-                        Text("Schedule")
-                            .font(KTheme.Typography.displaySmall)
-                            .foregroundColor(KTheme.Colors.textPrimary)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("SCHEDULE")
+                                .font(.system(size: 11, weight: .bold, design: .monospaced))
+                                .foregroundColor(accent.opacity(0.8))
+                                .tracking(2)
+                            Text("Schedule")
+                                .font(KTheme.Typography.displaySmall)
+                                .foregroundColor(KTheme.Colors.textPrimary)
+                        }
                         Spacer()
                         Button {
                             if selectedSegment == .tasks { showAddTask = true }
@@ -29,12 +37,13 @@ struct ScheduleView: View {
                         } label: {
                             Image(systemName: "plus.circle.fill")
                                 .font(.system(size: 28))
-                                .foregroundColor(KTheme.Colors.accentPrimary)
+                                .foregroundColor(accent)
+                                .kGlow(color: accent, radius: 12)
                         }
                     }
 
                     // Date picker strip
-                    WeekStripView(selectedDate: $selectedDate)
+                    WeekStripView(selectedDate: $selectedDate, accent: accent)
 
                     // Segment control
                     HStack(spacing: 0) {
@@ -42,17 +51,22 @@ struct ScheduleView: View {
                             Button {
                                 withAnimation(KTheme.Animation.smooth) { selectedSegment = tab }
                             } label: {
-                                Text(tab.rawValue)
-                                    .font(KTheme.Typography.headingSmall)
+                                Text(tab.rawValue.uppercased())
+                                    .font(.system(size: 11, weight: .bold, design: .monospaced))
+                                    .tracking(1.5)
                                     .foregroundColor(selectedSegment == tab ? .white : KTheme.Colors.textSecondary)
                                     .frame(maxWidth: .infinity)
                                     .padding(.vertical, 10)
-                                    .background(selectedSegment == tab ? KTheme.Colors.accentPrimary : Color.clear)
+                                    .background(selectedSegment == tab ? accent : Color.clear)
                                     .cornerRadius(KTheme.Radius.md)
                             }
                         }
                     }
                     .background(KTheme.Colors.card.cornerRadius(KTheme.Radius.md))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: KTheme.Radius.md)
+                            .stroke(accent.opacity(0.2), lineWidth: 0.5)
+                    )
                     .padding(.bottom, KTheme.Spacing.xs)
                 }
                 .padding(.horizontal, KTheme.Spacing.md)
@@ -81,9 +95,12 @@ struct ScheduleView: View {
     // MARK: Tasks Content
     private var tasksContent: some View {
         VStack(spacing: KTheme.Spacing.md) {
+            // Hero moment — task completion count
+            taskHeroCard
+
             // Overdue
             if !scheduleStore.overdueTasks.isEmpty {
-                KSection(title: "⚠️ Overdue") {
+                premiumSection(title: "OVERDUE") {
                     VStack(spacing: KTheme.Spacing.sm) {
                         ForEach(scheduleStore.overdueTasks) { task in
                             TaskCard(task: task,
@@ -96,8 +113,13 @@ struct ScheduleView: View {
 
             // Today's tasks
             let todayTasks = scheduleStore.tasks(for: selectedDate)
-            KSection(title: Calendar.current.isDateInToday(selectedDate) ? "Today" : selectedDate.formatted(date: .abbreviated, time: .omitted),
-                     trailing: AnyView(Text("\(todayTasks.filter(\.isCompleted).count)/\(todayTasks.count) done").font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.textSecondary))) {
+            let sectionTitle = Calendar.current.isDateInToday(selectedDate)
+                ? "TODAY"
+                : selectedDate.formatted(date: .abbreviated, time: .omitted).uppercased()
+
+            premiumSection(title: sectionTitle,
+                           trailing: AnyView(taskDoneLabel(done: todayTasks.filter(\.isCompleted).count,
+                                                           total: todayTasks.count))) {
                 if todayTasks.isEmpty {
                     KEmptyState(icon: "checkmark.circle", title: "No tasks", subtitle: "Tap + to add a task for this day")
                 } else {
@@ -113,10 +135,12 @@ struct ScheduleView: View {
 
             // Upcoming (only for today view)
             if Calendar.current.isDateInToday(selectedDate) && !scheduleStore.upcomingTasks.isEmpty {
-                KSection(title: "Upcoming") {
+                premiumSection(title: "UPCOMING") {
                     VStack(spacing: KTheme.Spacing.sm) {
                         ForEach(scheduleStore.upcomingTasks.prefix(5)) { task in
-                            TaskCard(task: task, onComplete: { scheduleStore.toggleTaskCompletion(id: task.id) }, onDelete: { scheduleStore.removeTask(id: task.id) })
+                            TaskCard(task: task,
+                                     onComplete: { scheduleStore.toggleTaskCompletion(id: task.id) },
+                                     onDelete: { scheduleStore.removeTask(id: task.id) })
                         }
                     }
                 }
@@ -124,28 +148,60 @@ struct ScheduleView: View {
         }
     }
 
+    // MARK: Hero card — task completion number
+    private var taskHeroCard: some View {
+        let todayTasks = scheduleStore.tasks(for: selectedDate)
+        let done = todayTasks.filter(\.isCompleted).count
+        let total = todayTasks.count
+
+        return HStack(spacing: KTheme.Spacing.lg) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("COMPLETED")
+                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .foregroundColor(accent.opacity(0.8))
+                    .tracking(1.5)
+                HStack(alignment: .lastTextBaseline, spacing: 4) {
+                    Text("\(done)")
+                        .font(.system(size: 56, weight: .black, design: .rounded))
+                        .foregroundColor(KTheme.Colors.textPrimary)
+                    Text("/ \(total)")
+                        .font(.system(size: 22, weight: .semibold, design: .rounded))
+                        .foregroundColor(KTheme.Colors.textSecondary)
+                }
+                Text("tasks today")
+                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .foregroundColor(KTheme.Colors.textTertiary)
+                    .tracking(1.2)
+            }
+            Spacer()
+            KProgressRing(
+                progress: total > 0 ? Double(done) / Double(total) : 0,
+                total: 1.0,
+                size: 72,
+                lineWidth: 7,
+                color: accent,
+                label: total > 0 ? "\(Int(Double(done) / Double(total) * 100))%" : "0%"
+            )
+            .kGlow(color: accent, radius: 14)
+        }
+        .padding(KTheme.Spacing.md)
+        .background(KTheme.Colors.cardElevated)
+        .cornerRadius(KTheme.Radius.lg)
+        .overlay(
+            RoundedRectangle(cornerRadius: KTheme.Radius.lg)
+                .stroke(accent.opacity(0.3), lineWidth: 0.5)
+        )
+        .shadow(color: accent.opacity(0.15), radius: 20, x: 0, y: 0)
+    }
+
     // MARK: Habits Content
     private var habitsContent: some View {
         VStack(spacing: KTheme.Spacing.md) {
-            // Progress card
-            KCard(elevated: true) {
-                HStack {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Today's Progress").font(KTheme.Typography.headingSmall).foregroundColor(KTheme.Colors.textPrimary)
-                        Text("\(scheduleStore.completedTodayCount) of \(scheduleStore.todayHabits.count) habits").font(KTheme.Typography.bodyMedium).foregroundColor(KTheme.Colors.textSecondary)
-                        HStack(spacing: KTheme.Spacing.xs) {
-                            Text("Best streak").font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.textTertiary)
-                            KStreakBadge(days: scheduleStore.longestStreak)
-                        }
-                    }
-                    Spacer()
-                    KProgressRing(progress: scheduleStore.todayHabitProgress, total: 1.0, size: 72, lineWidth: 7, color: KTheme.Colors.accentPrimary,
-                                  label: "\(Int(scheduleStore.todayHabitProgress * 100))%")
-                }
-            }
+            // Hero progress card
+            habitHeroCard
 
             // Today's habits
-            KSection(title: "Daily Habits") {
+            premiumSection(title: "DAILY HABITS") {
                 VStack(spacing: KTheme.Spacing.sm) {
                     ForEach(scheduleStore.habits) { habit in
                         HabitDetailCard(habit: habit, onToggle: {
@@ -160,11 +216,85 @@ struct ScheduleView: View {
             }
         }
     }
+
+    // MARK: Habit hero card
+    private var habitHeroCard: some View {
+        HStack(spacing: KTheme.Spacing.lg) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("HABIT PROGRESS")
+                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .foregroundColor(accent.opacity(0.8))
+                    .tracking(1.5)
+                HStack(alignment: .lastTextBaseline, spacing: 4) {
+                    Text("\(scheduleStore.completedTodayCount)")
+                        .font(.system(size: 56, weight: .black, design: .rounded))
+                        .foregroundColor(KTheme.Colors.textPrimary)
+                    Text("/ \(scheduleStore.todayHabits.count)")
+                        .font(.system(size: 22, weight: .semibold, design: .rounded))
+                        .foregroundColor(KTheme.Colors.textSecondary)
+                }
+                Text("habits today")
+                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .foregroundColor(KTheme.Colors.textTertiary)
+                    .tracking(1.2)
+                HStack(spacing: KTheme.Spacing.xs) {
+                    Text("BEST STREAK")
+                        .font(.system(size: 10, weight: .bold, design: .monospaced))
+                        .foregroundColor(KTheme.Colors.textTertiary)
+                        .tracking(1.2)
+                    KStreakBadge(days: scheduleStore.longestStreak)
+                }
+                .padding(.top, 2)
+            }
+            Spacer()
+            KProgressRing(
+                progress: scheduleStore.todayHabitProgress,
+                total: 1.0,
+                size: 72,
+                lineWidth: 7,
+                color: accent,
+                label: "\(Int(scheduleStore.todayHabitProgress * 100))%"
+            )
+            .kGlow(color: accent, radius: 14)
+        }
+        .padding(KTheme.Spacing.md)
+        .background(KTheme.Colors.cardElevated)
+        .cornerRadius(KTheme.Radius.lg)
+        .overlay(
+            RoundedRectangle(cornerRadius: KTheme.Radius.lg)
+                .stroke(accent.opacity(0.3), lineWidth: 0.5)
+        )
+        .shadow(color: accent.opacity(0.15), radius: 20, x: 0, y: 0)
+    }
+
+    // MARK: Helpers
+    private func taskDoneLabel(done: Int, total: Int) -> some View {
+        Text("\(done)/\(total) DONE")
+            .font(.system(size: 10, weight: .bold, design: .monospaced))
+            .foregroundColor(accent.opacity(0.8))
+            .tracking(1.2)
+    }
+
+    @ViewBuilder
+    private func premiumSection<Content: View>(title: String, trailing: AnyView? = nil, @ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: KTheme.Spacing.md) {
+            HStack {
+                Text(title)
+                    .font(.system(size: 11, weight: .bold, design: .monospaced))
+                    .foregroundColor(accent)
+                    .tracking(2)
+                Spacer()
+                trailing
+            }
+            content()
+        }
+    }
 }
 
 // MARK: — Week Strip
 struct WeekStripView: View {
     @Binding var selectedDate: Date
+    var accent: Color = KTheme.Colors.accentTertiary
     private let calendar = Calendar.current
     private var weekDates: [Date] {
         let today = Date()
@@ -183,22 +313,28 @@ struct WeekStripView: View {
                     let isToday = calendar.isDateInToday(date)
                     VStack(spacing: 4) {
                         Text(dayLetter(date))
-                            .font(KTheme.Typography.caption)
+                            .font(.system(size: 10, weight: .bold, design: .monospaced))
                             .foregroundColor(isSelected ? .white : KTheme.Colors.textSecondary)
+                            .tracking(1)
                         Text("\(calendar.component(.day, from: date))")
                             .font(KTheme.Typography.headingSmall)
-                            .foregroundColor(isSelected ? .white : (isToday ? KTheme.Colors.accentPrimary : KTheme.Colors.textPrimary))
+                            .foregroundColor(isSelected ? .white : (isToday ? accent : KTheme.Colors.textPrimary))
                         Circle()
-                            .fill(isToday ? KTheme.Colors.accentPrimary : Color.clear)
+                            .fill(isToday ? accent : Color.clear)
                             .frame(width: 4, height: 4)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 8)
-                    .background(isSelected ? KTheme.Colors.accentPrimary.opacity(0.8) : Color.clear)
+                    .background(dayBackground(isSelected: isSelected, isToday: isToday))
                     .cornerRadius(KTheme.Radius.md)
                 }
             }
         }
+    }
+
+    private func dayBackground(isSelected: Bool, isToday: Bool) -> Color {
+        if isSelected { return accent.opacity(0.8) }
+        return Color.clear
     }
 
     private func dayLetter(_ date: Date) -> String {
@@ -213,15 +349,25 @@ struct TaskCard: View {
     let onComplete: () -> Void
     let onDelete: () -> Void
 
+    private var priorityColor: Color { Color(hex: task.priority.color) }
+
+    private var cardBackground: Color {
+        task.isCompleted ? KTheme.Colors.card.opacity(0.5) : KTheme.Colors.card
+    }
+
+    private var cardBorderColor: Color {
+        task.isOverdue ? KTheme.Colors.danger.opacity(0.3) : KTheme.Colors.border.opacity(0.4)
+    }
+
     var body: some View {
         HStack(alignment: .top, spacing: KTheme.Spacing.sm) {
             Button(action: onComplete) {
                 ZStack {
                     Circle()
-                        .stroke(Color(hex: task.priority.color), lineWidth: 2)
+                        .stroke(priorityColor, lineWidth: 2)
                         .frame(width: 24, height: 24)
                     if task.isCompleted {
-                        Circle().fill(Color(hex: task.priority.color)).frame(width: 24, height: 24)
+                        Circle().fill(priorityColor).frame(width: 24, height: 24)
                         Image(systemName: "checkmark").font(.system(size: 10, weight: .bold)).foregroundColor(.white)
                     }
                 }
@@ -243,13 +389,13 @@ struct TaskCard: View {
                             .font(KTheme.Typography.caption)
                             .foregroundColor(task.isOverdue ? KTheme.Colors.danger : KTheme.Colors.textSecondary)
                     }
-                    KBadge(text: task.priority.displayName, color: Color(hex: task.priority.color))
+                    KBadge(text: task.priority.displayName, color: priorityColor)
                     Image(systemName: task.category.icon).font(.caption).foregroundColor(KTheme.Colors.textTertiary)
                 }
 
                 if !task.subtasks.isEmpty {
                     ProgressView(value: task.completionPercentage)
-                        .tint(KTheme.Colors.accentPrimary)
+                        .tint(KTheme.Colors.accentTertiary)
                         .frame(maxWidth: 120)
                 }
 
@@ -257,11 +403,12 @@ struct TaskCard: View {
                     FlowLayout(spacing: 4) {
                         ForEach(task.tags, id: \.self) { tag in
                             Text("#\(tag)")
-                                .font(KTheme.Typography.caption)
-                                .foregroundColor(KTheme.Colors.accentPrimary)
+                                .font(.system(size: 10, weight: .bold, design: .monospaced))
+                                .foregroundColor(KTheme.Colors.accentTertiary)
+                                .tracking(0.5)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 3)
-                                .background(KTheme.Colors.accentPrimary.opacity(0.1))
+                                .background(KTheme.Colors.accentTertiary.opacity(0.1))
                                 .cornerRadius(KTheme.Radius.pill)
                         }
                     }
@@ -277,10 +424,10 @@ struct TaskCard: View {
         .padding(KTheme.Spacing.sm)
         .background(
             RoundedRectangle(cornerRadius: KTheme.Radius.md)
-                .fill(task.isCompleted ? KTheme.Colors.card.opacity(0.5) : KTheme.Colors.card)
+                .fill(cardBackground)
                 .overlay(
                     RoundedRectangle(cornerRadius: KTheme.Radius.md)
-                        .stroke(task.isOverdue ? KTheme.Colors.danger.opacity(0.3) : KTheme.Colors.border.opacity(0.4), lineWidth: 0.5)
+                        .stroke(cardBorderColor, lineWidth: 0.5)
                 )
         )
     }
@@ -292,17 +439,27 @@ struct HabitDetailCard: View {
     let onToggle: () -> Void
     var onDelete: (() -> Void)? = nil
 
+    private var habitColor: Color { Color(hex: habit.color) }
+
+    private var cardBackground: Color {
+        habit.isCompletedToday ? habitColor.opacity(0.08) : KTheme.Colors.card
+    }
+
+    private var cardBorder: Color {
+        habit.isCompletedToday ? habitColor.opacity(0.3) : KTheme.Colors.border.opacity(0.4)
+    }
+
     var body: some View {
         HStack(spacing: KTheme.Spacing.md) {
             Button(action: onToggle) {
                 ZStack {
                     Circle()
-                        .fill(habit.isCompletedToday ? Color(hex: habit.color) : Color(hex: habit.color).opacity(0.15))
+                        .fill(habit.isCompletedToday ? habitColor : habitColor.opacity(0.15))
                         .frame(width: 44, height: 44)
                         .animation(KTheme.Animation.snappy, value: habit.isCompletedToday)
                     Image(systemName: habit.isCompletedToday ? "checkmark" : habit.icon)
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(habit.isCompletedToday ? .white : Color(hex: habit.color))
+                        .foregroundColor(habit.isCompletedToday ? .white : habitColor)
                 }
             }
 
@@ -311,7 +468,10 @@ struct HabitDetailCard: View {
                     .font(KTheme.Typography.headingSmall)
                     .foregroundColor(habit.isCompletedToday ? KTheme.Colors.textSecondary : KTheme.Colors.textPrimary)
                     .strikethrough(habit.isCompletedToday, color: KTheme.Colors.textSecondary)
-                Text(habit.frequency.displayName).font(KTheme.Typography.caption).foregroundColor(KTheme.Colors.textTertiary)
+                Text(habit.frequency.displayName.uppercased())
+                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .foregroundColor(KTheme.Colors.textTertiary)
+                    .tracking(1.2)
             }
 
             Spacer()
@@ -332,10 +492,10 @@ struct HabitDetailCard: View {
         .padding(KTheme.Spacing.sm)
         .background(
             RoundedRectangle(cornerRadius: KTheme.Radius.md)
-                .fill(habit.isCompletedToday ? Color(hex: habit.color).opacity(0.08) : KTheme.Colors.card)
+                .fill(cardBackground)
                 .overlay(
                     RoundedRectangle(cornerRadius: KTheme.Radius.md)
-                        .stroke(habit.isCompletedToday ? Color(hex: habit.color).opacity(0.3) : KTheme.Colors.border.opacity(0.4), lineWidth: 0.5)
+                        .stroke(cardBorder, lineWidth: 0.5)
                 )
         )
         .animation(KTheme.Animation.snappy, value: habit.isCompletedToday)
