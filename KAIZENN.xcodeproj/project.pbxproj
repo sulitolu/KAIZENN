@@ -42,6 +42,7 @@
 		D1E2F3A4B5C6D7E8F9A0B1C2 /* WearableHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F3A4B5C6D7E8F9A0B1C2D3 /* WearableHubView.swift */; };
 		F3A4B5C6D7E8F9A0B1C2D3E4 /* GPSImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B5C6D7E8F9A0B1C2D3E4F5 /* GPSImportView.swift */; };
 		B5C6D7E8F9A0B1C2D3E4F5A6 /* StrengthLoggerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D7E8F9A0B1C2D3E4F5A6B7 /* StrengthLoggerView.swift */; };
+		F0A1B2C3D4E5F6A7B8C9D0E1 /* TrainingMenuScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6789012345678 /* TrainingMenuScanView.swift */; };
 		D7E8F9A0B1C2D3E4F5A6B7C8 /* CatapultParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F9A0B1C2D3E4F5A6B7C8D9 /* CatapultParser.swift */; };
 		C2657B3BF636AA7FDAF9CCC6 /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B4E9E7F645566F6EC8259C /* AddTaskView.swift */; };
 		CB061155EB874F821416F33C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C55399A23DBC7E16DBC1841 /* ContentView.swift */; };
@@ -113,6 +114,7 @@
 		E2F3A4B5C6D7E8F9A0B1C2D3 /* WearableHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WearableHubView.swift; sourceTree = "<group>"; };
 		A4B5C6D7E8F9A0B1C2D3E4F5 /* GPSImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSImportView.swift; sourceTree = "<group>"; };
 		C6D7E8F9A0B1C2D3E4F5A6B7 /* StrengthLoggerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthLoggerView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6789012345678 /* TrainingMenuScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingMenuScanView.swift; sourceTree = "<group>"; };
 		E8F9A0B1C2D3E4F5A6B7C8D9 /* CatapultParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatapultParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -160,6 +162,7 @@
 				A4B5C6D7E8F9A0B1C2D3E4F5 /* GPSImportView.swift */,
 				C6D7E8F9A0B1C2D3E4F5A6B7 /* StrengthLoggerView.swift */,
 				E8F9A0B1C2D3E4F5A6B7C8D9 /* CatapultParser.swift */,
+				A1B2C3D4E5F6789012345678 /* TrainingMenuScanView.swift */,
 			);
 			path = Hub;
 			sourceTree = "<group>";
@@ -551,6 +554,7 @@
 				BB22CC33DD44EE55FF667788 /* ClaudeService.swift in Sources */,
 				7039CE9C1C224420879389AE /* GPSSession.swift in Sources */,
 				BC4B7FB8C7494662906B4E4F /* StrengthSession.swift in Sources */,
+				F0A1B2C3D4E5F6A7B8C9D0E1 /* TrainingMenuScanView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -6,6 +6,7 @@ struct WearableHubView: View {
 
     @State private var showGPSImport = false
     @State private var showStrengthLogger = false
+    @State private var showTrainingMenu = false
 
     var body: some View {
         NavigationStack {
@@ -14,6 +15,7 @@ struct WearableHubView: View {
                     acwrCard
                     gpsSessionsSection
                     strengthSessionsSection
+                    trainingMenuCard
                 }
                 .padding(KTheme.Spacing.md)
                 .padding(.bottom, 100) // clear tab bar
@@ -27,6 +29,11 @@ struct WearableHubView: View {
         }
         .sheet(isPresented: $showStrengthLogger) {
             StrengthLoggerView().environmentObject(loadStore)
+        }
+        .sheet(isPresented: $showTrainingMenu) {
+            TrainingMenuScanView()
+                .environmentObject(appState)
+                .environmentObject(loadStore)
         }
     }
 
@@ -247,6 +254,41 @@ struct WearableHubView: View {
                 }
             }
         }
+    }
+
+    // MARK: Training Menu Card
+
+    private var trainingMenuCard: some View {
+        Button {
+            showTrainingMenu = true
+        } label: {
+            KCard {
+                HStack(spacing: KTheme.Spacing.md) {
+                    ZStack {
+                        Circle()
+                            .fill(KTheme.Colors.accentPrimary.opacity(0.15))
+                            .frame(width: 44, height: 44)
+                        Image(systemName: "camera.viewfinder")
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundColor(KTheme.Colors.accentPrimary)
+                    }
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Scan Training Program")
+                            .font(KTheme.Typography.label)
+                            .foregroundColor(KTheme.Colors.textPrimary)
+                        Text("Photo your whiteboard or printed plan — Kai fills in the session")
+                            .font(KTheme.Typography.caption)
+                            .foregroundColor(KTheme.Colors.textSecondary)
+                            .multilineTextAlignment(.leading)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(KTheme.Colors.textTertiary)
+                }
+            }
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: ACWR Computed Helpers
