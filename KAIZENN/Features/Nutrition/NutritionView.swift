@@ -108,13 +108,13 @@ struct NutritionView: View {
             VStack(alignment: .leading, spacing: 3) {
                 // Micro-label: "MATCH WEEK · THU" or phase + weekday
                 Text("\(phaseLabel) · \(weekdayLabel)")
-                    .font(.system(size: 8, weight: .bold, design: .monospaced))
+                    .font(.system(size: 12, weight: .bold, design: .monospaced))
                     .foregroundColor(KTheme.Colors.textTertiary)
                     .tracking(1)
 
                 // Title
                 Text("Fuel")
-                    .font(.system(size: 15, weight: .heavy))
+                    .font(.system(size: 26, weight: .heavy))
                     .foregroundColor(KTheme.Colors.textPrimary)
                     .tracking(-0.3)
 
@@ -154,11 +154,11 @@ struct NutritionView: View {
         let days = sport.daysUntilPerformance
         let label = days == 0 ? "MATCH DAY" : "\(days) DAYS OUT"
         return Text(label)
-            .font(.system(size: 7, weight: .bold))
+            .font(.system(size: 11, weight: .bold))
             .foregroundColor(KTheme.Colors.accentAmber)
             .tracking(0.5)
-            .padding(.horizontal, 7)
-            .padding(.vertical, 4)
+            .padding(.horizontal, 9)
+            .padding(.vertical, 5)
             .background(KTheme.Colors.accentAmber.opacity(0.1))
             .overlay(
                 Capsule()
@@ -170,11 +170,11 @@ struct NutritionView: View {
     // MARK: — Calories Hero Card
 
     private var caloriesHeroCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 12) {
 
             // Micro-label
             Text("CALORIES TODAY")
-                .font(.system(size: 8, weight: .bold, design: .monospaced))
+                .font(.system(size: 12, weight: .bold, design: .monospaced))
                 .foregroundColor(KTheme.Colors.textTertiary)
                 .tracking(1)
 
@@ -187,20 +187,20 @@ struct NutritionView: View {
             // Macros row: Protein / Carbs / Fat
             macrosRow
         }
-        .padding(KTheme.Spacing.md)
+        .padding(16)
         .background(cardBackground)
     }
 
     // Split into helpers to avoid type-checker complexity
     private var calorieNumberRow: some View {
-        HStack(alignment: .lastTextBaseline, spacing: 4) {
+        HStack(alignment: .lastTextBaseline, spacing: 6) {
             Text(formattedCalories(todayNutrition.totalCalories))
-                .font(.system(size: 30, weight: .black))
+                .font(.system(size: 48, weight: .black))
                 .foregroundColor(KTheme.Colors.textPrimary)
                 .tracking(-1)
 
             Text("/ \(targets.calories)")
-                .font(.system(size: 13, weight: .bold))
+                .font(.system(size: 18, weight: .bold))
                 .foregroundColor(KTheme.Colors.textTertiary)
         }
     }
@@ -250,10 +250,10 @@ struct NutritionView: View {
     // MARK: — Card Background Helper (avoids nested ternaries in .background)
 
     private var cardBackground: some View {
-        RoundedRectangle(cornerRadius: 13)
+        RoundedRectangle(cornerRadius: 16)
             .fill(KTheme.Colors.card)
             .overlay(
-                RoundedRectangle(cornerRadius: 13)
+                RoundedRectangle(cornerRadius: 16)
                     .stroke(KTheme.Colors.border.opacity(0.5), lineWidth: 0.5)
             )
     }
@@ -270,27 +270,27 @@ struct NutritionView: View {
     }
 
     private var scanMealCardContent: some View {
-        HStack(spacing: 9) {
-            // Icon: 26pt rounded square with brandGradient + violet glow
+        HStack(spacing: 14) {
+            // Icon: 40pt rounded square with brandGradient + violet glow
             ZStack {
-                RoundedRectangle(cornerRadius: 7)
+                RoundedRectangle(cornerRadius: 10)
                     .fill(KTheme.Colors.brandGradient)
-                    .frame(width: 26, height: 26)
+                    .frame(width: 40, height: 40)
                     .kGlow(color: KTheme.Colors.accentPrimary, radius: 10)
 
                 Image(systemName: "camera.fill")
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.white)
             }
 
             // Text block
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 3) {
                 Text("Scan Your Meal")
-                    .font(.system(size: 9, weight: .bold))
+                    .font(.system(size: 15, weight: .bold))
                     .foregroundColor(KTheme.Colors.textPrimary)
 
                 Text("AI reads your plate — auto-logged")
-                    .font(.system(size: 7, weight: .regular))
+                    .font(.system(size: 12, weight: .regular))
                     .foregroundColor(KTheme.Colors.textTertiary)
             }
 
@@ -298,18 +298,18 @@ struct NutritionView: View {
 
             // Chevron
             Image(systemName: "chevron.right")
-                .font(.system(size: 10, weight: .semibold))
+                .font(.system(size: 13, weight: .semibold))
                 .foregroundColor(KTheme.Colors.textTertiary)
         }
-        .padding(9)
+        .padding(14)
         .background(scanMealBackground)
     }
 
     private var scanMealBackground: some View {
-        RoundedRectangle(cornerRadius: 11)
+        RoundedRectangle(cornerRadius: 14)
             .fill(KTheme.Colors.accentPrimary.opacity(0.05))
             .overlay(
-                RoundedRectangle(cornerRadius: 11)
+                RoundedRectangle(cornerRadius: 14)
                     .stroke(KTheme.Colors.accentPrimary.opacity(0.18), lineWidth: 0.5)
             )
     }
@@ -504,12 +504,12 @@ struct MacroCell: View {
     let color: Color
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: 3) {
             Text(value)
-                .font(.system(size: 11, weight: .heavy))
+                .font(.system(size: 18, weight: .heavy))
                 .foregroundColor(color)
             Text(label)
-                .font(.system(size: 6, weight: .bold))
+                .font(.system(size: 10, weight: .bold))
                 .foregroundColor(KTheme.Colors.textTertiary)
                 .tracking(0.7)
         }
@@ -630,16 +630,16 @@ struct FoodEntryRow: View {
     let onDelete: () -> Void
 
     var body: some View {
-        HStack(spacing: 7) {
+        HStack(spacing: 10) {
             // Colored glowing dot
             Circle()
                 .fill(dotColor)
-                .frame(width: 6, height: 6)
+                .frame(width: 9, height: 9)
                 .shadow(color: dotColor.opacity(0.5), radius: 3)
 
             // Name
             Text(entry.food.name)
-                .font(.system(size: 8, weight: .semibold))
+                .font(.system(size: 15, weight: .semibold))
                 .foregroundColor(Color(hex: "C8C8E0"))
                 .lineLimit(1)
 
@@ -647,33 +647,33 @@ struct FoodEntryRow: View {
 
             // Grams
             Text(String(format: "%.0fg", entry.gramsConsumed))
-                .font(.system(size: 7, weight: .regular))
+                .font(.system(size: 12, weight: .regular))
                 .foregroundColor(KTheme.Colors.textTertiary)
-                .padding(.trailing, 3)
+                .padding(.trailing, 4)
 
             // kcal
             Text("\(Int(entry.calories)) kcal")
-                .font(.system(size: 8, weight: .bold))
+                .font(.system(size: 13, weight: .bold))
                 .foregroundColor(Color(hex: "4A4A6A"))
 
             // Delete
             Button(action: onDelete) {
                 Image(systemName: "trash")
-                    .font(.system(size: 10))
+                    .font(.system(size: 13))
                     .foregroundColor(KTheme.Colors.textTertiary)
                     .padding(6)
             }
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 6)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
         .background(entryBackground)
     }
 
     private var entryBackground: some View {
-        RoundedRectangle(cornerRadius: 9)
+        RoundedRectangle(cornerRadius: 12)
             .fill(KTheme.Colors.card)
             .overlay(
-                RoundedRectangle(cornerRadius: 9)
+                RoundedRectangle(cornerRadius: 12)
                     .stroke(Color(hex: "1A1A28"), lineWidth: 0.5)
             )
     }
