@@ -20,7 +20,7 @@ struct WearableHubView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 7) {
+                VStack(spacing: 14) {
                     // Header
                     hubHeader
 
@@ -65,11 +65,11 @@ struct WearableHubView: View {
         HStack(alignment: .bottom) {
             VStack(alignment: .leading, spacing: 2) {
                 Text("DATA SOURCES")
-                    .font(.system(size: 9, weight: .bold, design: .monospaced))
+                    .font(.system(size: 12, weight: .bold, design: .monospaced))
                     .foregroundColor(KTheme.Colors.textTertiary)
                     .tracking(1.5)
                 Text("Athlete Hub")
-                    .font(.system(size: 15, weight: .heavy))
+                    .font(.system(size: 26, weight: .heavy))
                     .foregroundColor(KTheme.Colors.textPrimary)
                     .tracking(-0.3)
             }
@@ -95,7 +95,7 @@ struct WearableHubView: View {
     // MARK: — Device Row
 
     private var deviceRow: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: 8) {
             DeviceTile(
                 symbol: "iphone",
                 name: "WHOOP",
@@ -133,16 +133,16 @@ struct WearableHubView: View {
                 HStack(spacing: 4) {
                     GlowingDot(color: KTheme.Colors.accentTertiary)
                     Text(gpsSessionLabel)
-                        .font(.system(size: 9, weight: .bold))
+                        .font(.system(size: 14, weight: .bold))
                         .foregroundColor(KTheme.Colors.textPrimary)
                 }
                 Spacer()
                 TinyChip(text: "CATAPULT", color: KTheme.Colors.accentTertiary)
             }
-            .padding(.bottom, 7)
+            .padding(.bottom, 12)
 
             // 3-col grid
-            HStack(spacing: 7) {
+            HStack(spacing: 12) {
                 GPSMetric(
                     value: gpsDistanceText,
                     unit: "km",
@@ -159,23 +159,23 @@ struct WearableHubView: View {
                     label: "SPRINTS"
                 )
             }
-            .padding(.bottom, 7)
+            .padding(.bottom, 12)
 
             // Divider
             Rectangle()
                 .fill(KTheme.Colors.cardElevated)
                 .frame(height: 0.5)
-                .padding(.bottom, 7)
+                .padding(.bottom, 12)
 
             // HSR row
             HSRRow(percent: gpsHSRPercent)
         }
-        .padding(10)
+        .padding(16)
         .background(
-            RoundedRectangle(cornerRadius: 13)
+            RoundedRectangle(cornerRadius: 16)
                 .fill(KTheme.Colors.card)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 13)
+                    RoundedRectangle(cornerRadius: 16)
                         .stroke(KTheme.Colors.cardElevated.opacity(1), lineWidth: 0.5)
                 )
         )
@@ -219,35 +219,35 @@ struct WearableHubView: View {
         Button {
             showGPSImport = true
         } label: {
-            HStack(spacing: 7) {
+            HStack(spacing: 12) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 6)
+                    RoundedRectangle(cornerRadius: 9)
                         .fill(KTheme.Colors.accentTertiary.opacity(0.1))
-                        .frame(width: 24, height: 24)
+                        .frame(width: 38, height: 38)
                     Image(systemName: "square.and.arrow.up")
-                        .font(.system(size: 11, weight: .semibold))
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(KTheme.Colors.accentTertiary)
                 }
-                VStack(alignment: .leading, spacing: 1) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text("Import Team Session")
-                        .font(.system(size: 8, weight: .bold))
+                        .font(.system(size: 15, weight: .bold))
                         .foregroundColor(KTheme.Colors.textPrimary)
                     Text("Catapult CSV · Auto-parsed")
-                        .font(.system(size: 6, weight: .medium))
+                        .font(.system(size: 12, weight: .medium))
                         .foregroundColor(KTheme.Colors.textTertiary)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(.system(size: 12, weight: .semibold))
                     .foregroundColor(KTheme.Colors.textTertiary)
             }
-            .padding(.horizontal, 9)
-            .padding(.vertical, 8)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
             .background(
-                RoundedRectangle(cornerRadius: 11)
+                RoundedRectangle(cornerRadius: 14)
                     .fill(KTheme.Colors.accentTertiary.opacity(0.04))
                     .overlay(
-                        RoundedRectangle(cornerRadius: 11)
+                        RoundedRectangle(cornerRadius: 14)
                             .stroke(KTheme.Colors.accentTertiary.opacity(0.18), lineWidth: 0.5)
                     )
             )
@@ -267,7 +267,7 @@ struct WearableHubView: View {
                     HStack(spacing: 4) {
                         GlowingDot(color: KTheme.Colors.accentAmber)
                         Text(strengthSessionLabel)
-                            .font(.system(size: 9, weight: .bold))
+                            .font(.system(size: 14, weight: .bold))
                             .foregroundColor(KTheme.Colors.textPrimary)
                     }
                     Spacer()
@@ -297,12 +297,12 @@ struct WearableHubView: View {
                     }
                 }
             }
-            .padding(10)
+            .padding(16)
             .background(
-                RoundedRectangle(cornerRadius: 13)
+                RoundedRectangle(cornerRadius: 16)
                     .fill(KTheme.Colors.card)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 13)
+                        RoundedRectangle(cornerRadius: 16)
                             .stroke(KTheme.Colors.cardElevated.opacity(1), lineWidth: 0.5)
                     )
             )
@@ -349,35 +349,35 @@ struct WearableHubView: View {
         Button {
             showTrainingMenu = true
         } label: {
-            HStack(spacing: KTheme.Spacing.sm) {
+            HStack(spacing: 12) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 8)
+                    RoundedRectangle(cornerRadius: 10)
                         .fill(KTheme.Colors.accentPrimary.opacity(0.12))
-                        .frame(width: 36, height: 36)
+                        .frame(width: 46, height: 46)
                     Image(systemName: "camera.viewfinder")
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.system(size: 22, weight: .semibold))
                         .foregroundColor(KTheme.Colors.accentPrimary)
                 }
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 3) {
                     Text("Scan Training Program")
-                        .font(.system(size: 9, weight: .bold))
+                        .font(.system(size: 15, weight: .bold))
                         .foregroundColor(KTheme.Colors.textPrimary)
                     Text("Photo your whiteboard — Kai fills in the session")
-                        .font(.system(size: 7, weight: .medium))
+                        .font(.system(size: 12, weight: .medium))
                         .foregroundColor(KTheme.Colors.textSecondary)
                         .multilineTextAlignment(.leading)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(.system(size: 12, weight: .semibold))
                     .foregroundColor(KTheme.Colors.textTertiary)
             }
-            .padding(10)
+            .padding(16)
             .background(
-                RoundedRectangle(cornerRadius: 13)
+                RoundedRectangle(cornerRadius: 16)
                     .fill(KTheme.Colors.card)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 13)
+                        RoundedRectangle(cornerRadius: 16)
                             .stroke(KTheme.Colors.cardElevated.opacity(1), lineWidth: 0.5)
                     )
             )
@@ -396,11 +396,11 @@ private struct LiveChip: View {
     let count: Int
     var body: some View {
         Text("\(count) LIVE")
-            .font(.system(size: 7, weight: .bold))
+            .font(.system(size: 11, weight: .bold))
             .foregroundColor(KTheme.Colors.accentGreen)
             .tracking(0.5)
-            .padding(.horizontal, 7)
-            .padding(.vertical, 4)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
             .background(
                 Capsule()
                     .fill(KTheme.Colors.accentGreen.opacity(0.1))
@@ -415,11 +415,11 @@ private struct TinyChip: View {
     let color: Color
     var body: some View {
         Text(text.uppercased())
-            .font(.system(size: 7, weight: .bold))
+            .font(.system(size: 11, weight: .bold))
             .foregroundColor(color)
             .tracking(0.3)
-            .padding(.horizontal, 6)
-            .padding(.vertical, 3)
+            .padding(.horizontal, 9)
+            .padding(.vertical, 4)
             .background(
                 Capsule()
                     .fill(color.opacity(0.1))
@@ -428,13 +428,13 @@ private struct TinyChip: View {
     }
 }
 
-/// 6pt glowing accent dot
+/// 9pt glowing accent dot
 private struct GlowingDot: View {
     let color: Color
     var body: some View {
         Circle()
             .fill(color)
-            .frame(width: 6, height: 6)
+            .frame(width: 9, height: 9)
             .shadow(color: color.opacity(0.7), radius: 3)
     }
 }
@@ -447,31 +447,31 @@ private struct DeviceTile: View {
     let accentColor: Color
 
     var body: some View {
-        VStack(spacing: 3) {
+        VStack(spacing: 5) {
             ZStack {
-                RoundedRectangle(cornerRadius: 5)
+                RoundedRectangle(cornerRadius: 8)
                     .fill(isConnected ? accentColor.opacity(0.1) : KTheme.Colors.cardElevated)
-                    .frame(width: 18, height: 18)
+                    .frame(width: 30, height: 30)
                 Image(systemName: symbol)
-                    .font(.system(size: 9, weight: .semibold))
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(isConnected ? accentColor : KTheme.Colors.textTertiary)
             }
             Text(name)
-                .font(.system(size: 6, weight: .bold))
+                .font(.system(size: 11, weight: .bold))
                 .foregroundColor(KTheme.Colors.textSecondary)
                 .tracking(0.5)
             Text(isConnected ? "Live" : "+ Add")
-                .font(.system(size: 6, weight: .bold))
+                .font(.system(size: 11, weight: .bold))
                 .foregroundColor(isConnected ? KTheme.Colors.accentGreen : KTheme.Colors.textTertiary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 7)
-        .padding(.horizontal, 5)
+        .padding(.vertical, 12)
+        .padding(.horizontal, 8)
         .background(
-            RoundedRectangle(cornerRadius: 10)
+            RoundedRectangle(cornerRadius: 14)
                 .fill(KTheme.Colors.card)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 10)
+                    RoundedRectangle(cornerRadius: 14)
                         .stroke(
                             isConnected
                                 ? KTheme.Colors.accentGreen.opacity(0.25)
@@ -490,20 +490,20 @@ private struct GPSMetric: View {
     let label: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 1) {
-            HStack(alignment: .lastTextBaseline, spacing: 1) {
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(alignment: .lastTextBaseline, spacing: 2) {
                 Text(value)
-                    .font(.system(size: 13, weight: .black))
+                    .font(.system(size: 20, weight: .black))
                     .foregroundColor(KTheme.Colors.textPrimary)
                     .tracking(-0.4)
                 if let unit = unit {
                     Text(unit)
-                        .font(.system(size: 7))
+                        .font(.system(size: 11))
                         .foregroundColor(KTheme.Colors.textTertiary)
                 }
             }
             Text(label)
-                .font(.system(size: 6, weight: .medium))
+                .font(.system(size: 11, weight: .medium))
                 .foregroundColor(KTheme.Colors.textTertiary)
                 .tracking(0.7)
                 .textCase(.uppercase)
@@ -517,18 +517,18 @@ private struct HSRRow: View {
     let percent: Double  // 0–100
 
     var body: some View {
-        HStack(spacing: 5) {
+        HStack(spacing: 8) {
             Text("HSR")
-                .font(.system(size: 6, weight: .medium))
+                .font(.system(size: 11, weight: .medium))
                 .foregroundColor(KTheme.Colors.textTertiary)
                 .textCase(.uppercase)
-                .frame(width: 22, alignment: .leading)
+                .frame(width: 32, alignment: .leading)
 
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 2)
                         .fill(KTheme.Colors.background)
-                        .frame(height: 3)
+                        .frame(height: 4)
                     RoundedRectangle(cornerRadius: 2)
                         .fill(
                             LinearGradient(
@@ -537,13 +537,13 @@ private struct HSRRow: View {
                                 endPoint: .trailing
                             )
                         )
-                        .frame(width: geo.size.width * CGFloat(min(percent, 100) / 100), height: 3)
+                        .frame(width: geo.size.width * CGFloat(min(percent, 100) / 100), height: 4)
                 }
             }
-            .frame(height: 3)
+            .frame(height: 4)
 
             Text(String(format: "%.0f%%", percent))
-                .font(.system(size: 8, weight: .heavy))
+                .font(.system(size: 13, weight: .heavy))
                 .foregroundColor(KTheme.Colors.accentTertiary)
         }
     }
@@ -560,18 +560,18 @@ private struct LiftRow: View {
     }
 
     var body: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: 8) {
             Text(item.name)
-                .font(.system(size: 7, weight: .semibold))
+                .font(.system(size: 12, weight: .semibold))
                 .foregroundColor(KTheme.Colors.textSecondary)
-                .frame(width: 40, alignment: .leading)
+                .frame(width: 58, alignment: .leading)
                 .lineLimit(1)
 
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 2)
                         .fill(KTheme.Colors.background)
-                        .frame(height: 2)
+                        .frame(height: 4)
                     RoundedRectangle(cornerRadius: 2)
                         .fill(
                             LinearGradient(
@@ -583,15 +583,17 @@ private struct LiftRow: View {
                                 endPoint: .trailing
                             )
                         )
-                        .frame(width: geo.size.width * fillFraction, height: 2)
+                        .frame(width: geo.size.width * fillFraction, height: 4)
                 }
             }
-            .frame(height: 2)
+            .frame(height: 4)
 
             Text(String(format: "%.0f kg", item.weightKg))
-                .font(.system(size: 8, weight: .heavy))
+                .font(.system(size: 14, weight: .heavy))
                 .foregroundColor(KTheme.Colors.textPrimary)
-                .frame(width: 32, alignment: .trailing)
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
+                .frame(width: 64, alignment: .trailing)
         }
     }
 }

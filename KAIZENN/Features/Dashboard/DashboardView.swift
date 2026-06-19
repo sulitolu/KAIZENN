@@ -118,13 +118,13 @@ struct DashboardView: View {
     // MARK: - Body
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 10) {
+            VStack(spacing: 14) {
                 headerSection
                 scoreHeroCard
                 statsRow
                 Color.clear.frame(height: 100)
             }
-            .padding(.horizontal, 14)
+            .padding(.horizontal, 18)
             .padding(.top, 14)
         }
         .background(KTheme.Colors.background.ignoresSafeArea())
@@ -136,11 +136,11 @@ struct DashboardView: View {
         HStack(alignment: .center) {
             VStack(alignment: .leading, spacing: 3) {
                 Text(greetingLabel)
-                    .font(.system(size: 9, weight: .medium, design: .monospaced))
+                    .font(.system(size: 12, weight: .medium, design: .monospaced))
                     .foregroundColor(KTheme.Colors.textTertiary)
                     .tracking(1)
                 Text(athleteName)
-                    .font(.system(size: 16, weight: .heavy))
+                    .font(.system(size: 26, weight: .heavy))
                     .foregroundColor(KTheme.Colors.textPrimary)
                     .tracking(-0.3)
             }
@@ -153,10 +153,10 @@ struct DashboardView: View {
         ZStack {
             Circle()
                 .fill(KTheme.Colors.brandGradient)
-                .frame(width: 32, height: 32)
+                .frame(width: 44, height: 44)
                 .shadow(color: KTheme.Colors.accentPrimary.opacity(0.4), radius: 7, x: 0, y: 0)
             Image(systemName: "person.fill")
-                .font(.system(size: 14, weight: .medium))
+                .font(.system(size: 20, weight: .medium))
                 .foregroundColor(.white)
         }
     }
@@ -170,7 +170,7 @@ struct DashboardView: View {
                     readinessMicroLabel
                     scoreGradientNumber
                     Text(readinessLabel)
-                        .font(.system(size: 9, weight: .bold))
+                        .font(.system(size: 13, weight: .bold))
                         .foregroundColor(readinessColor)
                         .tracking(0.3)
                 }
@@ -180,22 +180,22 @@ struct DashboardView: View {
             // Pillar tiles row
             pillarsRow
         }
-        .padding(14)
+        .padding(18)
         .background(scoreHeroBackground)
         .overlay(scoreHeroBorder)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 18))
     }
 
     private var readinessMicroLabel: some View {
         Text("READINESS")
-            .font(.system(size: 8, weight: .bold, design: .monospaced))
+            .font(.system(size: 12, weight: .bold, design: .monospaced))
             .foregroundColor(KTheme.Colors.textTertiary)
             .tracking(1.5)
     }
 
     private var scoreGradientNumber: some View {
         Text("\(readinessScore)")
-            .font(.system(size: 54, weight: .black))
+            .font(.system(size: 88, weight: .black))
             .tracking(-2)
             .foregroundStyle(
                 LinearGradient(
@@ -210,7 +210,7 @@ struct DashboardView: View {
         ZStack {
             Circle()
                 .fill(Color(hex: "0F0F1E"))
-                .frame(width: 50, height: 50)
+                .frame(width: 84, height: 84)
             Circle()
                 .stroke(
                     LinearGradient(
@@ -218,11 +218,11 @@ struct DashboardView: View {
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     ),
-                    lineWidth: 2.5
+                    lineWidth: 4
                 )
-                .frame(width: 50, height: 50)
+                .frame(width: 84, height: 84)
             Text("\(readinessScore)")
-                .font(.system(size: 14, weight: .black))
+                .font(.system(size: 22, weight: .black))
                 .foregroundColor(Color(hex: "A89FFF"))
         }
     }
@@ -236,7 +236,7 @@ struct DashboardView: View {
     }
 
     private var scoreHeroBorder: some View {
-        RoundedRectangle(cornerRadius: 16)
+        RoundedRectangle(cornerRadius: 18)
             .stroke(KTheme.Colors.accentPrimary.opacity(0.12), lineWidth: 0.5)
     }
 
@@ -283,15 +283,15 @@ struct DashboardView: View {
         StatCard {
             HStack(alignment: .firstTextBaseline, spacing: 1) {
                 Text(String(format: "%.1f", acuteLoad / 1000))
-                    .font(.system(size: 13, weight: .heavy))
+                    .font(.system(size: 20, weight: .heavy))
                     .foregroundColor(KTheme.Colors.textPrimary)
                 Text("km")
-                    .font(.system(size: 7, weight: .semibold))
+                    .font(.system(size: 11, weight: .semibold))
                     .foregroundColor(KTheme.Colors.textTertiary)
                     .textCase(.uppercase)
             }
             Text("GPS Load")
-                .font(.system(size: 7, weight: .regular))
+                .font(.system(size: 11, weight: .regular))
                 .foregroundColor(KTheme.Colors.textTertiary)
             miniBar(
                 fill: LinearGradient(
@@ -308,15 +308,15 @@ struct DashboardView: View {
         StatCard {
             HStack(alignment: .firstTextBaseline, spacing: 1) {
                 Text(healthKitManager.heartRateResting.map { "\(Int($0))" } ?? "--")
-                    .font(.system(size: 13, weight: .heavy))
+                    .font(.system(size: 20, weight: .heavy))
                     .foregroundColor(KTheme.Colors.textPrimary)
                 Text("bpm")
-                    .font(.system(size: 7, weight: .semibold))
+                    .font(.system(size: 11, weight: .semibold))
                     .foregroundColor(KTheme.Colors.textTertiary)
                     .textCase(.uppercase)
             }
             Text("Rest HR")
-                .font(.system(size: 7, weight: .regular))
+                .font(.system(size: 11, weight: .regular))
                 .foregroundColor(KTheme.Colors.textTertiary)
             miniBar(
                 fill: LinearGradient(
@@ -332,13 +332,13 @@ struct DashboardView: View {
     private var matchCard: some View {
         StatCard {
             Text("MATCH")
-                .font(.system(size: 8, weight: .bold))
+                .font(.system(size: 12, weight: .bold))
                 .foregroundColor(KTheme.Colors.accentSecondary)
             Text(matchDayName)
-                .font(.system(size: 11, weight: .heavy))
+                .font(.system(size: 18, weight: .heavy))
                 .foregroundColor(KTheme.Colors.textPrimary)
             Text("\(sport.daysUntilPerformance) days out")
-                .font(.system(size: 7, weight: .regular))
+                .font(.system(size: 11, weight: .regular))
                 .foregroundColor(KTheme.Colors.textTertiary)
             miniBar(
                 fill: LinearGradient(
@@ -377,13 +377,13 @@ struct DashboardView: View {
             ZStack(alignment: .leading) {
                 Capsule()
                     .fill(KTheme.Colors.cardElevated)
-                    .frame(height: 2)
+                    .frame(height: 3)
                 Capsule()
                     .fill(fill)
-                    .frame(width: geo.size.width * CGFloat(min(max(fraction, 0), 1)), height: 2)
+                    .frame(width: geo.size.width * CGFloat(min(max(fraction, 0), 1)), height: 3)
             }
         }
-        .frame(height: 2)
+        .frame(height: 3)
         .padding(.top, 5)
     }
 }
@@ -398,35 +398,35 @@ private struct PillarTile: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             ZStack {
-                RoundedRectangle(cornerRadius: 4)
+                RoundedRectangle(cornerRadius: 6)
                     .fill(iconColor.opacity(0.2))
-                    .frame(width: 14, height: 14)
+                    .frame(width: 24, height: 24)
                 Image(systemName: iconSystemName)
-                    .font(.system(size: 7, weight: .medium))
+                    .font(.system(size: 12, weight: .medium))
                     .foregroundColor(iconColor)
             }
             .padding(.bottom, 4)
 
             Text(value)
-                .font(.system(size: 10, weight: .heavy))
+                .font(.system(size: 17, weight: .heavy))
                 .foregroundColor(KTheme.Colors.textPrimary)
                 .lineLimit(1)
-                .minimumScaleFactor(0.7)
+                .minimumScaleFactor(0.85)
 
             Text(name)
-                .font(.system(size: 6, weight: .medium))
+                .font(.system(size: 10, weight: .medium))
                 .foregroundColor(KTheme.Colors.textTertiary)
                 .tracking(0.7)
                 .padding(.top, 1)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 4)
-        .padding(.vertical, 6)
+        .padding(.vertical, 12)
         .background(
-            RoundedRectangle(cornerRadius: 9)
+            RoundedRectangle(cornerRadius: 10)
                 .fill(Color.white.opacity(0.02))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 9)
+                    RoundedRectangle(cornerRadius: 10)
                         .stroke(Color.white.opacity(0.04), lineWidth: 0.5)
                 )
         )
@@ -446,13 +446,13 @@ private struct StatCard<Content: View>: View {
             content
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 7)
-        .padding(.vertical, 8)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 12)
         .background(
-            RoundedRectangle(cornerRadius: 11)
+            RoundedRectangle(cornerRadius: 16)
                 .fill(KTheme.Colors.card)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 11)
+                    RoundedRectangle(cornerRadius: 16)
                         .stroke(KTheme.Colors.cardElevated, lineWidth: 0.5)
                 )
         )
