@@ -11,6 +11,7 @@ struct UserProfile: Codable {
     var goal: Goal = .loseFat
     var weeklyGoalKg: Double = 0.5 // kg per week
     var profileImageURL: String? = nil
+    var sportProfile: SportProfile = SportProfile()
 
     enum Gender: String, Codable, CaseIterable {
         case male, female, other

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		04A7814E4EEC70DE7D6C41B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8D562B3E40B6C9EC53F38F07 /* Assets.xcassets */; };
 		04DEEC5DF0043E486D50E6DE /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0021C5C2956990173B6D091 /* UserProfile.swift */; };
+		1A2B3C4D5E6F7A8B9C0D1E2F /* SportProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B3C4D5E6F7A8B9C0D1E2F3A /* SportProfile.swift */; };
 		0AEB7898D2545145F8E0B4C7 /* NutritionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6C56295BB4682F8D01931C /* NutritionStore.swift */; };
 		15A12CC83C82EA541FC21539 /* OnboardingFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60B3AAC2E60EF20542835FBA /* OnboardingFlowView.swift */; };
 		2F4C501FD3324042C681505E /* ActivityModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BF6A101ADB86CED296D47B /* ActivityModels.swift */; };
@@ -77,6 +78,7 @@
 		93877A8ED2CE9EBE2CD5B717 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
 		9E6C56295BB4682F8D01931C /* NutritionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionStore.swift; sourceTree = "<group>"; };
 		9F19765D068E4A8698F6FC0F /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
+		2B3C4D5E6F7A8B9C0D1E2F3A /* SportProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportProfile.swift; sourceTree = "<group>"; };
 		A0021C5C2956990173B6D091 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		A083F1897FE65BA0360D927A /* KTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KTheme.swift; sourceTree = "<group>"; };
 		A1926D9960C83E0D3B20705E /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
@@ -310,6 +312,7 @@
 			isa = PBXGroup;
 			children = (
 				A0021C5C2956990173B6D091 /* UserProfile.swift */,
+				2B3C4D5E6F7A8B9C0D1E2F3A /* SportProfile.swift */,
 				3486F76CEDC4116165842329 /* NutritionModels.swift */,
 				91BF6A101ADB86CED296D47B /* ActivityModels.swift */,
 				001F0D44BEF7DD9E0ECC9090 /* ScheduleModels.swift */,
@@ -474,6 +477,7 @@
 				CF64F6DD1FD2D1E73E0C0663 /* KComponents.swift in Sources */,
 				B3B1E2166CCE182C164F3526 /* HealthKitManager.swift in Sources */,
 				04DEEC5DF0043E486D50E6DE /* UserProfile.swift in Sources */,
+				1A2B3C4D5E6F7A8B9C0D1E2F /* SportProfile.swift in Sources */,
 				E31920300A97E130DA9FE108 /* NutritionModels.swift in Sources */,
 				2F4C501FD3324042C681505E /* ActivityModels.swift in Sources */,
 				9AE8EBB19366BE4866A2D39A /* ScheduleModels.swift in Sources */,
