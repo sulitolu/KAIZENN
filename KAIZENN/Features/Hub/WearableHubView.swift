@@ -591,7 +591,9 @@ private struct LiftRow: View {
             Text(String(format: "%.0f kg", item.weightKg))
                 .font(.system(size: 14, weight: .heavy))
                 .foregroundColor(KTheme.Colors.textPrimary)
-                .frame(width: 46, alignment: .trailing)
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
+                .frame(width: 64, alignment: .trailing)
         }
     }
 }
