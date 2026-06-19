@@ -14,7 +14,7 @@ struct MainTabView: View {
                 NutritionView()
                     .tag(AppState.Tab.nutrition)
 
-                WearableHubPlaceholderView()
+                WearableHubView()
                     .tag(AppState.Tab.hub)
 
                 CoachView()
