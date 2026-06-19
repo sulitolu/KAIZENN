@@ -37,6 +37,7 @@
 		8C2832FA151648DE8EF36451 /* LoadStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E868E1A4C35548A0AF1BF44F /* LoadStore.swift */; };
 		BB22CC33DD44EE55FF667788 /* ClaudeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF66 /* ClaudeService.swift */; };
 		BC770D61FF67FBCBA603E094 /* CoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3F9E0C64F4C07C0341E24D /* CoachView.swift */; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* WearableHubPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7B8C9D0E1F2A3 /* WearableHubPlaceholderView.swift */; };
 		C2657B3BF636AA7FDAF9CCC6 /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B4E9E7F645566F6EC8259C /* AddTaskView.swift */; };
 		CB061155EB874F821416F33C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C55399A23DBC7E16DBC1841 /* ContentView.swift */; };
 		CF64F6DD1FD2D1E73E0C0663 /* KComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70027590D58C8F57E6524260 /* KComponents.swift */; };
@@ -100,6 +101,7 @@
 		F6C9B84C7FB7A36D458D9FF7 /* LogWeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogWeightView.swift; sourceTree = "<group>"; };
 		FC4FC53957394ECAB54AE795 /* KAIZENN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KAIZENN.entitlements; sourceTree = "<group>"; };
 		FEF3FD01726B46F7ADBE8A4E /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		B2C3D4E5F6A7B8C9D0E1F2A3 /* WearableHubPlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WearableHubPlaceholderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +129,7 @@
 			children = (
 				CFD260E652C64D27844D9BC6 /* Dashboard */,
 				F93CA62B64404E1D8A99F082 /* Nutrition */,
+				C3D4E5F6A7B8C9D0E1F2A3B4 /* Hub */,
 				C365F160D5904C68A0CC0E24 /* Activity */,
 				95E9E7C26E6742A0B5553D35 /* Weight */,
 				7981B23C8FA54749960D18F4 /* Schedule */,
@@ -135,6 +138,14 @@
 				C18162A1A58447A7B36A086D /* Profile */,
 			);
 			path = Features;
+			sourceTree = "<group>";
+		};
+		C3D4E5F6A7B8C9D0E1F2A3B4 /* Hub */ = {
+			isa = PBXGroup;
+			children = (
+				B2C3D4E5F6A7B8C9D0E1F2A3 /* WearableHubPlaceholderView.swift */,
+			);
+			path = Hub;
 			sourceTree = "<group>";
 		};
 		0CF0179A2CC647EB8C32269C /* Coach */ = {
@@ -510,6 +521,7 @@
 				A385AEA5DE38382CD65DAC61 /* ScheduleView.swift in Sources */,
 				C2657B3BF636AA7FDAF9CCC6 /* AddTaskView.swift in Sources */,
 				BC770D61FF67FBCBA603E094 /* CoachView.swift in Sources */,
+				A1B2C3D4E5F6A7B8C9D0E1F2 /* WearableHubPlaceholderView.swift in Sources */,
 				15A12CC83C82EA541FC21539 /* OnboardingFlowView.swift in Sources */,
 				F7DFD454952E7A4E13CAE607 /* ProfileView.swift in Sources */,
 				BB22CC33DD44EE55FF667788 /* ClaudeService.swift in Sources */,

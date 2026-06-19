@@ -3,6 +3,7 @@ import SwiftUI
 struct MainTabView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var healthKitManager: HealthKitManager
+    @EnvironmentObject var loadStore: LoadStore
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -13,17 +14,17 @@ struct MainTabView: View {
                 NutritionView()
                     .tag(AppState.Tab.nutrition)
 
-                ActivityView()
-                    .tag(AppState.Tab.activity)
+                WearableHubPlaceholderView()
+                    .tag(AppState.Tab.hub)
 
-                WeightView()
-                    .tag(AppState.Tab.weight)
+                CoachView()
+                    .tag(AppState.Tab.coach)
 
                 ScheduleView()
                     .tag(AppState.Tab.schedule)
 
-                CoachView()
-                    .tag(AppState.Tab.coach)
+                WeightView()
+                    .tag(AppState.Tab.weight)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .ignoresSafeArea()
