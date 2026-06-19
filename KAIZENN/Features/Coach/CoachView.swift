@@ -11,6 +11,7 @@ struct CoachView: View {
     @EnvironmentObject var weightStore: WeightStore
     @EnvironmentObject var scheduleStore: ScheduleStore
     @EnvironmentObject var activityStore: ActivityStore
+    @EnvironmentObject var loadStore: LoadStore
 
     @StateObject private var coach = KAICoach()
     @State private var chatMessages: [ChatMessage] = []
@@ -27,10 +28,10 @@ struct CoachView: View {
                     // Header
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("AI Coach")
+                            Text("Kai Coach")
                                 .font(KTheme.Typography.displaySmall)
                                 .foregroundColor(KTheme.Colors.textPrimary)
-                            Text("Your personal wellness intelligence")
+                            sportContextSubtitle
                                 .font(KTheme.Typography.bodySmall)
                                 .foregroundColor(KTheme.Colors.textSecondary)
                         }
@@ -279,35 +280,60 @@ struct CoachView: View {
         }
     }
 
+    private var sportContextSubtitle: Text {
+        let sp = appState.userProfile.sportProfile
+        let sport = sp.sport.displayName
+        let phase = sp.seasonPhase.displayName
+        let position = sp.position
+        if position.isEmpty {
+            return Text("\(sport) · \(phase)")
+        } else {
+            return Text("\(sport) · \(position) · \(phase)")
+        }
+    }
+
     private func buildSystemPrompt() -> String {
         let profile = appState.userProfile
+        let sp = profile.sportProfile
         let todayNutrition = nutritionStore.dailyNutrition(for: Date())
         let caloriesLeft = profile.macroTargets.calories - Int(todayNutrition.totalCalories)
         let stepsToday = healthKitManager.todaySteps
         let workoutsThisWeek = activityStore.totalWorkoutsThisWeek
         let sleepHours = healthKitManager.sleepHoursLast
+        let acwr = String(format: "%.2f", loadStore.acwr)
+        let athleteName = profile.name.isEmpty ? "Athlete" : profile.name
+        let position = sp.position.isEmpty ? "athlete" : sp.position
 
         return """
-        You are KAI, a personal health and fitness coach inside the KAIZENN app. \
-        You are science-backed, motivating, and concise. \
-        Always give practical, actionable advice tailored to the user's real data below.
+        You are Kai Coach, a world-class performance AI for athletes. \
+        You are sport-intelligent, direct, and science-backed. \
+        Always reference the athlete's actual numbers and frame everything around performance, not aesthetics.
 
-        User Profile:
-        - Name: \(profile.name.isEmpty ? "User" : profile.name)
-        - Goal: \(profile.goal.rawValue)
-        - Daily calorie target: \(profile.macroTargets.calories) kcal
-        - Protein target: \(profile.macroTargets.proteinG)g
-        - Weekly weight goal: \(String(format: "%.1f", profile.weeklyGoalKg)) kg/week
+        Athlete Context:
+        - Name: \(athleteName)
+        - Sport: \(sp.sport.displayName)
+        - Position: \(position)
+        - Season Phase: \(sp.seasonPhase.displayName)
+        - Days Until Next Performance: \(sp.daysUntilPerformance)
+        - Protein Target: \(String(format: "%.1f", sp.sport.proteinPerKg))g per kg body weight
 
-        Today's Stats (use these to personalise every reply):
-        - Calories remaining today: \(caloriesLeft) kcal
-        - Protein consumed: \(Int(todayNutrition.totalProteinG))g of \(profile.macroTargets.proteinG)g target
+        Today's Training Load:
+        - ACWR (Acute:Chronic Workload Ratio): \(acwr) (sweet spot 0.8-1.3)
+        - Sleep last night: \(String(format: "%.1f", sleepHours)) hours
         - Steps today: \(stepsToday)
         - Workouts this week: \(workoutsThisWeek)
-        - Sleep last night: \(String(format: "%.1f", sleepHours)) hours
 
-        Keep replies under 150 words. Be direct, warm, and encouraging. \
-        Reference the user's actual numbers when relevant.
+        Today's Nutrition:
+        - Calories remaining: \(caloriesLeft) kcal (target: \(profile.macroTargets.calories) kcal)
+        - Protein consumed: \(Int(todayNutrition.totalProteinG))g of \(profile.macroTargets.proteinG)g target
+
+        Coaching Style:
+        - Use \(sp.sport.displayName)-specific language and context
+        - Be direct, specific, and sport-intelligent
+        - Reference the athlete's actual numbers in every reply
+        - Keep replies under 200 words
+        - When asked what to do, give numbered action items (1, 2, 3)
+        - Frame everything around performance, not aesthetics
         """
     }
 
