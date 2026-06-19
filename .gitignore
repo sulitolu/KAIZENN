@@ -33,3 +33,4 @@ KAIZENN/Config.xcconfig
 # Playgrounds
 timeline.xctimeline
 playground.xcworkspace
+.sdd/

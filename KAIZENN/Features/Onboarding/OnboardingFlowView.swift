@@ -14,8 +14,9 @@ struct OnboardingFlowView: View {
     @State private var goal: UserProfile.Goal = .loseFat
     @State private var weeklyGoalKg = 0.5
     @State private var showHealthRequest = false
+    @State private var sportProfile = SportProfile()
 
-    private let totalSteps = 5
+    private let totalSteps = 6
 
     var body: some View {
         ZStack {
@@ -41,6 +42,10 @@ struct OnboardingFlowView: View {
                     bodyStep.tag(2)
                     goalStep.tag(3)
                     activityStep.tag(4)
+                    SportProfileSetupView(sportProfile: $sportProfile) {
+                        completeOnboarding()
+                    }
+                    .tag(5)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .animation(KTheme.Animation.smooth, value: currentStep)
@@ -317,9 +322,7 @@ struct OnboardingFlowView: View {
             Spacer()
             HStack {
                 backButton
-                KButton(title: "Start My Journey 🚀") {
-                    completeOnboarding()
-                }
+                nextButton(title: "Continue", enabled: true)
             }
         }
         .padding(.horizontal, KTheme.Spacing.lg)
@@ -369,10 +372,11 @@ struct OnboardingFlowView: View {
     }
 
     private func completeOnboarding() {
-        let profile = UserProfile(name: name, age: age, gender: gender,
+        var profile = UserProfile(name: name, age: age, gender: gender,
                                    heightCm: heightCm, currentWeightKg: currentWeight,
                                    goalWeightKg: goalWeight, activityLevel: activityLevel,
                                    goal: goal, weeklyGoalKg: weeklyGoalKg)
+        profile.sportProfile = sportProfile
         appState.completeOnboarding(profile: profile)
     }
 

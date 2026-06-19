@@ -5,6 +5,7 @@ struct NutritionView: View {
     @EnvironmentObject var appState: AppState
 
     @State private var showAddFood = false
+    @State private var showFoodScan = false
     @State private var selectedMealType: MealEntry.MealType = .breakfast
     @State private var selectedDate = Date()
     @State private var chartMetric: ChartMetric = .calories
@@ -45,18 +46,34 @@ struct NutritionView: View {
                             dateNavigator
                         }
                         Spacer()
-                        Button {
-                            showAddFood = true
-                        } label: {
-                            HStack(spacing: 6) {
-                                Image(systemName: "plus")
-                                Text("Log Food")
+                        HStack(spacing: KTheme.Spacing.sm) {
+                            Button {
+                                showFoodScan = true
+                            } label: {
+                                HStack(spacing: 5) {
+                                    Image(systemName: "camera.viewfinder")
+                                    Text("Scan")
+                                }
+                                .font(KTheme.Typography.label)
+                                .foregroundColor(KTheme.Colors.accentPrimary)
+                                .padding(.horizontal, KTheme.Spacing.md)
+                                .padding(.vertical, KTheme.Spacing.sm)
+                                .background(KTheme.Colors.accentPrimary.opacity(0.12))
+                                .cornerRadius(KTheme.Radius.pill)
                             }
-                            .font(KTheme.Typography.label)
-                            .foregroundColor(.white)
-                            .padding(.horizontal, KTheme.Spacing.md)
-                            .padding(.vertical, KTheme.Spacing.sm)
-                            .background(KTheme.Colors.brandGradient.cornerRadius(KTheme.Radius.pill))
+                            Button {
+                                showAddFood = true
+                            } label: {
+                                HStack(spacing: 6) {
+                                    Image(systemName: "plus")
+                                    Text("Log Food")
+                                }
+                                .font(KTheme.Typography.label)
+                                .foregroundColor(.white)
+                                .padding(.horizontal, KTheme.Spacing.md)
+                                .padding(.vertical, KTheme.Spacing.sm)
+                                .background(KTheme.Colors.brandGradient.cornerRadius(KTheme.Radius.pill))
+                            }
                         }
                     }
 
@@ -90,6 +107,9 @@ struct NutritionView: View {
         }
         .sheet(isPresented: $showAddFood) {
             AddFoodView(mealType: selectedMealType)
+        }
+        .sheet(isPresented: $showFoodScan) {
+            FoodPhotoScanView(mealType: selectedMealType)
         }
     }
 

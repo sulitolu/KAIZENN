@@ -9,6 +9,7 @@ struct KAIZENNApp: App {
     @StateObject private var weightStore = WeightStore()
     @StateObject private var scheduleStore = ScheduleStore()
     @StateObject private var activityStore = ActivityStore()
+    @StateObject private var loadStore = LoadStore()
 
     private let connectivity = WatchConnectivityManager.shared
     private let notifications = NotificationManager.shared
@@ -28,6 +29,7 @@ struct KAIZENNApp: App {
                 .environmentObject(weightStore)
                 .environmentObject(scheduleStore)
                 .environmentObject(activityStore)
+                .environmentObject(loadStore)
                 .preferredColorScheme(.dark)
                 .task { await notifications.requestPermission() }
                 .onChange(of: scheduleStore.habits) { _, habits in

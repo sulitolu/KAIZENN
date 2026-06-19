@@ -7,25 +7,27 @@ class AppState: ObservableObject {
     @Published var userProfile: UserProfile
 
     enum Tab: Int, CaseIterable {
-        case dashboard, nutrition, activity, weight, schedule, coach
+        case dashboard, nutrition, hub, coach, schedule, weight
+
         var title: String {
             switch self {
             case .dashboard: return "Home"
-            case .nutrition: return "Nutrition"
-            case .activity: return "Activity"
-            case .weight: return "Weight"
-            case .schedule: return "Schedule"
-            case .coach: return "AI Coach"
+            case .nutrition: return "Fuel"
+            case .hub:       return "Hub"
+            case .coach:     return "Kai"
+            case .schedule:  return "Schedule"
+            case .weight:    return "Weight"
             }
         }
+
         var icon: String {
             switch self {
-            case .dashboard: return "square.grid.2x2.fill"
+            case .dashboard: return "bolt.circle.fill"
             case .nutrition: return "fork.knife"
-            case .activity: return "figure.run"
-            case .weight: return "scalemass.fill"
-            case .schedule: return "calendar"
-            case .coach: return "brain.head.profile"
+            case .hub:       return "antenna.radiowaves.left.and.right"
+            case .coach:     return "brain.head.profile"
+            case .schedule:  return "calendar"
+            case .weight:    return "scalemass.fill"
             }
         }
     }
