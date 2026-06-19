@@ -43,7 +43,7 @@ struct SportProfileSetupView: View {
     private var sportStep: some View {
         VStack(spacing: KTheme.Spacing.xl) {
             stepHeader(
-                step: "5 / 5",
+                step: "1 / 5",
                 title: "Your Sport",
                 subtitle: "Select your primary sport for personalised targets"
             )
@@ -51,6 +51,7 @@ struct SportProfileSetupView: View {
             let columns = [GridItem(.flexible()), GridItem(.flexible())]
             LazyVGrid(columns: columns, spacing: KTheme.Spacing.sm) {
                 ForEach(SportProfile.Sport.allCases, id: \.self) { sport in
+                    let isSelected = sportProfile.sport == sport
                     Button {
                         withAnimation(KTheme.Animation.snappy) {
                             sportProfile.sport = sport
@@ -59,28 +60,14 @@ struct SportProfileSetupView: View {
                         VStack(spacing: KTheme.Spacing.xs) {
                             Image(systemName: sportIcon(sport))
                                 .font(.system(size: 28))
-                                .foregroundColor(sportProfile.sport == sport ? .black : .white)
+                                .foregroundColor(selectionTextColor(isSelected: isSelected, selectedColor: .black, deselectedColor: .white))
                             Text(sport.displayName)
                                 .font(KTheme.Typography.headingSmall)
-                                .foregroundColor(sportProfile.sport == sport ? .black : KTheme.Colors.textPrimary)
+                                .foregroundColor(selectionTextColor(isSelected: isSelected, selectedColor: .black, deselectedColor: KTheme.Colors.textPrimary))
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, KTheme.Spacing.lg)
-                        .background(
-                            RoundedRectangle(cornerRadius: KTheme.Radius.md)
-                                .fill(sportProfile.sport == sport
-                                    ? KTheme.Colors.accentPrimary
-                                    : Color(hex: "1A1A28"))
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: KTheme.Radius.md)
-                                        .stroke(
-                                            sportProfile.sport == sport
-                                                ? Color.clear
-                                                : KTheme.Colors.border,
-                                            lineWidth: 0.5
-                                        )
-                                )
-                        )
+                        .background(selectionCellBackground(isSelected: isSelected, radius: KTheme.Radius.md))
                     }
                     .buttonStyle(KScaleButtonStyle())
                 }
@@ -98,7 +85,7 @@ struct SportProfileSetupView: View {
     private var positionStep: some View {
         VStack(spacing: KTheme.Spacing.xl) {
             stepHeader(
-                step: "5 / 5",
+                step: "2 / 5",
                 title: "Your Position",
                 subtitle: "Select your position in \(sportProfile.sport.displayName)"
             )
@@ -106,6 +93,7 @@ struct SportProfileSetupView: View {
             ScrollView {
                 VStack(spacing: KTheme.Spacing.xs) {
                     ForEach(sportProfile.sport.positions, id: \.self) { pos in
+                        let isSelected = sportProfile.position == pos
                         Button {
                             withAnimation(KTheme.Animation.snappy) {
                                 sportProfile.position = pos
@@ -116,27 +104,13 @@ struct SportProfileSetupView: View {
                                     .font(KTheme.Typography.bodyMedium)
                                     .foregroundColor(KTheme.Colors.textPrimary)
                                 Spacer()
-                                if sportProfile.position == pos {
+                                if isSelected {
                                     Image(systemName: "checkmark.circle.fill")
                                         .foregroundColor(KTheme.Colors.accentPrimary)
                                 }
                             }
                             .padding(KTheme.Spacing.md)
-                            .background(
-                                RoundedRectangle(cornerRadius: KTheme.Radius.md)
-                                    .fill(sportProfile.position == pos
-                                        ? KTheme.Colors.accentPrimary.opacity(0.12)
-                                        : KTheme.Colors.card)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: KTheme.Radius.md)
-                                            .stroke(
-                                                sportProfile.position == pos
-                                                    ? KTheme.Colors.accentPrimary
-                                                    : KTheme.Colors.border.opacity(0.4),
-                                                lineWidth: 1
-                                            )
-                                    )
-                            )
+                            .background(accentCellBackground(isSelected: isSelected, fillOpacity: 0.12, radius: KTheme.Radius.md))
                         }
                     }
                 }
@@ -162,13 +136,14 @@ struct SportProfileSetupView: View {
     private var phaseStep: some View {
         VStack(spacing: KTheme.Spacing.xl) {
             stepHeader(
-                step: "5 / 5",
+                step: "3 / 5",
                 title: "Season Phase",
                 subtitle: "Your current training phase affects nutrition targets"
             )
 
             VStack(spacing: KTheme.Spacing.sm) {
                 ForEach(SportProfile.SeasonPhase.allCases, id: \.self) { phase in
+                    let isSelected = sportProfile.seasonPhase == phase
                     Button {
                         withAnimation(KTheme.Animation.snappy) {
                             sportProfile.seasonPhase = phase
@@ -177,9 +152,7 @@ struct SportProfileSetupView: View {
                         HStack(spacing: KTheme.Spacing.md) {
                             Image(systemName: phaseIcon(phase))
                                 .font(.system(size: 20))
-                                .foregroundColor(sportProfile.seasonPhase == phase
-                                    ? KTheme.Colors.accentPrimary
-                                    : KTheme.Colors.textSecondary)
+                                .foregroundColor(isSelected ? KTheme.Colors.accentPrimary : KTheme.Colors.textSecondary)
                                 .frame(width: 32)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(phase.displayName)
@@ -190,27 +163,13 @@ struct SportProfileSetupView: View {
                                     .foregroundColor(KTheme.Colors.textSecondary)
                             }
                             Spacer()
-                            if sportProfile.seasonPhase == phase {
+                            if isSelected {
                                 Image(systemName: "checkmark.circle.fill")
                                     .foregroundColor(KTheme.Colors.accentPrimary)
                             }
                         }
                         .padding(KTheme.Spacing.md)
-                        .background(
-                            RoundedRectangle(cornerRadius: KTheme.Radius.md)
-                                .fill(sportProfile.seasonPhase == phase
-                                    ? KTheme.Colors.accentPrimary.opacity(0.1)
-                                    : KTheme.Colors.card)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: KTheme.Radius.md)
-                                        .stroke(
-                                            sportProfile.seasonPhase == phase
-                                                ? KTheme.Colors.accentPrimary
-                                                : KTheme.Colors.border.opacity(0.4),
-                                            lineWidth: 1
-                                        )
-                                )
-                        )
+                        .background(accentCellBackground(isSelected: isSelected, fillOpacity: 0.1, radius: KTheme.Radius.md))
                     }
                 }
             }
@@ -230,7 +189,7 @@ struct SportProfileSetupView: View {
     private var dayStep: some View {
         VStack(spacing: KTheme.Spacing.xl) {
             stepHeader(
-                step: "5 / 5",
+                step: "4 / 5",
                 title: "Game Day",
                 subtitle: "When is your main performance or match day?"
             )
@@ -244,6 +203,7 @@ struct SportProfileSetupView: View {
                         ForEach(0..<7) { i in
                             // weekday: Sun=1, Mon=2 ... Sat=7
                             let weekday = i + 1
+                            let isSelected = sportProfile.performanceDayOfWeek == weekday
                             Button {
                                 withAnimation(KTheme.Animation.snappy) {
                                     sportProfile.performanceDayOfWeek = weekday
@@ -251,24 +211,10 @@ struct SportProfileSetupView: View {
                             } label: {
                                 Text(dayLabels[i])
                                     .font(.system(size: 11, weight: .semibold))
-                                    .foregroundColor(sportProfile.performanceDayOfWeek == weekday ? .black : KTheme.Colors.textSecondary)
+                                    .foregroundColor(selectionTextColor(isSelected: isSelected, selectedColor: .black, deselectedColor: KTheme.Colors.textSecondary))
                                     .frame(maxWidth: .infinity)
                                     .padding(.vertical, 10)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: KTheme.Radius.sm)
-                                            .fill(sportProfile.performanceDayOfWeek == weekday
-                                                ? KTheme.Colors.accentPrimary
-                                                : Color(hex: "1A1A28"))
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: KTheme.Radius.sm)
-                                                    .stroke(
-                                                        sportProfile.performanceDayOfWeek == weekday
-                                                            ? Color.clear
-                                                            : KTheme.Colors.border,
-                                                        lineWidth: 0.5
-                                                    )
-                                            )
-                                    )
+                                    .background(selectionCellBackground(isSelected: isSelected, radius: KTheme.Radius.sm))
                             }
                         }
                     }
@@ -304,6 +250,7 @@ struct SportProfileSetupView: View {
 
             VStack(spacing: KTheme.Spacing.sm) {
                 ForEach(SportProfile.Wearable.allCases, id: \.self) { device in
+                    let isSelected = sportProfile.wearable == device
                     Button {
                         withAnimation(KTheme.Animation.snappy) {
                             sportProfile.wearable = device
@@ -312,35 +259,19 @@ struct SportProfileSetupView: View {
                         HStack(spacing: KTheme.Spacing.md) {
                             Image(systemName: wearableIcon(device))
                                 .font(.system(size: 20))
-                                .foregroundColor(sportProfile.wearable == device
-                                    ? KTheme.Colors.accentPrimary
-                                    : KTheme.Colors.textSecondary)
+                                .foregroundColor(isSelected ? KTheme.Colors.accentPrimary : KTheme.Colors.textSecondary)
                                 .frame(width: 32)
                             Text(device.displayName)
                                 .font(KTheme.Typography.headingSmall)
                                 .foregroundColor(KTheme.Colors.textPrimary)
                             Spacer()
-                            if sportProfile.wearable == device {
+                            if isSelected {
                                 Image(systemName: "checkmark.circle.fill")
                                     .foregroundColor(KTheme.Colors.accentPrimary)
                             }
                         }
                         .padding(KTheme.Spacing.md)
-                        .background(
-                            RoundedRectangle(cornerRadius: KTheme.Radius.md)
-                                .fill(sportProfile.wearable == device
-                                    ? KTheme.Colors.accentPrimary.opacity(0.1)
-                                    : KTheme.Colors.card)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: KTheme.Radius.md)
-                                        .stroke(
-                                            sportProfile.wearable == device
-                                                ? KTheme.Colors.accentPrimary
-                                                : KTheme.Colors.border.opacity(0.4),
-                                            lineWidth: 1
-                                        )
-                                )
-                        )
+                        .background(accentCellBackground(isSelected: isSelected, fillOpacity: 0.1, radius: KTheme.Radius.md))
                     }
                 }
             }
@@ -354,6 +285,35 @@ struct SportProfileSetupView: View {
             }
         }
         .padding(.horizontal, KTheme.Spacing.lg)
+    }
+
+    // MARK: Selection Cell Styling Helpers
+
+    /// Standard selection cell: accent fill vs dark fill, clear vs border stroke.
+    /// Used by sport grid and day-of-week picker.
+    private func selectionCellBackground(isSelected: Bool, radius: CGFloat) -> some View {
+        RoundedRectangle(cornerRadius: radius)
+            .fill(isSelected ? KTheme.Colors.accentPrimary : Color(hex: "1A1A28"))
+            .overlay(
+                RoundedRectangle(cornerRadius: radius)
+                    .stroke(isSelected ? Color.clear : KTheme.Colors.border, lineWidth: 0.5)
+            )
+    }
+
+    /// Accent-tinted selection cell: accent.opacity vs card fill, accent vs border.opacity stroke.
+    /// Used by position, phase, and wearable pickers.
+    private func accentCellBackground(isSelected: Bool, fillOpacity: Double, radius: CGFloat) -> some View {
+        RoundedRectangle(cornerRadius: radius)
+            .fill(isSelected ? KTheme.Colors.accentPrimary.opacity(fillOpacity) : KTheme.Colors.card)
+            .overlay(
+                RoundedRectangle(cornerRadius: radius)
+                    .stroke(isSelected ? KTheme.Colors.accentPrimary : KTheme.Colors.border.opacity(0.4), lineWidth: 1)
+            )
+    }
+
+    /// Returns a foreground color based on selection state.
+    private func selectionTextColor(isSelected: Bool, selectedColor: Color, deselectedColor: Color) -> Color {
+        isSelected ? selectedColor : deselectedColor
     }
 
     // MARK: Shared Helpers
