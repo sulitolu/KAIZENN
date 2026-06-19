@@ -466,17 +466,18 @@ struct DashboardView: View {
         }
     }
 
+    private static let matchDayFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "EEE"
+        return f
+    }()
+
     private var matchDayName: String {
-        let weekday = Calendar.current.component(.weekday, from: Date())
-        let target = sport.performanceDayOfWeek
-        guard let date = Calendar.current.date(
-            bySetting: .weekday,
-            value: target,
-            of: Date()
-        ) else { return "Sat" }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEE"
-        return formatter.string(from: date)
+        // Compute the actual upcoming performance date from the day countdown.
+        guard let date = Calendar.current.date(byAdding: .day, value: sport.daysUntilPerformance, to: Date()) else {
+            return "Sat"
+        }
+        return Self.matchDayFormatter.string(from: date)
     }
 
     private var matchBarFraction: Double {
