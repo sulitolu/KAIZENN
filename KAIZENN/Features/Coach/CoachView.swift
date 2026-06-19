@@ -83,7 +83,7 @@ struct CoachView: View {
                 // Sport micro-label above title
                 sportContextLabel
                 Text("Kai Coach")
-                    .font(.system(size: 16, weight: .heavy))
+                    .font(.system(size: 26, weight: .heavy))
                     .foregroundColor(KTheme.Colors.textPrimary)
             }
             Spacer()
@@ -97,7 +97,7 @@ struct CoachView: View {
         let position = sp.position.uppercased()
         let label = position.isEmpty ? "\(sport) · \(phase)" : "\(sport) · \(position) · \(phase)"
         return Text(label)
-            .font(.system(size: 7, weight: .bold, design: .monospaced))
+            .font(.system(size: 12, weight: .bold, design: .monospaced))
             .foregroundColor(KTheme.Colors.textTertiary)
             .tracking(1.5)
     }
@@ -115,23 +115,23 @@ struct CoachView: View {
                 startRadius: 0,
                 endRadius: 50
             )
-            .clipShape(RoundedRectangle(cornerRadius: 13))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
 
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 8) {
                 // "TODAY'S BRIEF" label
                 Text("TODAY'S BRIEF")
-                    .font(.system(size: 7, weight: .bold))
+                    .font(.system(size: 12, weight: .bold))
                     .foregroundColor(KTheme.Colors.accentPrimary)
                     .tracking(1.5)
 
                 // Dynamic message body — wired to coach's dailyInsight
                 briefMessageBody
-                    .font(.system(size: 9))
+                    .font(.system(size: 15))
                     .foregroundColor(KTheme.Colors.textSecondary)
-                    .lineSpacing(4.4) // ~1.6 line height at 9pt
+                    .lineSpacing(6)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(11)
+            .padding(17)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .background(
@@ -141,9 +141,9 @@ struct CoachView: View {
                 endPoint: .bottomTrailing
             )
         )
-        .cornerRadius(13)
+        .cornerRadius(16)
         .overlay(
-            RoundedRectangle(cornerRadius: 13)
+            RoundedRectangle(cornerRadius: 16)
                 .stroke(KTheme.Colors.accentPrimary.opacity(0.18), lineWidth: 0.5)
         )
     }
@@ -160,10 +160,10 @@ struct CoachView: View {
 
     // MARK: Focus Today Section (replaces recommendationsSection)
     private var focusTodaySection: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 10) {
             // "FOCUS TODAY" label
             Text("FOCUS TODAY")
-                .font(.system(size: 7, weight: .bold, design: .monospaced))
+                .font(.system(size: 12, weight: .bold, design: .monospaced))
                 .foregroundColor(KTheme.Colors.textTertiary)
                 .tracking(1)
 
@@ -289,9 +289,9 @@ struct CoachView: View {
 
     // MARK: Pinned Input Bar (mockup: .ai-input)
     private var pinnedInputBar: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 12) {
             TextField("Ask Kai anything...", text: $userInput)
-                .font(.system(size: 8))
+                .font(.system(size: 15))
                 .foregroundColor(KTheme.Colors.textPrimary)
 
             Button {
@@ -302,18 +302,18 @@ struct CoachView: View {
                 sendButtonBackground
                     .overlay(
                         Image(systemName: "paperplane.fill")
-                            .font(.system(size: 9, weight: .semibold))
+                            .font(.system(size: 16, weight: .semibold))
                             .foregroundColor(.white)
                     )
             }
             .disabled(userInput.isEmpty || isThinking)
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
         .background(KTheme.Colors.card)
-        .cornerRadius(18)
+        .cornerRadius(24)
         .overlay(
-            RoundedRectangle(cornerRadius: 18)
+            RoundedRectangle(cornerRadius: 24)
                 .stroke(KTheme.Colors.border.opacity(0.6), lineWidth: 0.5)
         )
     }
@@ -322,7 +322,7 @@ struct CoachView: View {
     private var sendButtonBackground: some View {
         Circle()
             .fill(KTheme.Colors.brandGradient)
-            .frame(width: 20, height: 20)
+            .frame(width: 34, height: 34)
     }
 
     // MARK: — Preserved Logic
@@ -462,16 +462,16 @@ struct FocusActionRow: View {
     }
 
     private var rowContent: some View {
-        HStack(spacing: 7) {
+        HStack(spacing: 12) {
             numberBadge
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 3) {
                 Text(text)
-                    .font(.system(size: 8, weight: .semibold))
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(Color(hex: "C8C8E0"))
                     .fixedSize(horizontal: false, vertical: true)
                 if !description.isEmpty {
                     Text(description)
-                        .font(.system(size: 7))
+                        .font(.system(size: 12))
                         .foregroundColor(KTheme.Colors.textSecondary)
                         .lineLimit(2)
                         .fixedSize(horizontal: false, vertical: true)
@@ -480,16 +480,16 @@ struct FocusActionRow: View {
             Spacer()
             if actionType != nil {
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 8, weight: .semibold))
+                    .font(.system(size: 12, weight: .semibold))
                     .foregroundColor(KTheme.Colors.textTertiary)
             }
         }
-        .padding(.vertical, 7)
-        .padding(.horizontal, 8)
+        .padding(.vertical, 12)
+        .padding(.horizontal, 14)
         .background(KTheme.Colors.card)
-        .cornerRadius(10)
+        .cornerRadius(14)
         .overlay(
-            RoundedRectangle(cornerRadius: 10)
+            RoundedRectangle(cornerRadius: 14)
                 .stroke(KTheme.Colors.cardElevated, lineWidth: 0.5)
         )
     }
@@ -498,16 +498,16 @@ struct FocusActionRow: View {
         ZStack {
             badgeBackground
             Text("\(number)")
-                .font(.system(size: 8, weight: .black))
+                .font(.system(size: 13, weight: .black))
                 .foregroundColor(badgeColor)
         }
-        .frame(width: 16, height: 16)
-        .cornerRadius(5)
+        .frame(width: 26, height: 26)
+        .cornerRadius(8)
     }
 
     /// Extracted to avoid nested ternaries in .background() modifier
     private var badgeBackground: some View {
-        RoundedRectangle(cornerRadius: 5)
+        RoundedRectangle(cornerRadius: 8)
             .fill(badgeColor.opacity(0.1))
     }
 
