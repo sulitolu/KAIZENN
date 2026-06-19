@@ -38,9 +38,23 @@ struct DashboardView: View {
         return (calorieRatio * 0.5 + proteinRatio * 0.5) * 100
     }
 
+    // HRV vs personal baseline: at/above baseline scores well, below penalises.
+    private var hrvAvailable: Bool { healthKitManager.hrvLatestMs != nil }
+
+    private var hrvScore: Double {
+        guard let latest = healthKitManager.hrvLatestMs else { return 75 }
+        guard let base = healthKitManager.hrvBaselineMs, base > 0 else { return 75 }
+        let ratio = latest / base
+        return min(max(75 + (ratio - 1.0) * 150, 0), 100)
+    }
+
     // MARK: - Readiness
+    // Four pillars at 25% each once HRV data exists; until then, sleep/load/fuel.
     var readinessScore: Int {
-        Int(sleepScore * 0.33 + loadScore * 0.33 + fuelScore * 0.34)
+        if hrvAvailable {
+            return Int(sleepScore * 0.25 + loadScore * 0.25 + fuelScore * 0.25 + hrvScore * 0.25)
+        }
+        return Int(sleepScore * 0.33 + loadScore * 0.33 + fuelScore * 0.34)
     }
 
     private var readinessLabel: String {
@@ -92,7 +106,14 @@ struct DashboardView: View {
     }
 
     // MARK: - HRV display
-    private var hrvDisplay: String { "+4ms" }
+    // Shows the delta vs baseline ("+4ms") when a baseline exists, else the raw value, else "—".
+    private var hrvDisplay: String {
+        guard let latest = healthKitManager.hrvLatestMs else { return "—" }
+        if let delta = healthKitManager.hrvDeltaMs, abs(delta) >= 0.5 {
+            return String(format: "%+.0fms", delta)
+        }
+        return String(format: "%.0fms", latest)
+    }
 
     // MARK: - Body
     var body: some View {

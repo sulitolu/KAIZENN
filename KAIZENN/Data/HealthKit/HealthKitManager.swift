@@ -17,7 +17,15 @@ class HealthKitManager: ObservableObject {
     @Published var heartRateResting: Double? = nil
     @Published var sleepHoursLast: Double = 0
     @Published var bloodOxygen: Double? = nil
+    @Published var hrvLatestMs: Double? = nil      // most recent HRV SDNN (ms)
+    @Published var hrvBaselineMs: Double? = nil    // 7-day average HRV SDNN (ms)
     @Published var recentWorkouts: [WorkoutSession] = []
+
+    /// Change in HRV vs the rolling 7-day baseline (positive = better recovery).
+    var hrvDeltaMs: Double? {
+        guard let latest = hrvLatestMs, let base = hrvBaselineMs else { return nil }
+        return latest - base
+    }
 
     // MARK: Read types
     private let readTypes: Set<HKObjectType> = {
@@ -66,16 +74,20 @@ class HealthKitManager: ObservableObject {
         async let distance = fetchTodayQuantity(.distanceWalkingRunning, unit: .meter())
         async let hr = fetchMostRecentSample(.heartRate, unit: HKUnit.count().unitDivided(by: .minute()))
         async let hrResting = fetchMostRecentSample(.restingHeartRate, unit: HKUnit.count().unitDivided(by: .minute()))
+        async let hrv = fetchMostRecentSample(.heartRateVariabilitySDNN, unit: HKUnit.secondUnit(with: .milli))
+        async let hrvBase = fetchAverageQuantity(.heartRateVariabilitySDNN, unit: HKUnit.secondUnit(with: .milli), days: 7)
         async let workouts = fetchRecentWorkouts()
         async let sleep = fetchLastNightSleep()
 
-        let (s, a, r, d, h, hrr, w, sl) = await (steps, active, resting, distance, hr, hrResting, workouts, sleep)
+        let (s, a, r, d, h, hrr, hv, hvb, w, sl) = await (steps, active, resting, distance, hr, hrResting, hrv, hrvBase, workouts, sleep)
         todaySteps = Int(s)
         todayActiveCalories = a
         todayRestingCalories = r
         todayDistance = d
         heartRateCurrent = h > 0 ? h : nil
         heartRateResting = hrr > 0 ? hrr : nil
+        hrvLatestMs = hv > 0 ? hv : nil
+        hrvBaselineMs = hvb > 0 ? hvb : nil
         recentWorkouts = w
         sleepHoursLast = sl
     }
@@ -89,6 +101,19 @@ class HealthKitManager: ObservableObject {
         return await withCheckedContinuation { cont in
             let q = HKStatisticsQuery(quantityType: type, quantitySamplePredicate: pred, options: .cumulativeSum) { _, stats, _ in
                 cont.resume(returning: stats?.sumQuantity()?.doubleValue(for: unit) ?? 0)
+            }
+            store.execute(q)
+        }
+    }
+
+    /// Rolling average of a discrete quantity (e.g. HRV SDNN) over the last `days` days.
+    func fetchAverageQuantity(_ id: HKQuantityTypeIdentifier, unit: HKUnit, days: Int) async -> Double {
+        guard let type = HKQuantityType.quantityType(forIdentifier: id) else { return 0 }
+        let start = Calendar.current.date(byAdding: .day, value: -days, to: Date()) ?? Date()
+        let pred = HKQuery.predicateForSamples(withStart: start, end: Date())
+        return await withCheckedContinuation { cont in
+            let q = HKStatisticsQuery(quantityType: type, quantitySamplePredicate: pred, options: .discreteAverage) { _, stats, _ in
+                cont.resume(returning: stats?.averageQuantity()?.doubleValue(for: unit) ?? 0)
             }
             store.execute(q)
         }
