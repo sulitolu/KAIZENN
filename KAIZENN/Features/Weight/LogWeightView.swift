@@ -16,43 +16,62 @@ struct LogWeightView: View {
             ZStack {
                 KTheme.Colors.background.ignoresSafeArea()
                 VStack(spacing: KTheme.Spacing.lg) {
-                    // Big weight input
+                    // Big weight input (hero)
                     KCard(elevated: true) {
                         VStack(spacing: KTheme.Spacing.sm) {
-                            Text("Weight").font(KTheme.Typography.headingSmall).foregroundColor(KTheme.Colors.textSecondary)
-                            HStack(alignment: .bottom, spacing: 4) {
+                            Text("WEIGHT")
+                                .font(.system(size: 10, weight: .bold, design: .monospaced))
+                                .foregroundColor(KTheme.Colors.accentPrimary.opacity(0.8))
+                                .tracking(1.5)
+                            HStack(alignment: .firstTextBaseline, spacing: 6) {
                                 TextField("0.0", text: $weight)
                                     .keyboardType(.decimalPad)
-                                    .font(.system(size: 60, weight: .bold))
-                                    .foregroundColor(KTheme.Colors.accentPrimary)
+                                    .font(.system(size: 60, weight: .black, design: .rounded))
+                                    .foregroundColor(KTheme.Colors.textPrimary)
                                     .multilineTextAlignment(.center)
+                                    .fixedSize()
                                 Text("kg")
-                                    .font(KTheme.Typography.headingLarge)
+                                    .font(.system(size: 22, weight: .semibold, design: .rounded))
                                     .foregroundColor(KTheme.Colors.textSecondary)
-                                    .padding(.bottom, 8)
                             }
                             .frame(maxWidth: .infinity)
                         }
                         .padding(.vertical, KTheme.Spacing.md)
                     }
+                    .overlay(
+                        RoundedRectangle(cornerRadius: KTheme.Radius.lg)
+                            .stroke(KTheme.Colors.accentPrimary.opacity(0.3), lineWidth: 0.5)
+                    )
+                    .shadow(color: KTheme.Colors.accentPrimary.opacity(0.15), radius: 20, x: 0, y: 0)
 
                     // Optional metrics
                     KCard {
                         VStack(spacing: KTheme.Spacing.md) {
                             HStack {
-                                Text("Body Fat %").font(KTheme.Typography.label).foregroundColor(KTheme.Colors.textSecondary)
+                                Text("BODY FAT %")
+                                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                                    .foregroundColor(KTheme.Colors.textSecondary)
+                                    .tracking(1.5)
                                 Spacer()
                                 TextField("Optional", text: $bodyFat)
                                     .keyboardType(.decimalPad)
                                     .multilineTextAlignment(.trailing)
                                     .foregroundColor(KTheme.Colors.textPrimary)
-                                    .font(KTheme.Typography.headingSmall)
+                                    .font(.system(size: 18, weight: .bold, design: .rounded))
                                 Text("%").foregroundColor(KTheme.Colors.textSecondary)
                             }
                             Divider().background(KTheme.Colors.border)
-                            DatePicker("Date", selection: $date, displayedComponents: [.date, .hourAndMinute])
-                                .colorScheme(.dark)
-                                .foregroundColor(KTheme.Colors.textPrimary)
+                            HStack {
+                                Text("DATE")
+                                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                                    .foregroundColor(KTheme.Colors.textSecondary)
+                                    .tracking(1.5)
+                                Spacer()
+                                DatePicker("", selection: $date, displayedComponents: [.date, .hourAndMinute])
+                                    .labelsHidden()
+                                    .colorScheme(.dark)
+                                    .foregroundColor(KTheme.Colors.textPrimary)
+                            }
                         }
                     }
 
