@@ -10,7 +10,5 @@
 	</array>
 	<key>com.apple.developer.healthkit.background-delivery</key>
 	<true/>
-	<key>com.apple.developer.devicecheck.appattest-environment</key>
-	<string>development</string>
 </dict>
 </plist>

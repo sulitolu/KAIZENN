@@ -32,13 +32,14 @@ actor AppAttestManager {
 
     /// Headers that authenticate a request whose body is `body`.
     func authHeaders(for body: Data) async throws -> [String: String] {
-        #if targetEnvironment(simulator)
         #if DEBUG
-        return ["x-key-id": "simulator-\(deviceKeyIdFallback())", "x-dev-bypass": devBypassToken]
+        // Dev/testing path: bypass App Attest on BOTH simulator and device, so a
+        // debug build can talk to the proxy without the full attestation flow.
+        // Gated server-side by DEV_BYPASS_ENABLED (disabled before launch); the
+        // token is compiled out of release builds entirely.
+        return ["x-key-id": "dev-\(deviceKeyIdFallback())", "x-dev-bypass": devBypassToken]
         #else
-        throw AppAttestError.unsupported
-        #endif
-        #else
+        // Production: real App Attest — one-time attestation + per-request assertion.
         guard service.isSupported else { throw AppAttestError.unsupported }
         let keyId = try await ensureAttestedKey()
         let challenge = try await fetchChallenge()

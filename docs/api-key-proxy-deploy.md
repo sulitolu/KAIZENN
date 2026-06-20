@@ -100,6 +100,32 @@ on the production key.
 
 ---
 
+## Status note (2026-06-20): deployed + device-verified via dev-bypass
+
+The proxy is LIVE (`kaizenn-proxy`, ref `oeaphuyfcexpidpzzcri`) and the full
+pipeline is verified from a real device (Juls) through the dev-bypass path —
+Coach replies, no key in the app, requests logged in `usage_counters` (`dev-*`).
+
+Two items are deferred until the Apple Developer account side is ready:
+1. **Program License Agreement** must be accepted at developer.apple.com/account
+   (it blocks provisioning updates).
+2. **App Attest capability** on App ID `com.kaizenn.app` (auto-added by Xcode once
+   the PLA is accepted; else enable manually under Identifiers → Capabilities).
+
+Because of #2, the App Attest **entitlement was temporarily removed** from
+`KAIZENN.entitlements` so the device DEBUG build (which uses the bypass, not App
+Attest) signs cleanly. Restore it (`com.apple.developer.devicecheck.appattest-environment`
+= `development`/`production`) when finalizing the real App Attest path.
+
+`AppAttestManager` now uses the dev-bypass on **both** simulator and device in
+DEBUG; release builds use the real App Attest flow. `APPLE_TEAM_ID` for production
+attestation is `SXGCGRXFNT`, bundle id `com.kaizenn.app`.
+
+Remaining for production: accept PLA → enable App Attest capability → restore
+entitlement → capture one attestation blob from a device to finish
+`extractNonceExtension` → set APPLE_TEAM_ID/APP_BUNDLE_ID secrets → disable
+DEV_BYPASS_ENABLED → ship release build → delete the `envcheck` function.
+
 ## Hand-off
 
 When you've done Steps 1–2 (project + secrets), give me: the **project ref/URL**, your
