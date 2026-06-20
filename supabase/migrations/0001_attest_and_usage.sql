@@ -4,7 +4,7 @@
 
 create table if not exists attest_devices (
   key_id      text        primary key,
-  public_key  bytea       not null,
+  public_key  text        not null,  -- base64-encoded SPKI (clean over PostgREST vs bytea)
   sign_count  bigint      not null default 0,
   created_at  timestamptz not null default now()
 );

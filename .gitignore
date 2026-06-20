@@ -34,3 +34,7 @@ KAIZENN/Config.xcconfig
 timeline.xctimeline
 playground.xcworkspace
 .sdd/
+
+# Supabase function local secrets
+supabase/functions/**/.env.local
+.env.local
