@@ -6,11 +6,14 @@ struct DashboardView: View {
     @EnvironmentObject var nutritionStore: NutritionStore
     @EnvironmentObject var loadStore: LoadStore
     @EnvironmentObject var weightStore: WeightStore
+    @EnvironmentObject var activityStore: ActivityStore
+    @EnvironmentObject var scheduleStore: ScheduleStore
 
     // MARK: - Sheet state
     @State private var showLogMeal = false
     @State private var showLogSession = false
     @State private var showLogWeight = false
+    @State private var showProfile = false
 
     // MARK: - Raw values
     private var sleepHours: Double { healthKitManager.sleepHoursLast }
@@ -159,6 +162,15 @@ struct DashboardView: View {
                 .environmentObject(weightStore)
                 .environmentObject(healthKitManager)
         }
+        .sheet(isPresented: $showProfile) {
+            ProfileView()
+                .environmentObject(appState)
+                .environmentObject(healthKitManager)
+                .environmentObject(nutritionStore)
+                .environmentObject(weightStore)
+                .environmentObject(activityStore)
+                .environmentObject(scheduleStore)
+        }
     }
 
     // MARK: - Header
@@ -175,7 +187,8 @@ struct DashboardView: View {
                     .tracking(-0.3)
             }
             Spacer()
-            avatarCircle
+            Button { showProfile = true } label: { avatarCircle }
+                .buttonStyle(.plain)
         }
     }
 
@@ -255,11 +268,13 @@ struct DashboardView: View {
 
     // MARK: - Score Hero Card
     private var scoreHeroCard: some View {
-        Button {
-            navigate(to: .coach)
-        } label: {
-            VStack(spacing: 11) {
-                // Top row: left column + ring
+        // The top row (score + ring) navigates to Coach. It's a SEPARATE button from
+        // the pillar tiles below — nesting them inside one outer Button made the
+        // pillars' own destinations (Load→Hub, Fuel→Nutrition) unreachable.
+        VStack(spacing: 11) {
+            Button {
+                navigate(to: .coach)
+            } label: {
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 2) {
                         readinessMicroLabel
@@ -272,15 +287,16 @@ struct DashboardView: View {
                     Spacer()
                     scoreRingEcho
                 }
-                // Pillar tiles row
-                pillarsRow
             }
-            .padding(18)
-            .background(scoreHeroBackground)
-            .overlay(scoreHeroBorder)
-            .clipShape(RoundedRectangle(cornerRadius: 18))
+            .buttonStyle(.plain)
+
+            // Pillar tiles row — each tile is its own button (Sleep/Load/Fuel/HRV).
+            pillarsRow
         }
-        .buttonStyle(.plain)
+        .padding(18)
+        .background(scoreHeroBackground)
+        .overlay(scoreHeroBorder)
+        .clipShape(RoundedRectangle(cornerRadius: 18))
     }
 
     private var readinessMicroLabel: some View {
