@@ -123,3 +123,99 @@ extension Color {
         )
     }
 }
+
+// MARK: — In-app Localization (L)
+// Lightweight key → [lang → String] lookup with English fallback. Views read
+// @AppStorage("app_language") in their body and render strings via L.t(key, lang);
+// reading the AppStorage in-body is what makes the language switch live (no restart).
+// New file creation is intentionally avoided — this lives in an already-compiled file.
+enum L {
+    static func t(_ key: String, _ lang: String) -> String {
+        table[key]?[lang] ?? table[key]?["en"] ?? key
+    }
+
+    private static let table: [String: [String: String]] = [
+        // Tab bar
+        "tab.home":      ["en": "Home",     "ja": "ホーム"],
+        "tab.fuel":      ["en": "Fuel",     "ja": "栄養"],
+        "tab.hub":       ["en": "Hub",      "ja": "ハブ"],
+        "tab.kai":       ["en": "Kai",      "ja": "カイ"],
+        "tab.schedule":  ["en": "Schedule", "ja": "スケジュール"],
+
+        // Settings — header & buttons
+        "settings.title":        ["en": "Settings", "ja": "設定"],
+        "common.done":           ["en": "Done",     "ja": "完了"],
+        "common.cancel":         ["en": "Cancel",   "ja": "キャンセル"],
+
+        // Settings — section headers
+        "settings.section.language":      ["en": "LANGUAGE",      "ja": "言語"],
+        "settings.section.units":         ["en": "UNITS",         "ja": "単位"],
+        "settings.section.notifications": ["en": "NOTIFICATIONS", "ja": "通知"],
+        "settings.section.data":          ["en": "DATA",          "ja": "データ"],
+        "settings.section.about":         ["en": "ABOUT",         "ja": "アプリについて"],
+
+        // Settings — language note
+        "settings.language.note": [
+            "en": "Full in-app translation is rolling out — your choice is saved now.",
+            "ja": "アプリ全体の翻訳は順次対応中です。選択は今すぐ保存されます。",
+        ],
+
+        // Settings — units rows
+        "settings.units.bodyWeight": ["en": "Body weight", "ja": "体重"],
+        "settings.units.food":       ["en": "Food",        "ja": "食事"],
+
+        // Settings — notifications
+        "settings.notifications.reminders": ["en": "Reminders & nudges", "ja": "リマインダーと通知"],
+        "settings.notifications.denied": [
+            "en": "Notifications are turned off in iOS Settings. Enable them for KAIZENN to receive reminders.",
+            "ja": "通知はiOSの設定でオフになっています。リマインダーを受け取るにはKAIZENNの通知を有効にしてください。",
+        ],
+
+        // Settings — data / advanced / reset
+        "settings.data.advanced":     ["en": "Advanced",      "ja": "詳細設定"],
+        "settings.data.resetAll":     ["en": "Reset all data", "ja": "すべてのデータをリセット"],
+        "settings.data.resetSubtitle": [
+            "en": "Clears everything on this device",
+            "ja": "この端末のすべてのデータを消去します",
+        ],
+
+        // Settings — reset confirmation sheet
+        "settings.reset.title": ["en": "Reset all data", "ja": "すべてのデータをリセット"],
+        "settings.reset.body": [
+            "en": "This permanently clears your logged meals, water, weight, habits, tasks, and workouts on this device. This cannot be undone.",
+            "ja": "この端末に記録された食事・水分・体重・習慣・タスク・ワークアウトを完全に消去します。この操作は取り消せません。",
+        ],
+        "settings.reset.typeToConfirm": [
+            "en": "Type RESET to confirm",
+            "ja": "確認のため RESET と入力してください",
+        ],
+        "settings.reset.confirmButton": ["en": "Reset everything", "ja": "すべてリセット"],
+
+        // Settings — about
+        "settings.about.version": ["en": "Version", "ja": "バージョン"],
+
+        // Dashboard header
+        "dashboard.athlete":          ["en": "Athlete",   "ja": "アスリート"],
+        "dashboard.readiness":        ["en": "READINESS",      "ja": "コンディション"],
+        "dashboard.readiness.peak":   ["en": "PEAK CONDITION", "ja": "最高のコンディション"],
+        "dashboard.readiness.gameReady": ["en": "GAME READY",  "ja": "試合準備完了"],
+        "dashboard.readiness.build":  ["en": "BUILD DAY",      "ja": "強化日"],
+        "dashboard.readiness.recovery": ["en": "RECOVERY DAY", "ja": "回復日"],
+        "dashboard.edge.sleep": [
+            "en": "Your edge: target 8hrs sleep tonight.",
+            "ja": "あなたの強み：今夜は8時間の睡眠を目指しましょう。",
+        ],
+        "dashboard.edge.fuel": [
+            "en": "Your edge: hit protein target before training.",
+            "ja": "あなたの強み：トレーニング前にタンパク質目標を達成しましょう。",
+        ],
+        "dashboard.edge.load": [
+            "en": "Your edge: ease load — ACWR above sweet spot.",
+            "ja": "あなたの強み：負荷を抑えましょう — ACWRが適正値を超えています。",
+        ],
+        "dashboard.edge.primed": [
+            "en": "You are primed. Attack today's session.",
+            "ja": "準備は万全です。今日のセッションに全力で挑みましょう。",
+        ],
+    ]
+}

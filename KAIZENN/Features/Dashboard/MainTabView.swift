@@ -39,6 +39,8 @@ struct MainTabView: View {
 // MARK: — Custom Tab Bar
 struct KTabBar: View {
     @Binding var selectedTab: AppState.Tab
+    // Reading the language here makes the tab labels re-render live when it changes.
+    @AppStorage("app_language") private var lang = "en"
 
     var body: some View {
         HStack(spacing: 0) {
@@ -63,7 +65,7 @@ struct KTabBar: View {
                                 .animation(KTheme.Animation.bounce, value: selectedTab == tab)
                         }
                         .frame(width: 44, height: 32)
-                        Text(tab.title)
+                        Text(L.t(tab.titleKey, lang))
                             .font(KTheme.Typography.caption)
                             .foregroundColor(selectedTab == tab ? KTheme.Colors.accentPrimary : KTheme.Colors.textTertiary)
                     }

@@ -9,11 +9,15 @@ struct DashboardView: View {
     @EnvironmentObject var activityStore: ActivityStore
     @EnvironmentObject var scheduleStore: ScheduleStore
 
+    // Reading the language in-body makes localized header strings re-render live.
+    @AppStorage("app_language") private var lang = "en"
+
     // MARK: - Sheet state
     @State private var showLogMeal = false
     @State private var showLogSession = false
     @State private var showLogWeight = false
     @State private var showProfile = false
+    @State private var showSettings = false
     @State private var showWeightHistory = false
 
     // MARK: - Raw values
@@ -69,10 +73,10 @@ struct DashboardView: View {
 
     private var readinessLabel: String {
         switch readinessScore {
-        case 80...: return "PEAK CONDITION"
-        case 60..<80: return "GAME READY"
-        case 40..<60: return "BUILD DAY"
-        default: return "RECOVERY DAY"
+        case 80...:   return L.t("dashboard.readiness.peak", lang)
+        case 60..<80: return L.t("dashboard.readiness.gameReady", lang)
+        case 40..<60: return L.t("dashboard.readiness.build", lang)
+        default:      return L.t("dashboard.readiness.recovery", lang)
         }
     }
 
@@ -87,13 +91,13 @@ struct DashboardView: View {
 
     private var edgePrompt: String {
         if sleepScore < 60 {
-            return "Your edge: target 8hrs sleep tonight."
+            return L.t("dashboard.edge.sleep", lang)
         } else if fuelScore < 60 {
-            return "Your edge: hit protein target before training."
+            return L.t("dashboard.edge.fuel", lang)
         } else if loadScore < 60 {
-            return "Your edge: ease load — ACWR above sweet spot."
+            return L.t("dashboard.edge.load", lang)
         } else {
-            return "You are primed. Attack today's session."
+            return L.t("dashboard.edge.primed", lang)
         }
     }
 
@@ -112,7 +116,7 @@ struct DashboardView: View {
     }
 
     private var athleteName: String {
-        appState.userProfile.name.isEmpty ? "Athlete" : appState.userProfile.name
+        appState.userProfile.name.isEmpty ? L.t("dashboard.athlete", lang) : appState.userProfile.name
     }
 
     // MARK: - HRV display
@@ -173,6 +177,9 @@ struct DashboardView: View {
                 .environmentObject(activityStore)
                 .environmentObject(scheduleStore)
         }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
+        }
         .sheet(isPresented: $showWeightHistory) {
             WeightView()
                 .environmentObject(weightStore)
@@ -195,8 +202,24 @@ struct DashboardView: View {
                     .tracking(-0.3)
             }
             Spacer()
-            Button { showProfile = true } label: { avatarCircle }
-                .buttonStyle(.plain)
+            HStack(spacing: 12) {
+                Button { showSettings = true } label: { settingsGear }
+                    .buttonStyle(HeaderControlButtonStyle())
+                Button { showProfile = true } label: { avatarCircle }
+                    .buttonStyle(HeaderControlButtonStyle())
+            }
+        }
+    }
+
+    private var settingsGear: some View {
+        ZStack {
+            Circle()
+                .fill(KTheme.Colors.card)
+                .overlay(Circle().stroke(KTheme.Colors.cardElevated, lineWidth: 0.5))
+                .frame(width: 40, height: 40)
+            Image(systemName: "gearshape.fill")
+                .font(.system(size: 16, weight: .medium))
+                .foregroundColor(KTheme.Colors.textSecondary)
         }
     }
 
@@ -209,6 +232,16 @@ struct DashboardView: View {
             Image(systemName: "person.fill")
                 .font(.system(size: 20, weight: .medium))
                 .foregroundColor(.white)
+        }
+    }
+
+    // Press feedback shared by the header gear + avatar so they read as a matched pair.
+    private struct HeaderControlButtonStyle: ButtonStyle {
+        func makeBody(configuration: Configuration) -> some View {
+            configuration.label
+                .scaleEffect(configuration.isPressed ? 0.9 : 1.0)
+                .opacity(configuration.isPressed ? 0.85 : 1.0)
+                .animation(KTheme.Animation.snappy, value: configuration.isPressed)
         }
     }
 
@@ -308,7 +341,7 @@ struct DashboardView: View {
     }
 
     private var readinessMicroLabel: some View {
-        Text("READINESS")
+        Text(L.t("dashboard.readiness", lang))
             .font(.system(size: 12, weight: .bold, design: .monospaced))
             .foregroundColor(KTheme.Colors.textTertiary)
             .tracking(1.5)

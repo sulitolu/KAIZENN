@@ -19,6 +19,17 @@ class AppState: ObservableObject {
             }
         }
 
+        // Localization key for the tab label; resolve via L.t(titleKey, lang).
+        var titleKey: String {
+            switch self {
+            case .dashboard: return "tab.home"
+            case .nutrition: return "tab.fuel"
+            case .hub:       return "tab.hub"
+            case .coach:     return "tab.kai"
+            case .schedule:  return "tab.schedule"
+            }
+        }
+
         var icon: String {
             switch self {
             case .dashboard: return "bolt.circle.fill"

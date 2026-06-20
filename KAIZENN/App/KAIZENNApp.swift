@@ -31,7 +31,12 @@ struct KAIZENNApp: App {
                 .environmentObject(activityStore)
                 .environmentObject(loadStore)
                 .preferredColorScheme(.dark)
-                .task { await notifications.requestPermission() }
+                .task {
+                    await notifications.requestPermission()
+                    if UserDefaults.standard.bool(forKey: "notifications_enabled") {
+                        notifications.scheduleDailyReminders()
+                    }
+                }
                 .onChange(of: scheduleStore.habits) { _, habits in
                     notifications.rescheduleAll(habits: habits)
                 }

@@ -18,6 +18,49 @@ class NotificationManager: ObservableObject {
         } catch {}
     }
 
+    /// Requests authorization and returns whether it was granted. Unlike
+    /// `requestPermission()`, this does not auto-schedule anything — the caller
+    /// (e.g. the Settings toggle) decides what to do with the result.
+    func requestAuthorization() async -> Bool {
+        do {
+            let granted = try await center.requestAuthorization(options: [.alert, .sound, .badge])
+            isAuthorized = granted
+            return granted
+        } catch {
+            return false
+        }
+    }
+
+    // MARK: Reminders & nudges (Settings toggle)
+
+    /// Default daily reminder set driven by the "Reminders & nudges" toggle.
+    /// Clears all pending requests first, then schedules a fixed morning / lunch /
+    /// dinner cadence that repeats every day.
+    func scheduleDailyReminders() {
+        center.removeAllPendingNotificationRequests()
+
+        let reminders: [(String, String, String, Int, Int)] = [
+            ("reminder-morning", "Morning check-in", "Log your weight and check today's readiness.", 8, 0),
+            ("reminder-lunch",   "Fuel up",          "Don't forget to log your lunch.",             12, 0),
+            ("reminder-dinner",  "Dinner log",       "Log your dinner to keep your fuel score accurate.", 19, 0),
+        ]
+        for (id, title, body, hour, minute) in reminders {
+            let content = UNMutableNotificationContent()
+            content.title = title
+            content.body = body
+            content.sound = .default
+            var comps = DateComponents()
+            comps.hour = hour; comps.minute = minute; comps.second = 0
+            let trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: true)
+            center.add(UNNotificationRequest(identifier: id, content: content, trigger: trigger))
+        }
+    }
+
+    /// Cancels every pending notification request.
+    func cancelAll() {
+        center.removeAllPendingNotificationRequests()
+    }
+
     // MARK: Habit reminders
     func scheduleHabitReminder(for habit: Habit) {
         guard let reminderTime = habit.reminderTime else { return }
