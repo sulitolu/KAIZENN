@@ -97,7 +97,8 @@ async function authenticate(req: Request, rawBody: Uint8Array): Promise<string |
 
 Deno.serve(async (req: Request) => {
   const url = new URL(req.url);
-  const path = url.pathname.replace(/^\/kai-proxy/, "");
+  // Robust to both "/kai-proxy/<route>" and "/functions/v1/kai-proxy/<route>".
+  const path = url.pathname.split("/kai-proxy").pop() ?? "";
 
   if (req.method === "GET" && path === "/challenge") {
     const challenge = randomChallenge();
