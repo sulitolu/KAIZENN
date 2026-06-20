@@ -43,17 +43,19 @@ struct CoachView: View {
                     // Science-backed tips
                     scienceTipsSection
 
-                    // Bottom padding for pinned input bar
-                    Color.clear.frame(height: 80)
+                    // Bottom padding to clear the pinned input bar (~58pt) AND
+                    // the floating KTabBar (~100pt) so the last card stays visible.
+                    Color.clear.frame(height: 170)
                 }
                 .padding(.horizontal, KTheme.Spacing.md)
                 .padding(.top, KTheme.Spacing.md)
             }
 
             // Pinned Ask Kai input bar (mockup: .ai-input)
+            // Sits above the floating KTabBar (~100pt) instead of behind it.
             pinnedInputBar
                 .padding(.horizontal, KTheme.Spacing.md)
-                .padding(.bottom, 16)
+                .padding(.bottom, 100)
         }
         .onAppear {
             coach.analyze(
