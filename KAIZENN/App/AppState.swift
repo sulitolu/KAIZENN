@@ -7,7 +7,7 @@ class AppState: ObservableObject {
     @Published var userProfile: UserProfile
 
     enum Tab: Int, CaseIterable {
-        case dashboard, nutrition, hub, coach, schedule, weight
+        case dashboard, nutrition, hub, coach, schedule
 
         var title: String {
             switch self {
@@ -16,7 +16,6 @@ class AppState: ObservableObject {
             case .hub:       return "Hub"
             case .coach:     return "Kai"
             case .schedule:  return "Schedule"
-            case .weight:    return "Weight"
             }
         }
 
@@ -27,7 +26,6 @@ class AppState: ObservableObject {
             case .hub:       return "antenna.radiowaves.left.and.right"
             case .coach:     return "brain.head.profile"
             case .schedule:  return "calendar"
-            case .weight:    return "scalemass.fill"
             }
         }
     }

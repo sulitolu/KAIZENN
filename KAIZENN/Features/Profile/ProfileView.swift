@@ -9,7 +9,7 @@ struct ProfileView: View {
     @EnvironmentObject var scheduleStore: ScheduleStore
 
     @State private var showEditProfile = false
-    @State private var showResetAlert = false
+    @State private var showSettings = false
 
     private let accent = KTheme.Colors.accentPrimary
 
@@ -23,8 +23,6 @@ struct ProfileView: View {
                     sportProfileCard
                     bodyMetricsCard
                     healthPermissionsCard
-                    settingsSection
-                    dangerSection
                     Color.clear.frame(height: 100)
                 }
                 .padding(.horizontal, KTheme.Spacing.md)
@@ -34,11 +32,8 @@ struct ProfileView: View {
         .sheet(isPresented: $showEditProfile) {
             EditProfileView()
         }
-        .alert("Reset All Data", isPresented: $showResetAlert) {
-            Button("Cancel", role: .cancel) {}
-            Button("Reset", role: .destructive) { resetData() }
-        } message: {
-            Text("This will delete all your nutrition logs, weight history, and habits. This action cannot be undone.")
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
         }
     }
 
@@ -66,12 +61,21 @@ struct ProfileView: View {
                         microLabel("KAIZENN MEMBER", color: .white.opacity(0.55))
                     }
                     Spacer()
-                    Button {
-                        showEditProfile = true
-                    } label: {
-                        Image(systemName: "pencil.circle.fill")
-                            .font(.system(size: 28))
-                            .foregroundColor(.white.opacity(0.8))
+                    HStack(spacing: 12) {
+                        Button {
+                            showSettings = true
+                        } label: {
+                            Image(systemName: "gearshape.fill")
+                                .font(.system(size: 24))
+                                .foregroundColor(.white.opacity(0.8))
+                        }
+                        Button {
+                            showEditProfile = true
+                        } label: {
+                            Image(systemName: "pencil.circle.fill")
+                                .font(.system(size: 28))
+                                .foregroundColor(.white.opacity(0.8))
+                        }
                     }
                 }
             }
@@ -300,43 +304,6 @@ struct ProfileView: View {
         }
     }
 
-    // MARK: — Settings Section
-    private var settingsSection: some View {
-        VStack(alignment: .leading, spacing: KTheme.Spacing.sm) {
-            premiumSectionHeader("PREFERENCES")
-            KCard {
-                VStack(spacing: 0) {
-                    SettingsRow(icon: "bell.fill", color: accent, title: "Notifications") {
-                        if let url = URL(string: UIApplication.openSettingsURLString) {
-                            UIApplication.shared.open(url)
-                        }
-                    }
-                    Divider().background(KTheme.Colors.border)
-                    SettingsRow(icon: "moon.fill", color: accent, title: "Dark Mode") {}
-                    Divider().background(KTheme.Colors.border)
-                    SettingsRow(icon: "scalemass.fill", color: KTheme.Colors.accentTertiary, title: "Units: Metric (kg / cm)") {}
-                    Divider().background(KTheme.Colors.border)
-                    SettingsRow(icon: "info.circle.fill", color: KTheme.Colors.textSecondary, title: "App Version: 1.0.0") {}
-                }
-            }
-        }
-    }
-
-    // MARK: — Danger Zone
-    private var dangerSection: some View {
-        VStack(alignment: .leading, spacing: KTheme.Spacing.sm) {
-            premiumSectionHeader("ACCOUNT")
-            VStack(spacing: KTheme.Spacing.sm) {
-                KButton(title: "Edit Profile", style: .secondary) {
-                    showEditProfile = true
-                }
-                KButton(title: "Reset All Data", style: .danger) {
-                    showResetAlert = true
-                }
-            }
-        }
-    }
-
     // MARK: — Helpers
     private func premiumSectionHeader(_ title: String) -> some View {
         Text(title)
@@ -352,15 +319,6 @@ struct ProfileView: View {
             .tracking(1.5)
     }
 
-    private func resetData() {
-        appState.hasCompletedOnboarding = false
-        UserDefaults.standard.removeObject(forKey: "kaizenn_nutrition_entries")
-        UserDefaults.standard.removeObject(forKey: "kaizenn_water_entries")
-        UserDefaults.standard.removeObject(forKey: "kaizenn_weight_measurements")
-        UserDefaults.standard.removeObject(forKey: "kaizenn_habits")
-        UserDefaults.standard.removeObject(forKey: "kaizenn_tasks")
-        UserDefaults.standard.removeObject(forKey: "kaizenn_workouts")
-    }
 }
 
 // MARK: — Edit Profile Sheet
@@ -494,22 +452,3 @@ struct PremiumStatCell: View {
     }
 }
 
-// MARK: — Settings Row (unchanged)
-struct SettingsRow: View {
-    let icon: String
-    let color: Color
-    let title: String
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: KTheme.Spacing.md) {
-                Image(systemName: icon).foregroundColor(color).frame(width: 24)
-                Text(title).font(KTheme.Typography.bodyMedium).foregroundColor(KTheme.Colors.textPrimary)
-                Spacer()
-                Image(systemName: "chevron.right").foregroundColor(KTheme.Colors.textTertiary).font(.caption)
-            }
-            .padding(.vertical, KTheme.Spacing.sm)
-        }
-    }
-}

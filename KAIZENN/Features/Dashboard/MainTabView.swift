@@ -22,9 +22,6 @@ struct MainTabView: View {
 
                 ScheduleView()
                     .tag(AppState.Tab.schedule)
-
-                WeightView()
-                    .tag(AppState.Tab.weight)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .ignoresSafeArea()

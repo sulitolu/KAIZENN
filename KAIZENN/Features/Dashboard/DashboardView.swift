@@ -14,6 +14,7 @@ struct DashboardView: View {
     @State private var showLogSession = false
     @State private var showLogWeight = false
     @State private var showProfile = false
+    @State private var showWeightHistory = false
 
     // MARK: - Raw values
     private var sleepHours: Double { healthKitManager.sleepHoursLast }
@@ -139,6 +140,7 @@ struct DashboardView: View {
                 quickActionRow
                 scoreHeroCard
                 statsRow
+                weightTrendCard
                 edgeCard
             }
             .padding(.horizontal, 18)
@@ -170,6 +172,12 @@ struct DashboardView: View {
                 .environmentObject(weightStore)
                 .environmentObject(activityStore)
                 .environmentObject(scheduleStore)
+        }
+        .sheet(isPresented: $showWeightHistory) {
+            WeightView()
+                .environmentObject(weightStore)
+                .environmentObject(healthKitManager)
+                .environmentObject(appState)
         }
     }
 
@@ -500,6 +508,84 @@ struct DashboardView: View {
         let days = sport.daysUntilPerformance
         guard days > 0 else { return 1.0 }
         return 1.0 - (Double(days) / 7.0)
+    }
+
+    // MARK: - Weight Trend Card
+    private var weightTrendCard: some View {
+        Button { showWeightHistory = true } label: {
+            HStack(spacing: 14) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("WEIGHT")
+                        .font(.system(size: 11, weight: .bold, design: .monospaced))
+                        .foregroundColor(KTheme.Colors.accentSecondary)
+                        .tracking(1.5)
+                    if let latest = weightStore.latestWeight {
+                        Text(String(format: "%.1f kg", latest))
+                            .font(.system(size: 24, weight: .heavy))
+                            .foregroundColor(KTheme.Colors.textPrimary)
+                        weightChangeLabel
+                    } else {
+                        Text("No entries yet — tap to log")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(KTheme.Colors.textTertiary)
+                    }
+                }
+                Spacer()
+                weightSparkline
+                    .frame(width: 84, height: 38)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(KTheme.Colors.textTertiary)
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(KTheme.Colors.card)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(KTheme.Colors.cardElevated, lineWidth: 0.5)
+                    )
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
+    @ViewBuilder
+    private var weightChangeLabel: some View {
+        if let change = weightStore.weightChange(lastDays: 30) {
+            let down = change <= 0
+            HStack(spacing: 3) {
+                Image(systemName: down ? "arrow.down.right" : "arrow.up.right")
+                    .font(.system(size: 10, weight: .bold))
+                Text(String(format: "%.1f kg · 30d", abs(change)))
+                    .font(.system(size: 12, weight: .semibold))
+            }
+            .foregroundColor(down ? KTheme.Colors.accentGreen : KTheme.Colors.accentAmber)
+        }
+    }
+
+    @ViewBuilder
+    private var weightSparkline: some View {
+        let points = weightStore.trendLine(lastDays: 30)
+        if points.count >= 2 {
+            GeometryReader { geo in
+                let minV = points.min() ?? 0
+                let maxV = points.max() ?? 1
+                let range = max(maxV - minV, 0.001)
+                Path { path in
+                    for (i, v) in points.enumerated() {
+                        let x = geo.size.width * CGFloat(i) / CGFloat(points.count - 1)
+                        let y = geo.size.height * (1 - CGFloat((v - minV) / range))
+                        if i == 0 { path.move(to: CGPoint(x: x, y: y)) }
+                        else { path.addLine(to: CGPoint(x: x, y: y)) }
+                    }
+                }
+                .stroke(
+                    KTheme.Colors.accentSecondary,
+                    style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round)
+                )
+            }
+        }
     }
 
     // MARK: - Edge Card
