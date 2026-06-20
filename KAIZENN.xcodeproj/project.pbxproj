@@ -9,76 +9,88 @@
 /* Begin PBXBuildFile section */
 		04A7814E4EEC70DE7D6C41B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8D562B3E40B6C9EC53F38F07 /* Assets.xcassets */; };
 		04DEEC5DF0043E486D50E6DE /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0021C5C2956990173B6D091 /* UserProfile.swift */; };
-		1A2B3C4D5E6F7A8B9C0D1E2F /* SportProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B3C4D5E6F7A8B9C0D1E2F3A /* SportProfile.swift */; };
 		0AEB7898D2545145F8E0B4C7 /* NutritionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6C56295BB4682F8D01931C /* NutritionStore.swift */; };
 		15A12CC83C82EA541FC21539 /* OnboardingFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60B3AAC2E60EF20542835FBA /* OnboardingFlowView.swift */; };
+		1A2B3C4D5E6F7A8B9C0D1E2F /* SportProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B3C4D5E6F7A8B9C0D1E2F3A /* SportProfile.swift */; };
+		207B1054BC1640A290B31727 /* FoodPhotoScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32A5E2F875C4A01ABF14654 /* FoodPhotoScanView.swift */; };
 		2F4C501FD3324042C681505E /* ActivityModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BF6A101ADB86CED296D47B /* ActivityModels.swift */; };
+		4342C66E6102EAB1E32F7F1E /* ProxyConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0200E6305302558E6CB980C /* ProxyConfig.swift */; };
 		4DC7EFA7E729B492D4D9172E /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBDA3236A3DD82FE4245CA7E /* AppState.swift */; };
 		5B083EA9B8E1A2EDA5DF0690 /* WeightStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A473374B40C1F5DD3B764F6 /* WeightStore.swift */; };
 		6105612DBCF6B316335CE476 /* AddFoodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1505C1567225A39F15208143 /* AddFoodView.swift */; };
-		207B1054BC1640A290B31727 /* FoodPhotoScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32A5E2F875C4A01ABF14654 /* FoodPhotoScanView.swift */; };
 		626F30D58C3445F29E2F0BDE /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEF3FD01726B46F7ADBE8A4E /* NotificationManager.swift */; };
 		654C21FF9D12EF059A9C835B /* LogWeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C9B84C7FB7A36D458D9FF7 /* LogWeightView.swift */; };
+		7039CE9C1C224420879389AE /* GPSSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43746BB905634F97B3497D38 /* GPSSession.swift */; };
 		70D5940D7218B4D0C2F38E32 /* NutritionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B12905602A54541D803EDE4 /* NutritionView.swift */; };
 		74C12F28F3F5DA47E83164EE /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60BB56C71F6FE206357FBC5B /* MainTabView.swift */; };
+		805B6A7768104E6700107F70 /* AppAttestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6F3E886B51FBE741DF09E57 /* AppAttestManager.swift */; };
 		8B96EA90586A664726888B8A /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB3876B349BED91B0D93DAFF /* RootView.swift */; };
+		8C2832FA151648DE8EF36451 /* LoadStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E868E1A4C35548A0AF1BF44F /* LoadStore.swift */; };
 		9AE8EBB19366BE4866A2D39A /* ScheduleModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F0D44BEF7DD9E0ECC9090 /* ScheduleModels.swift */; };
 		A0CCA717A90BC88D63EAB5E8 /* ActivityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454E071F81DB7F28A76C3D8F /* ActivityStore.swift */; };
 		A385AEA5DE38382CD65DAC61 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93877A8ED2CE9EBE2CD5B717 /* ScheduleView.swift */; };
 		A55E846C7D9C11F5872AACFA /* KAIZENNApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499F2B3DA0EBD4484B821FBA /* KAIZENNApp.swift */; };
 		AE25D2ADB9303051068EFB7C /* WatchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA5063ABCB9D6C330FDC0C81 /* WatchKit.framework */; };
 		B3B1E2166CCE182C164F3526 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1926D9960C83E0D3B20705E /* HealthKitManager.swift */; };
+		B5C6D7E8F9A0B1C2D3E4F5A6 /* StrengthLoggerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D7E8F9A0B1C2D3E4F5A6B7 /* StrengthLoggerView.swift */; };
 		B5E83DAB5D740CAC794E2370 /* KAIZENNWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657D6919B2ABE2F8B5FEB5AC /* KAIZENNWatchApp.swift */; };
+		B6C7D8E9F0A1B2C3D4E5F6A7 /* SportProfileSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B6C7D8E9F0A1B2C3D4E5F6 /* SportProfileSetupView.swift */; };
 		B80BAD722FE4DDE100269068 /* File.txt in Resources */ = {isa = PBXBuildFile; fileRef = B80BAD712FE4DDE100269068 /* File.txt */; };
 		BAFDE2B80D144A5F86AB9282 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F19765D068E4A8698F6FC0F /* WatchConnectivityManager.swift */; };
-		7039CE9C1C224420879389AE /* GPSSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43746BB905634F97B3497D38 /* GPSSession.swift */; };
-		BC4B7FB8C7494662906B4E4F /* StrengthSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0A0AEA590D4DB0BD445B4C /* StrengthSession.swift */; };
-		8C2832FA151648DE8EF36451 /* LoadStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E868E1A4C35548A0AF1BF44F /* LoadStore.swift */; };
 		BB22CC33DD44EE55FF667788 /* ClaudeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF66 /* ClaudeService.swift */; };
+		BC4B7FB8C7494662906B4E4F /* StrengthSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0A0AEA590D4DB0BD445B4C /* StrengthSession.swift */; };
 		BC770D61FF67FBCBA603E094 /* CoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3F9E0C64F4C07C0341E24D /* CoachView.swift */; };
-		D1E2F3A4B5C6D7E8F9A0B1C2 /* WearableHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F3A4B5C6D7E8F9A0B1C2D3 /* WearableHubView.swift */; };
-		F3A4B5C6D7E8F9A0B1C2D3E4 /* GPSImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B5C6D7E8F9A0B1C2D3E4F5 /* GPSImportView.swift */; };
-		B5C6D7E8F9A0B1C2D3E4F5A6 /* StrengthLoggerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D7E8F9A0B1C2D3E4F5A6B7 /* StrengthLoggerView.swift */; };
-		F0A1B2C3D4E5F6A7B8C9D0E1 /* TrainingMenuScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6789012345678 /* TrainingMenuScanView.swift */; };
-		D7E8F9A0B1C2D3E4F5A6B7C8 /* CatapultParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F9A0B1C2D3E4F5A6B7C8D9 /* CatapultParser.swift */; };
 		C2657B3BF636AA7FDAF9CCC6 /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B4E9E7F645566F6EC8259C /* AddTaskView.swift */; };
 		CB061155EB874F821416F33C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C55399A23DBC7E16DBC1841 /* ContentView.swift */; };
 		CF64F6DD1FD2D1E73E0C0663 /* KComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70027590D58C8F57E6524260 /* KComponents.swift */; };
 		CFD96B9274C1DF3C0C34E74E /* KTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A083F1897FE65BA0360D927A /* KTheme.swift */; };
+		D1E2F3A4B5C6D7E8F9A0B1C2 /* WearableHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F3A4B5C6D7E8F9A0B1C2D3 /* WearableHubView.swift */; };
 		D708C9FCD82AAD29C288DCB2 /* ScheduleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3CB7C0CC2324BD1548388D /* ScheduleStore.swift */; };
+		D7E8F9A0B1C2D3E4F5A6B7C8 /* CatapultParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F9A0B1C2D3E4F5A6B7C8D9 /* CatapultParser.swift */; };
 		DB04D9EC4599B2292D30C061 /* WeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C226AC67400A8E7FD5F6509 /* WeightView.swift */; };
 		E122309DF0C240A4AE53BC4F /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6744AA49E02464781C4373C /* BarcodeScannerView.swift */; };
 		E2247B3EBA845E97050D7102 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917FF61075306FED050C78AC /* DashboardView.swift */; };
 		E31920300A97E130DA9FE108 /* NutritionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3486F76CEDC4116165842329 /* NutritionModels.swift */; };
+		F0A1B2C3D4E5F6A7B8C9D0E1 /* TrainingMenuScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6789012345678 /* TrainingMenuScanView.swift */; };
+		F3A4B5C6D7E8F9A0B1C2D3E4 /* GPSImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B5C6D7E8F9A0B1C2D3E4F5 /* GPSImportView.swift */; };
 		F5F8306DA9EA43C58185E446 /* OpenFoodFactsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8607429885DD49118322ECBA /* OpenFoodFactsService.swift */; };
 		F7DFD454952E7A4E13CAE607 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0503B9E1CF593DA0A19DA4 /* ProfileView.swift */; };
-		FDCBD33150BD2B4CBE73FBB2 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C88617FE27799E67B29F6DF /* HealthKit.framework */; };
-		B6C7D8E9F0A1B2C3D4E5F6A7 /* SportProfileSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B6C7D8E9F0A1B2C3D4E5F6 /* SportProfileSetupView.swift */; };
 		FACE000000000000000000B1 /* UserProfileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEEF000000000000000000F1 /* UserProfileTests.swift */; };
 		FACE000000000000000000B2 /* StrengthSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEEF000000000000000000F2 /* StrengthSessionTests.swift */; };
 		FACE000000000000000000B3 /* GPSSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEEF000000000000000000F3 /* GPSSessionTests.swift */; };
 		FACE000000000000000000B4 /* SportProfileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEEF000000000000000000F4 /* SportProfileTests.swift */; };
 		FACE000000000000000000B5 /* CatapultParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEEF000000000000000000F5 /* CatapultParserTests.swift */; };
 		FACE000000000000000000B6 /* LoadStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEEF000000000000000000F6 /* LoadStoreTests.swift */; };
+		FDCBD33150BD2B4CBE73FBB2 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C88617FE27799E67B29F6DF /* HealthKit.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CAFE000000000000000000A8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5299AC4324DC18342A8CCD96 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 10B243F3E8F88BBF5D5C0CB6;
+			remoteInfo = KAIZENN;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		001F0D44BEF7DD9E0ECC9090 /* ScheduleModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleModels.swift; sourceTree = "<group>"; };
 		02B4E9E7F645566F6EC8259C /* AddTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
 		1505C1567225A39F15208143 /* AddFoodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodView.swift; sourceTree = "<group>"; };
-		F32A5E2F875C4A01ABF14654 /* FoodPhotoScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodPhotoScanView.swift; sourceTree = "<group>"; };
 		1C226AC67400A8E7FD5F6509 /* WeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightView.swift; sourceTree = "<group>"; };
 		1F3CB7C0CC2324BD1548388D /* ScheduleStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleStore.swift; sourceTree = "<group>"; };
+		2B3C4D5E6F7A8B9C0D1E2F3A /* SportProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportProfile.swift; sourceTree = "<group>"; };
 		2C88617FE27799E67B29F6DF /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		3486F76CEDC4116165842329 /* NutritionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionModels.swift; sourceTree = "<group>"; };
 		3515F086ED3D1C85E9065024 /* KAIZENN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KAIZENN.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A8F2C1D9E4B5067A1C2D3E4 /* KAIZENNWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KAIZENNWatch.entitlements; sourceTree = "<group>"; };
+		43746BB905634F97B3497D38 /* GPSSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSSession.swift; sourceTree = "<group>"; };
 		454E071F81DB7F28A76C3D8F /* ActivityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityStore.swift; sourceTree = "<group>"; };
 		499F2B3DA0EBD4484B821FBA /* KAIZENNApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KAIZENNApp.swift; sourceTree = "<group>"; };
 		4A3F9E0C64F4C07C0341E24D /* CoachView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachView.swift; sourceTree = "<group>"; };
 		4D815DD2BB41FEA1DA45DC65 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		60B3AAC2E60EF20542835FBA /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
-		A5B6C7D8E9F0A1B2C3D4E5F6 /* SportProfileSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportProfileSetupView.swift; sourceTree = "<group>"; };
 		60BB56C71F6FE206357FBC5B /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		657D6919B2ABE2F8B5FEB5AC /* KAIZENNWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KAIZENNWatchApp.swift; sourceTree = "<group>"; };
 		6A473374B40C1F5DD3B764F6 /* WeightStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightStore.swift; sourceTree = "<group>"; };
@@ -91,38 +103,40 @@
 		917FF61075306FED050C78AC /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		91BF6A101ADB86CED296D47B /* ActivityModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityModels.swift; sourceTree = "<group>"; };
 		93877A8ED2CE9EBE2CD5B717 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
+		9D0A0AEA590D4DB0BD445B4C /* StrengthSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthSession.swift; sourceTree = "<group>"; };
 		9E6C56295BB4682F8D01931C /* NutritionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionStore.swift; sourceTree = "<group>"; };
 		9F19765D068E4A8698F6FC0F /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
-		43746BB905634F97B3497D38 /* GPSSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSSession.swift; sourceTree = "<group>"; };
-		9D0A0AEA590D4DB0BD445B4C /* StrengthSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthSession.swift; sourceTree = "<group>"; };
-		E868E1A4C35548A0AF1BF44F /* LoadStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadStore.swift; sourceTree = "<group>"; };
-		2B3C4D5E6F7A8B9C0D1E2F3A /* SportProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportProfile.swift; sourceTree = "<group>"; };
 		A0021C5C2956990173B6D091 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		A083F1897FE65BA0360D927A /* KTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KTheme.swift; sourceTree = "<group>"; };
 		A1926D9960C83E0D3B20705E /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6789012345678 /* TrainingMenuScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingMenuScanView.swift; sourceTree = "<group>"; };
+		A4B5C6D7E8F9A0B1C2D3E4F5 /* GPSImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSImportView.swift; sourceTree = "<group>"; };
+		A5B6C7D8E9F0A1B2C3D4E5F6 /* SportProfileSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportProfileSetupView.swift; sourceTree = "<group>"; };
 		AA11BB22CC33DD44EE55FF66 /* ClaudeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeService.swift; sourceTree = "<group>"; };
 		B80BAD712FE4DDE100269068 /* File.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = File.txt; sourceTree = "<group>"; };
 		BA5063ABCB9D6C330FDC0C81 /* WatchKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchKit.framework; path = System/Library/Frameworks/WatchKit.framework; sourceTree = SDKROOT; };
 		BB3876B349BED91B0D93DAFF /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
-		C666607A8ABE9C541089D071 /* KAIZENNWatch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "KAIZENNWatch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C6744AA49E02464781C4373C /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
-		CC33DD44EE55FF6677889900 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
-		DBDA3236A3DD82FE4245CA7E /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
-		F6C9B84C7FB7A36D458D9FF7 /* LogWeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogWeightView.swift; sourceTree = "<group>"; };
-		FC4FC53957394ECAB54AE795 /* KAIZENN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KAIZENN.entitlements; sourceTree = "<group>"; };
-		FEF3FD01726B46F7ADBE8A4E /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
-		E2F3A4B5C6D7E8F9A0B1C2D3 /* WearableHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WearableHubView.swift; sourceTree = "<group>"; };
-		A4B5C6D7E8F9A0B1C2D3E4F5 /* GPSImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSImportView.swift; sourceTree = "<group>"; };
-		C6D7E8F9A0B1C2D3E4F5A6B7 /* StrengthLoggerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthLoggerView.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F6789012345678 /* TrainingMenuScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingMenuScanView.swift; sourceTree = "<group>"; };
-		E8F9A0B1C2D3E4F5A6B7C8D9 /* CatapultParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatapultParser.swift; sourceTree = "<group>"; };
-		CAFE000000000000000000A1 /* KAIZENNTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KAIZENNTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEEF000000000000000000F1 /* UserProfileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileTests.swift; sourceTree = "<group>"; };
 		BEEF000000000000000000F2 /* StrengthSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthSessionTests.swift; sourceTree = "<group>"; };
 		BEEF000000000000000000F3 /* GPSSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSSessionTests.swift; sourceTree = "<group>"; };
 		BEEF000000000000000000F4 /* SportProfileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportProfileTests.swift; sourceTree = "<group>"; };
 		BEEF000000000000000000F5 /* CatapultParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatapultParserTests.swift; sourceTree = "<group>"; };
 		BEEF000000000000000000F6 /* LoadStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadStoreTests.swift; sourceTree = "<group>"; };
+		C666607A8ABE9C541089D071 /* KAIZENNWatch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "KAIZENNWatch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6744AA49E02464781C4373C /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
+		C6D7E8F9A0B1C2D3E4F5A6B7 /* StrengthLoggerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthLoggerView.swift; sourceTree = "<group>"; };
+		CAFE000000000000000000A1 /* KAIZENNTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KAIZENNTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC33DD44EE55FF6677889900 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		D0200E6305302558E6CB980C /* ProxyConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProxyConfig.swift; path = Networking/ProxyConfig.swift; sourceTree = "<group>"; };
+		D6F3E886B51FBE741DF09E57 /* AppAttestManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppAttestManager.swift; path = Networking/AppAttestManager.swift; sourceTree = "<group>"; };
+		DBDA3236A3DD82FE4245CA7E /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		E2F3A4B5C6D7E8F9A0B1C2D3 /* WearableHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WearableHubView.swift; sourceTree = "<group>"; };
+		E868E1A4C35548A0AF1BF44F /* LoadStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadStore.swift; sourceTree = "<group>"; };
+		E8F9A0B1C2D3E4F5A6B7C8D9 /* CatapultParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatapultParser.swift; sourceTree = "<group>"; };
+		F32A5E2F875C4A01ABF14654 /* FoodPhotoScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodPhotoScanView.swift; sourceTree = "<group>"; };
+		F6C9B84C7FB7A36D458D9FF7 /* LogWeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogWeightView.swift; sourceTree = "<group>"; };
+		FC4FC53957394ECAB54AE795 /* KAIZENN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KAIZENN.entitlements; sourceTree = "<group>"; };
+		FEF3FD01726B46F7ADBE8A4E /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,18 +175,6 @@
 			path = Features;
 			sourceTree = "<group>";
 		};
-		C3D4E5F6A7B8C9D0E1F2A3B4 /* Hub */ = {
-			isa = PBXGroup;
-			children = (
-				E2F3A4B5C6D7E8F9A0B1C2D3 /* WearableHubView.swift */,
-				A4B5C6D7E8F9A0B1C2D3E4F5 /* GPSImportView.swift */,
-				C6D7E8F9A0B1C2D3E4F5A6B7 /* StrengthLoggerView.swift */,
-				E8F9A0B1C2D3E4F5A6B7C8D9 /* CatapultParser.swift */,
-				A1B2C3D4E5F6789012345678 /* TrainingMenuScanView.swift */,
-			);
-			path = Hub;
-			sourceTree = "<group>";
-		};
 		0CF0179A2CC647EB8C32269C /* Coach */ = {
 			isa = PBXGroup;
 			children = (
@@ -199,19 +201,6 @@
 				BF7A2D27A78D590BDEF15AF2 /* Products */,
 				B85152D62FDF93D9002044DD /* Recovered References */,
 			);
-			sourceTree = "<group>";
-		};
-		CAFE000000000000000000A2 /* KAIZENNTests */ = {
-			isa = PBXGroup;
-			children = (
-				BEEF000000000000000000F1 /* UserProfileTests.swift */,
-				BEEF000000000000000000F2 /* StrengthSessionTests.swift */,
-				BEEF000000000000000000F3 /* GPSSessionTests.swift */,
-				BEEF000000000000000000F4 /* SportProfileTests.swift */,
-				BEEF000000000000000000F5 /* CatapultParserTests.swift */,
-				BEEF000000000000000000F6 /* LoadStoreTests.swift */,
-			);
-			path = KAIZENNTests;
 			sourceTree = "<group>";
 		};
 		70BD4530DF8142378BFF662B /* Data */ = {
@@ -249,6 +238,7 @@
 				48460F5E220240C99CD952FC /* DesignSystem */,
 				A3C1F9B2E4D74E8FA0B1C2D3 /* Notifications */,
 				B2D4E6F8A1C34B7D9E0F1A2B /* Connectivity */,
+				99788A7DCE5508A101807BB4 /* Networking */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -268,6 +258,15 @@
 				F6C9B84C7FB7A36D458D9FF7 /* LogWeightView.swift */,
 			);
 			path = Weight;
+			sourceTree = "<group>";
+		};
+		99788A7DCE5508A101807BB4 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				D0200E6305302558E6CB980C /* ProxyConfig.swift */,
+				D6F3E886B51FBE741DF09E57 /* AppAttestManager.swift */,
+			);
+			name = Networking;
 			sourceTree = "<group>";
 		};
 		9F891AF20FFCF5BC4E15AE9D /* KAIZENNWatch Watch App */ = {
@@ -338,6 +337,31 @@
 			children = (
 			);
 			path = Activity;
+			sourceTree = "<group>";
+		};
+		C3D4E5F6A7B8C9D0E1F2A3B4 /* Hub */ = {
+			isa = PBXGroup;
+			children = (
+				E2F3A4B5C6D7E8F9A0B1C2D3 /* WearableHubView.swift */,
+				A4B5C6D7E8F9A0B1C2D3E4F5 /* GPSImportView.swift */,
+				C6D7E8F9A0B1C2D3E4F5A6B7 /* StrengthLoggerView.swift */,
+				E8F9A0B1C2D3E4F5A6B7C8D9 /* CatapultParser.swift */,
+				A1B2C3D4E5F6789012345678 /* TrainingMenuScanView.swift */,
+			);
+			path = Hub;
+			sourceTree = "<group>";
+		};
+		CAFE000000000000000000A2 /* KAIZENNTests */ = {
+			isa = PBXGroup;
+			children = (
+				BEEF000000000000000000F1 /* UserProfileTests.swift */,
+				BEEF000000000000000000F2 /* StrengthSessionTests.swift */,
+				BEEF000000000000000000F3 /* GPSSessionTests.swift */,
+				BEEF000000000000000000F4 /* SportProfileTests.swift */,
+				BEEF000000000000000000F5 /* CatapultParserTests.swift */,
+				BEEF000000000000000000F6 /* LoadStoreTests.swift */,
+			);
+			path = KAIZENNTests;
 			sourceTree = "<group>";
 		};
 		CDB672A5B963039BE9FC9603 /* KAIZENN */ = {
@@ -435,8 +459,6 @@
 			dependencies = (
 			);
 			name = KAIZENN;
-			packageProductDependencies = (
-			);
 			productName = KAIZENN;
 			productReference = 3515F086ED3D1C85E9065024 /* KAIZENN.app */;
 			productType = "com.apple.product-type.application";
@@ -454,8 +476,6 @@
 			dependencies = (
 			);
 			name = "KAIZENNWatch Watch App";
-			packageProductDependencies = (
-			);
 			productName = "KAIZENNWatch Watch App";
 			productReference = C666607A8ABE9C541089D071 /* KAIZENNWatch Watch App.app */;
 			productType = "com.apple.product-type.application";
@@ -472,8 +492,6 @@
 				CAFE000000000000000000A7 /* PBXTargetDependency */,
 			);
 			name = KAIZENNTests;
-			packageProductDependencies = (
-			);
 			productName = KAIZENNTests;
 			productReference = CAFE000000000000000000A1 /* KAIZENNTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -594,6 +612,8 @@
 				7039CE9C1C224420879389AE /* GPSSession.swift in Sources */,
 				BC4B7FB8C7494662906B4E4F /* StrengthSession.swift in Sources */,
 				F0A1B2C3D4E5F6A7B8C9D0E1 /* TrainingMenuScanView.swift in Sources */,
+				4342C66E6102EAB1E32F7F1E /* ProxyConfig.swift in Sources */,
+				805B6A7768104E6700107F70 /* AppAttestManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -611,16 +631,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXContainerItemProxy section */
-		CAFE000000000000000000A8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5299AC4324DC18342A8CCD96 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 10B243F3E8F88BBF5D5C0CB6;
-			remoteInfo = KAIZENN;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXTargetDependency section */
 		CAFE000000000000000000A7 /* PBXTargetDependency */ = {
@@ -795,30 +805,6 @@
 			};
 			name = Debug;
 		};
-		E0FA9E38B29999CDCAED7CD9 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = CC33DD44EE55FF6677889900 /* Config.xcconfig */;
-			buildSettings = {
-				ASSET_CATALOG_COMPILER_OPTIMIZATION = space;
-				CODE_SIGN_ENTITLEMENTS = KAIZENN/KAIZENN.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = KAIZENN/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LE_SWIFT_VERSION = 5.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kaizenn.app;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 		CAFE000000000000000000A5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -856,6 +842,30 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KAIZENN.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/KAIZENN";
+			};
+			name = Release;
+		};
+		E0FA9E38B29999CDCAED7CD9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CC33DD44EE55FF6677889900 /* Config.xcconfig */;
+			buildSettings = {
+				ASSET_CATALOG_COMPILER_OPTIMIZATION = space;
+				CODE_SIGN_ENTITLEMENTS = KAIZENN/KAIZENN.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = KAIZENN/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LE_SWIFT_VERSION = 5.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kaizenn.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
