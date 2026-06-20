@@ -15,6 +15,7 @@
 		207B1054BC1640A290B31727 /* FoodPhotoScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32A5E2F875C4A01ABF14654 /* FoodPhotoScanView.swift */; };
 		2F4C501FD3324042C681505E /* ActivityModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BF6A101ADB86CED296D47B /* ActivityModels.swift */; };
 		4342C66E6102EAB1E32F7F1E /* ProxyConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0200E6305302558E6CB980C /* ProxyConfig.swift */; };
+		4D41CA20C98165484C57B400 /* ClaudeServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26164ACA6E2669428B3C7B3 /* ClaudeServiceTests.swift */; };
 		4DC7EFA7E729B492D4D9172E /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBDA3236A3DD82FE4245CA7E /* AppState.swift */; };
 		5B083EA9B8E1A2EDA5DF0690 /* WeightStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A473374B40C1F5DD3B764F6 /* WeightStore.swift */; };
 		6105612DBCF6B316335CE476 /* AddFoodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1505C1567225A39F15208143 /* AddFoodView.swift */; };
@@ -133,6 +134,7 @@
 		E2F3A4B5C6D7E8F9A0B1C2D3 /* WearableHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WearableHubView.swift; sourceTree = "<group>"; };
 		E868E1A4C35548A0AF1BF44F /* LoadStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadStore.swift; sourceTree = "<group>"; };
 		E8F9A0B1C2D3E4F5A6B7C8D9 /* CatapultParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatapultParser.swift; sourceTree = "<group>"; };
+		F26164ACA6E2669428B3C7B3 /* ClaudeServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClaudeServiceTests.swift; sourceTree = "<group>"; };
 		F32A5E2F875C4A01ABF14654 /* FoodPhotoScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodPhotoScanView.swift; sourceTree = "<group>"; };
 		F6C9B84C7FB7A36D458D9FF7 /* LogWeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogWeightView.swift; sourceTree = "<group>"; };
 		FC4FC53957394ECAB54AE795 /* KAIZENN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KAIZENN.entitlements; sourceTree = "<group>"; };
@@ -360,6 +362,7 @@
 				BEEF000000000000000000F4 /* SportProfileTests.swift */,
 				BEEF000000000000000000F5 /* CatapultParserTests.swift */,
 				BEEF000000000000000000F6 /* LoadStoreTests.swift */,
+				F26164ACA6E2669428B3C7B3 /* ClaudeServiceTests.swift */,
 			);
 			path = KAIZENNTests;
 			sourceTree = "<group>";
@@ -627,6 +630,7 @@
 				FACE000000000000000000B4 /* SportProfileTests.swift in Sources */,
 				FACE000000000000000000B5 /* CatapultParserTests.swift in Sources */,
 				FACE000000000000000000B6 /* LoadStoreTests.swift in Sources */,
+				4D41CA20C98165484C57B400 /* ClaudeServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

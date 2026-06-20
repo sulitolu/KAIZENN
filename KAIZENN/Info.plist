@@ -56,7 +56,5 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>ClaudeAPIKey</key>
-	<string>$(CLAUDE_API_KEY)</string>
 </dict>
 </plist>

@@ -1,133 +1,87 @@
 import Foundation
 import UIKit
 
-// MARK: — Claude AI Service
-// Powers the KAI Coach chat using Anthropic's Claude API.
-// ⚠️  Before App Store release, move the API key to a secure backend
-//     (e.g. a Supabase Edge Function) so it's never shipped inside the app binary.
+// MARK: — Claude AI Service (via kai-proxy)
+// The Anthropic key lives ONLY in the Supabase Edge Function. Every call is
+// authenticated with App Attest (see AppAttestManager) and rate-limited server-side.
 
 enum ClaudeError: LocalizedError {
     case invalidResponse
     case requestFailed(String)
     case noContent
+    case rateLimited
+    case unverifiedDevice
 
     var errorDescription: String? {
         switch self {
         case .invalidResponse:        return "Unexpected response from AI service."
         case .requestFailed(let msg): return msg
         case .noContent:              return "No response received from AI."
+        case .rateLimited:            return "You've hit today's AI limit — it resets tomorrow."
+        case .unverifiedDevice:       return "Couldn't verify this device for AI features."
         }
     }
 }
 
 struct ClaudeService {
+    /// Injectable for tests; defaults to the shared session.
+    static var session: URLSession = .shared
 
-    // API key is loaded from Config.xcconfig → Info.plist at build time.
-    // Set CLAUDE_API_KEY in KAIZENN/Config.xcconfig (gitignored).
-    // ⚠️  For production: fetch this from your backend, never hardcode it.
-    private static var apiKey: String {
-        Bundle.main.object(forInfoDictionaryKey: "ClaudeAPIKey") as? String ?? ""
-    }
-    private static let model   = "claude-sonnet-4-6"
-    private static let baseURL = URL(string: "https://api.anthropic.com/v1/messages")!
-
-    /// Send a chat turn to Claude and return the assistant's reply.
-    /// - Parameters:
-    ///   - messages:     The full conversation so far (ChatMessage array from CoachView).
-    ///   - systemPrompt: Context about the user's profile and today's data.
+    /// Send a chat turn to the proxy and return the assistant's reply.
     static func chat(messages: [ChatMessage], systemPrompt: String) async throws -> String {
-
-        // Build the Anthropic messages array from our ChatMessage model
         let anthropicMessages = messages.map { msg in
-            ["role": msg.isUser ? "user" : "assistant",
-             "content": msg.text]
+            ["role": msg.isUser ? "user" : "assistant", "content": msg.text]
         }
-
-        let body: [String: Any] = [
-            "model":      model,
-            "max_tokens": 1024,
-            "system":     systemPrompt,
-            "messages":   anthropicMessages
-        ]
-
-        var request = URLRequest(url: baseURL)
-        request.httpMethod = "POST"
-        request.setValue(apiKey,          forHTTPHeaderField: "x-api-key")
-        request.setValue("2023-06-01",    forHTTPHeaderField: "anthropic-version")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONSerialization.data(withJSONObject: body)
-
-        let (data, response) = try await URLSession.shared.data(for: request)
-
-        guard let http = response as? HTTPURLResponse else {
-            throw ClaudeError.invalidResponse
-        }
-
-        guard (200..<300).contains(http.statusCode) else {
-            let msg = String(data: data, encoding: .utf8) ?? "Unknown error"
-            throw ClaudeError.requestFailed("API error \(http.statusCode): \(msg)")
-        }
-
-        let decoded = try JSONDecoder().decode(ClaudeResponse.self, from: data)
-
-        guard let text = decoded.content.first?.text else {
-            throw ClaudeError.noContent
-        }
-
-        return text
+        let payload: [String: Any] = ["messages": anthropicMessages, "systemPrompt": systemPrompt]
+        return try await post(path: "chat", payload: payload)
     }
 
-    /// Send an image to Claude Vision and return the assistant's analysis.
-    /// image is base64-encoded and sent as a content block alongside the system prompt.
+    /// Send an image to the proxy's vision endpoint and return the analysis.
     static func chatWithImage(image: UIImage, systemPrompt: String) async throws -> String {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {
             throw ClaudeError.requestFailed("Failed to encode image")
         }
-        let base64 = imageData.base64EncodedString()
-
-        let body: [String: Any] = [
-            "model":      model,
-            "max_tokens": 1024,
-            "system":     systemPrompt,
-            "messages": [
-                [
-                    "role": "user",
-                    "content": [
-                        ["type": "image",
-                         "source": ["type": "base64", "media_type": "image/jpeg", "data": base64]],
-                        ["type": "text",
-                         "text": "Analyse this image and respond with structured JSON only."]
-                    ]
-                ]
-            ]
+        let payload: [String: Any] = [
+            "imageBase64": imageData.base64EncodedString(),
+            "systemPrompt": systemPrompt,
         ]
+        return try await post(path: "vision", payload: payload)
+    }
 
-        var request = URLRequest(url: baseURL)
-        request.httpMethod = "POST"
-        request.setValue(apiKey,             forHTTPHeaderField: "x-api-key")
-        request.setValue("2023-06-01",       forHTTPHeaderField: "anthropic-version")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+    // MARK: - Shared proxy POST
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+    private static func post(path: String, payload: [String: Any]) async throws -> String {
+        let body = try JSONSerialization.data(withJSONObject: payload)
 
-        guard let http = response as? HTTPURLResponse else { throw ClaudeError.invalidResponse }
-        guard (200..<300).contains(http.statusCode) else {
-            let msg = String(data: data, encoding: .utf8) ?? "Unknown error"
-            throw ClaudeError.requestFailed("Vision API error \(http.statusCode): \(msg)")
+        let headers: [String: String]
+        do {
+            headers = try await AppAttestManager.shared.authHeaders(for: body)
+        } catch {
+            throw ClaudeError.unverifiedDevice
         }
 
-        let decoded = try JSONDecoder().decode(ClaudeResponse.self, from: data)
-        guard let text = decoded.content.first?.text else { throw ClaudeError.noContent }
+        var request = URLRequest(url: ProxyConfig.baseURL.appendingPathComponent(path))
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        headers.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }
+        request.httpBody = body
+
+        let (data, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse else { throw ClaudeError.invalidResponse }
+
+        switch http.statusCode {
+        case 200..<300: break
+        case 401:       throw ClaudeError.unverifiedDevice
+        case 429:       throw ClaudeError.rateLimited
+        default:
+            let msg = String(data: data, encoding: .utf8) ?? "Unknown error"
+            throw ClaudeError.requestFailed("API error \(http.statusCode): \(msg)")
+        }
+
+        let decoded = try JSONDecoder().decode(ProxyReply.self, from: data)
+        guard let text = decoded.text, !text.isEmpty else { throw ClaudeError.noContent }
         return text
     }
 }
 
-// MARK: — Anthropic Response Models
-private struct ClaudeResponse: Decodable {
-    let content: [ContentBlock]
-}
-
-private struct ContentBlock: Decodable {
-    let text: String
-}
+private struct ProxyReply: Decodable { let text: String? }
