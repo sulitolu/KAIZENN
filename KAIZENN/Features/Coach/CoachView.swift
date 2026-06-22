@@ -20,11 +20,24 @@ struct CoachView: View {
     @State private var isThinking = false
     @State private var activeAction: CoachActionType?
 
+    private let actionStore = CoachActionStore()
+    @State private var hiddenActionIDs: Set<String> = []
+    @State private var editingProposal: ProposedAction?
+
     // Single source of truth for the score: Kai reads the same ReadinessEngine as Home.
     private var readiness: ReadinessBreakdown {
         ReadinessEngine.breakdown(for: readinessBaseline.inputs(
             health: healthKitManager, loadStore: loadStore,
             nutrition: nutritionStore, profile: appState.userProfile))
+    }
+
+    // Rule-based proposals, minus anything dismissed today or already on the schedule.
+    private var kaiProposals: [ProposedAction] {
+        let dismissed = actionStore.dismissed()
+        let todays = scheduleStore.tasks(for: Date())
+        return CoachActionEngine.proposals(readiness: readiness, sleepDebtHours: readinessBaseline.sleepDebtHours)
+            .filter { !hiddenActionIDs.contains($0.id) && !dismissed.contains($0.id) }
+            .filter { p in !todays.contains { $0.title == p.task.title } }
     }
 
     var body: some View {
@@ -41,6 +54,9 @@ struct CoachView: View {
 
                     // Focus Today (mockup: .ai-atl + .ai-action rows)
                     focusTodaySection
+
+                    // Suggested by Kai — propose → accept schedule actions
+                    suggestedSection
 
                     // Weekly Report
                     weeklyReportCard
@@ -84,6 +100,10 @@ struct CoachView: View {
             case .logWorkout:   StrengthLoggerView().environmentObject(loadStore)
             case .addSleepTask: AddTaskView(initialTitle: "Wind down for bed", initialCategory: .recovery)
             }
+        }
+        .sheet(item: $editingProposal) { p in
+            AddTaskView(initialTitle: p.task.title, initialCategory: p.task.category)
+                .environmentObject(scheduleStore)
         }
     }
 
@@ -193,6 +213,58 @@ struct CoachView: View {
     }
 
     // MARK: Weekly Report
+    // MARK: Suggested by Kai (propose → accept schedule actions)
+    @ViewBuilder
+    private var suggestedSection: some View {
+        let proposals = kaiProposals
+        if !proposals.isEmpty {
+            KSection(title: "Suggested by Kai") {
+                VStack(spacing: KTheme.Spacing.sm) {
+                    ForEach(proposals) { proposalCard($0) }
+                }
+            }
+        }
+    }
+
+    private func proposalCard(_ p: ProposedAction) -> some View {
+        KCard {
+            VStack(alignment: .leading, spacing: KTheme.Spacing.sm) {
+                Text(p.title)
+                    .font(KTheme.Typography.headingSmall)
+                    .foregroundColor(KTheme.Colors.textPrimary)
+                Text(p.detail)
+                    .font(KTheme.Typography.caption)
+                    .foregroundColor(KTheme.Colors.textSecondary)
+                HStack(spacing: KTheme.Spacing.sm) {
+                    Button {
+                        scheduleStore.addTask(p.task)
+                        withAnimation(KTheme.Animation.snappy) { _ = hiddenActionIDs.insert(p.id) }
+                    } label: {
+                        Text("Accept").font(.system(size: 14, weight: .bold)).foregroundColor(.white)
+                            .padding(.horizontal, 16).padding(.vertical, 8)
+                            .background(Capsule().fill(KTheme.Colors.accentPrimary))
+                    }
+                    .buttonStyle(.plain)
+
+                    Button { editingProposal = p } label: {
+                        Text("Edit").font(.system(size: 14, weight: .semibold)).foregroundColor(KTheme.Colors.textSecondary)
+                    }
+                    .buttonStyle(.plain)
+
+                    Spacer()
+
+                    Button {
+                        actionStore.dismiss(p.id)
+                        withAnimation(KTheme.Animation.snappy) { _ = hiddenActionIDs.insert(p.id) }
+                    } label: {
+                        Text("Dismiss").font(.system(size: 14)).foregroundColor(KTheme.Colors.textTertiary)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+    }
+
     // Readiness card — reads the SAME ReadinessEngine as Home (one source of truth, no parallel score).
     private var weeklyReportCard: some View {
         let r = readiness
