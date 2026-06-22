@@ -3,49 +3,79 @@ import XCTest
 
 final class ReadinessEngineTests: XCTestCase {
 
-    func testSleepScoreCapsAtEightHours() {
-        XCTAssertEqual(ReadinessEngine.sleepScore(8), 100, accuracy: 0.001)
-        XCTAssertEqual(ReadinessEngine.sleepScore(4), 50, accuracy: 0.001)
-        XCTAssertEqual(ReadinessEngine.sleepScore(10), 100, accuracy: 0.001) // capped
+    private func baseline(hrvN: Int = 60, sleepN: Int = 60) -> ReadinessBaseline {
+        ReadinessBaseline(
+            hrvLnSDNN: SignalBaseline(mean: 3.8, sd: 0.2, n: hrvN),       // ln(SDNN) ~ ln(45ms)
+            restingHR: SignalBaseline(mean: 55, sd: 4, n: hrvN),
+            sleepHours: SignalBaseline(mean: 7.5, sd: 0.8, n: sleepN),
+            sleepNeed: 8.0
+        )
     }
 
-    func testLoadScoreSweetSpotAndPenalty() {
-        XCTAssertEqual(ReadinessEngine.loadScore(0), 75, accuracy: 0.001)   // unknown
-        XCTAssertEqual(ReadinessEngine.loadScore(1.0), 100, accuracy: 0.001) // in 0.8...1.3
-        // acwr 1.4 -> delta 0.1 -> 100 - 10 = 90
-        XCTAssertEqual(ReadinessEngine.loadScore(1.4), 90, accuracy: 0.001)
+    private func inputs(hrv: Double? = 3.8, rhr: Double? = 55, sleep: Double? = 7.5,
+                        debt: Double = 0, reg: Double? = 0.5,
+                        acute: Double = 50, chronic: Double = 50,
+                        base: ReadinessBaseline? = nil) -> ReadinessInputs {
+        ReadinessInputs(hrvLnSDNNToday: hrv, restingHRToday: rhr, sleepHoursLast: sleep,
+                        sleepDebtHours: debt, sleepRegularitySD: reg,
+                        acuteLoad: acute, chronicLoad: chronic,
+                        consumedCalories: 2000, calorieTarget: 2000, proteinConsumed: 150, proteinTarget: 150,
+                        baseline: base ?? baseline())
     }
 
-    func testFuelScoreHalfCaloriesHalfProtein() {
-        // full calories, zero protein -> 50
-        XCTAssertEqual(ReadinessEngine.fuelScore(consumedCalories: 2300, calorieTarget: 2300, proteinConsumed: 0, proteinTarget: 150), 50, accuracy: 0.001)
-        // invalid targets -> 50 fallback
-        XCTAssertEqual(ReadinessEngine.fuelScore(consumedCalories: 100, calorieTarget: 0, proteinConsumed: 10, proteinTarget: 0), 50, accuracy: 0.001)
+    func testZSubMapping() {
+        XCTAssertEqual(ReadinessEngine.sub(z: 0), 80, accuracy: 0.001)
+        XCTAssertEqual(ReadinessEngine.sub(z: 1), 100, accuracy: 0.001)   // capped
+        XCTAssertEqual(ReadinessEngine.sub(z: -2), 40, accuracy: 0.001)
+        XCTAssertEqual(ReadinessEngine.sub(z: -5), 0, accuracy: 0.001)    // floored
     }
 
-    func testHRVScoreAbsentReturns75() {
-        XCTAssertEqual(ReadinessEngine.hrvScore(latest: nil, baseline: 50), 75, accuracy: 0.001)
-        XCTAssertEqual(ReadinessEngine.hrvScore(latest: 50, baseline: nil), 75, accuracy: 0.001)
-        XCTAssertEqual(ReadinessEngine.hrvScore(latest: 50, baseline: 50), 75, accuracy: 0.001) // at baseline
+    func testAtBaselineScoresAroundEighty() {
+        let b = ReadinessEngine.breakdown(for: inputs())
+        XCTAssertFalse(b.isCalibrating)
+        XCTAssertGreaterThanOrEqual(b.score, 74)
+        XCTAssertLessThanOrEqual(b.score, 86)
+        XCTAssertEqual(b.label, .ready)
+    }
+
+    func testLowHRVDropsRecovery() {
+        let low = ReadinessEngine.breakdown(for: inputs(hrv: 3.8 - 2 * 0.2))
+        XCTAssertNotNil(low.recovery)
+        XCTAssertLessThan(low.recovery!, 70)
+    }
+
+    func testHighRestingHRIsPenalised() {
+        let normal = ReadinessEngine.breakdown(for: inputs())
+        let highRHR = ReadinessEngine.breakdown(for: inputs(rhr: 55 + 2 * 4))
+        XCTAssertLessThan(highRHR.recovery!, normal.recovery!)
+    }
+
+    func testStrainPenalisesAcuteSpike() {
+        let spike = ReadinessEngine.strainScore(inputs(acute: 100, chronic: 50))!
+        XCTAssertLessThan(spike, 60)
+    }
+
+    func testMissingPillarRenormalises() {
+        let b = ReadinessEngine.breakdown(for: inputs(hrv: nil, rhr: nil))
+        XCTAssertNil(b.recovery)
+        XCTAssertGreaterThan(b.score, 0)
+    }
+
+    func testCalibratingUsesFallbackAndFlags() {
+        let cal = ReadinessEngine.breakdown(for: inputs(base: baseline(hrvN: 5, sleepN: 5)))
+        XCTAssertTrue(cal.isCalibrating)
+        XCTAssertGreaterThan(cal.score, 0)
+        XCTAssertLessThanOrEqual(cal.score, 100)
     }
 
     func testLabelBoundaries() {
-        XCTAssertEqual(ReadinessEngine.label(for: 80), .peak)
-        XCTAssertEqual(ReadinessEngine.label(for: 79), .gameReady)
-        XCTAssertEqual(ReadinessEngine.label(for: 60), .gameReady)
-        XCTAssertEqual(ReadinessEngine.label(for: 40), .build)
-        XCTAssertEqual(ReadinessEngine.label(for: 39), .recovery)
-    }
-
-    func testBreakdownDropsHRVWeightingWhenAbsent() {
-        // No HRV -> 3-pillar 0.33/0.33/0.34. All pillars 100 -> ~100.
-        let inputs = ReadinessInputs(sleepHours: 8, acwr: 1.0,
-            consumedCalories: 2300, calorieTarget: 2300,
-            proteinConsumed: 150, proteinTarget: 150,
-            hrvLatestMs: nil, hrvBaselineMs: nil)
-        let b = ReadinessEngine.breakdown(for: inputs)
-        XCTAssertFalse(b.hrvAvailable)
-        XCTAssertEqual(b.score, 100)
-        XCTAssertEqual(b.label, .peak)
+        XCTAssertEqual(ReadinessEngine.label(for: 85), .primed)
+        XCTAssertEqual(ReadinessEngine.label(for: 84), .ready)
+        XCTAssertEqual(ReadinessEngine.label(for: 70), .ready)
+        XCTAssertEqual(ReadinessEngine.label(for: 69), .moderate)
+        XCTAssertEqual(ReadinessEngine.label(for: 55), .moderate)
+        XCTAssertEqual(ReadinessEngine.label(for: 54), .caution)
+        XCTAssertEqual(ReadinessEngine.label(for: 40), .caution)
+        XCTAssertEqual(ReadinessEngine.label(for: 39), .recover)
     }
 }

@@ -20,6 +20,7 @@ struct DashboardView: View {
     @State private var showSettings = false
     @State private var showWeightHistory = false
     @State private var showReadinessReport = false
+    @StateObject private var readinessBaseline = ReadinessBaselineProvider()
 
     // MARK: - Raw values
     private var sleepHours: Double { healthKitManager.sleepHoursLast }
@@ -29,17 +30,21 @@ struct DashboardView: View {
     private var acuteLoad: Double { loadStore.acuteLoad }
     private var sport: SportProfile { appState.userProfile.sportProfile }
 
-    // MARK: - Readiness (delegated to ReadinessEngine)
+    // MARK: - Readiness (delegated to ReadinessEngine v2, baseline-relative)
     private var readinessInputs: ReadinessInputs {
         ReadinessInputs(
-            sleepHours: sleepHours,
-            acwr: acwr,
+            hrvLnSDNNToday: readinessBaseline.hrvLnSDNNToday,
+            restingHRToday: healthKitManager.heartRateResting,
+            sleepHoursLast: healthKitManager.sleepHoursLast > 0 ? healthKitManager.sleepHoursLast : nil,
+            sleepDebtHours: readinessBaseline.sleepDebtHours,
+            sleepRegularitySD: readinessBaseline.sleepRegularitySD,
+            acuteLoad: loadStore.acuteLoad,
+            chronicLoad: loadStore.chronicLoad,
             consumedCalories: consumedCalories,
             calorieTarget: Double(calorieTarget),
             proteinConsumed: nutritionStore.dailyNutrition(for: Date()).totalProteinG,
             proteinTarget: Double(appState.userProfile.macroTargets.proteinG),
-            hrvLatestMs: healthKitManager.hrvLatestMs,
-            hrvBaselineMs: healthKitManager.hrvBaselineMs
+            baseline: readinessBaseline.baseline
         )
     }
 
@@ -47,28 +52,25 @@ struct DashboardView: View {
 
     var readinessScore: Int { readinessBreakdown.score }
 
-    // Sub-scores kept as thin shims for edgePrompt + the fuel pillar tile.
-    private var sleepScore: Double { readinessBreakdown.sleepScore }
-    private var loadScore: Double { readinessBreakdown.loadScore }
-    private var fuelScore: Double { readinessBreakdown.fuelScore }
-
     private var readinessLabel: String {
         switch readinessBreakdown.label {
-        case .peak:      return L.t("dashboard.readiness.peak", lang)
-        case .gameReady: return L.t("dashboard.readiness.gameReady", lang)
-        case .build:     return L.t("dashboard.readiness.build", lang)
-        case .recovery:  return L.t("dashboard.readiness.recovery", lang)
+        case .primed:   return L.t("readiness.primed", lang)
+        case .ready:    return L.t("readiness.ready", lang)
+        case .moderate: return L.t("readiness.moderate", lang)
+        case .caution:  return L.t("readiness.caution", lang)
+        case .recover:  return L.t("readiness.recover", lang)
         }
     }
 
     private var readinessColor: Color { readinessBreakdown.label.color }
 
     private var edgePrompt: String {
-        if sleepScore < 60 {
+        let b = readinessBreakdown
+        if (b.sleep ?? 100) < 60 {
             return L.t("dashboard.edge.sleep", lang)
-        } else if fuelScore < 60 {
+        } else if (b.fuel ?? 100) < 60 {
             return L.t("dashboard.edge.fuel", lang)
-        } else if loadScore < 60 {
+        } else if (b.strain ?? 100) < 60 {
             return L.t("dashboard.edge.load", lang)
         } else {
             return L.t("dashboard.edge.primed", lang)
@@ -126,8 +128,14 @@ struct DashboardView: View {
             .padding(.bottom, 100)
         }
         .background(KTheme.Colors.background.ignoresSafeArea())
-        .task { await healthKitManager.fetchAllTodayData() }
-        .refreshable { await healthKitManager.fetchAllTodayData() }
+        .task {
+            await healthKitManager.fetchAllTodayData()
+            await readinessBaseline.refresh(health: healthKitManager)
+        }
+        .refreshable {
+            await healthKitManager.fetchAllTodayData()
+            await readinessBaseline.refresh(health: healthKitManager)
+        }
         .sheet(isPresented: $showLogMeal) {
             FoodPhotoScanView(mealType: .snack)
                 .environmentObject(appState)
@@ -161,6 +169,7 @@ struct DashboardView: View {
                 .environmentObject(nutritionStore)
                 .environmentObject(loadStore)
                 .environmentObject(weightStore)
+                .environmentObject(readinessBaseline)
         }
         .sheet(isPresented: $showWeightHistory) {
             WeightView()
@@ -377,13 +386,27 @@ struct DashboardView: View {
     }
 
     // MARK: - Pillar Tiles
+    // Pillar tiles show the baseline-relative sub-score (0–100), or "—" when that signal is unavailable.
+    private func pillarValue(_ v: Double?) -> String { v.map { "\(Int($0))" } ?? "—" }
+
     private var pillarsRow: some View {
-        HStack(spacing: 5) {
-            Button { navigate(to: .coach) } label: {
+        let b = readinessBreakdown
+        return HStack(spacing: 5) {
+            Button { showReadinessReport = true } label: {
+                PillarTile(
+                    iconSystemName: "waveform.path.ecg",
+                    iconColor: KTheme.Colors.accentSecondary,
+                    value: pillarValue(b.recovery),
+                    name: "RECOVERY"
+                )
+            }
+            .buttonStyle(.plain)
+
+            Button { showReadinessReport = true } label: {
                 PillarTile(
                     iconSystemName: "moon.fill",
                     iconColor: KTheme.Colors.accentPrimary,
-                    value: String(format: "%.1fh", sleepHours),
+                    value: pillarValue(b.sleep),
                     name: "SLEEP"
                 )
             }
@@ -393,8 +416,8 @@ struct DashboardView: View {
                 PillarTile(
                     iconSystemName: "bolt.fill",
                     iconColor: KTheme.Colors.accentTertiary,
-                    value: String(format: "%.1f", acwr),
-                    name: "LOAD"
+                    value: pillarValue(b.strain),
+                    name: "STRAIN"
                 )
             }
             .buttonStyle(.plain)
@@ -403,18 +426,8 @@ struct DashboardView: View {
                 PillarTile(
                     iconSystemName: "fork.knife",
                     iconColor: KTheme.Colors.accentAmber,
-                    value: "\(Int(fuelScore))%",
+                    value: pillarValue(b.fuel),
                     name: "FUEL"
-                )
-            }
-            .buttonStyle(.plain)
-
-            Button { navigate(to: .coach) } label: {
-                PillarTile(
-                    iconSystemName: "waveform.path.ecg",
-                    iconColor: KTheme.Colors.accentSecondary,
-                    value: hrvDisplay,
-                    name: "HRV"
                 )
             }
             .buttonStyle(.plain)

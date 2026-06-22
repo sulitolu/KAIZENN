@@ -71,17 +71,22 @@ struct ReadinessDailyView: View {
     @EnvironmentObject var healthKitManager: HealthKitManager
     @EnvironmentObject var nutritionStore: NutritionStore
     @EnvironmentObject var loadStore: LoadStore
+    @EnvironmentObject var readinessBaseline: ReadinessBaselineProvider
 
     private var inputs: ReadinessInputs {
         ReadinessInputs(
-            sleepHours: healthKitManager.sleepHoursLast,
-            acwr: loadStore.acwr,
+            hrvLnSDNNToday: readinessBaseline.hrvLnSDNNToday,
+            restingHRToday: healthKitManager.heartRateResting,
+            sleepHoursLast: healthKitManager.sleepHoursLast > 0 ? healthKitManager.sleepHoursLast : nil,
+            sleepDebtHours: readinessBaseline.sleepDebtHours,
+            sleepRegularitySD: readinessBaseline.sleepRegularitySD,
+            acuteLoad: loadStore.acuteLoad,
+            chronicLoad: loadStore.chronicLoad,
             consumedCalories: nutritionStore.dailyNutrition(for: Date()).totalCalories,
             calorieTarget: Double(appState.userProfile.dailyCalorieTarget),
             proteinConsumed: nutritionStore.dailyNutrition(for: Date()).totalProteinG,
             proteinTarget: Double(appState.userProfile.macroTargets.proteinG),
-            hrvLatestMs: healthKitManager.hrvLatestMs,
-            hrvBaselineMs: healthKitManager.hrvBaselineMs
+            baseline: readinessBaseline.baseline
         )
     }
     private var b: ReadinessBreakdown { ReadinessEngine.breakdown(for: inputs) }
@@ -89,24 +94,28 @@ struct ReadinessDailyView: View {
     var body: some View {
         VStack(spacing: KTheme.Spacing.md) {
             heroCard
-            pillarRow("Sleep", contribution: b.sleepScore,
-                      value: String(format: "%.1fh", inputs.sleepHours), tint: KTheme.Colors.accentTertiary)
-            pillarRow("Load", contribution: b.loadScore,
-                      value: inputs.acwr == 0 ? "—" : String(format: "ACWR %.2f", inputs.acwr), tint: KTheme.Colors.accentPrimary)
-            pillarRow("Fuel", contribution: b.fuelScore,
-                      value: "\(Int(inputs.consumedCalories)) / \(Int(inputs.calorieTarget)) kcal", tint: KTheme.Colors.accentAmber)
-            pillarRow("HRV", contribution: b.hrvScore,
-                      value: hrvText, tint: KTheme.Colors.accentSecondary)
+            Text(b.isCalibrating
+                 ? "Calibrating — learning your baseline (first \(ReadinessBaseline.minDays) days)"
+                 : "Scored vs your 60-day normal")
+                .font(.system(size: 11))
+                .foregroundColor(KTheme.Colors.textTertiary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            pillarRow("Recovery", contribution: b.recovery, detail: recoveryDetail, tint: KTheme.Colors.accentSecondary)
+            pillarRow("Sleep",    contribution: b.sleep,    detail: sleepDetail,    tint: KTheme.Colors.accentPrimary)
+            pillarRow("Strain",   contribution: b.strain,   detail: strainDetail,   tint: KTheme.Colors.accentTertiary)
+            pillarRow("Fuel",     contribution: b.fuel,     detail: fuelDetail,     tint: KTheme.Colors.accentAmber)
         }
     }
 
-    private var hrvText: String {
-        guard let latest = inputs.hrvLatestMs else { return "—" }
-        if let base = inputs.hrvBaselineMs, base > 0 {
-            return String(format: "%.0fms (%+.0f vs base)", latest, latest - base)
-        }
-        return String(format: "%.0fms", latest)
+    private var recoveryDetail: String {
+        guard let rhr = healthKitManager.heartRateResting else { return "HRV + resting HR" }
+        return String(format: "RHR %.0f bpm", rhr)
     }
+    private var sleepDetail: String { inputs.sleepHoursLast.map { String(format: "%.1fh", $0) } ?? "—" }
+    private var strainDetail: String {
+        inputs.chronicLoad > 0 ? String(format: "%.0f%% of normal load", inputs.acuteLoad / inputs.chronicLoad * 100) : "—"
+    }
+    private var fuelDetail: String { "\(Int(inputs.consumedCalories)) / \(Int(inputs.calorieTarget)) kcal" }
 
     private var heroCard: some View {
         VStack(spacing: 4) {
@@ -123,14 +132,14 @@ struct ReadinessDailyView: View {
         .background(RoundedRectangle(cornerRadius: 18).fill(KTheme.Colors.card))
     }
 
-    private func pillarRow(_ name: String, contribution: Double, value: String, tint: Color) -> some View {
+    private func pillarRow(_ name: String, contribution: Double?, detail: String, tint: Color) -> some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
                 Text(name).font(.system(size: 15, weight: .semibold)).foregroundColor(KTheme.Colors.textPrimary)
-                Text(value).font(.system(size: 13)).foregroundColor(KTheme.Colors.textTertiary)
+                Text(detail).font(.system(size: 13)).foregroundColor(KTheme.Colors.textTertiary)
             }
             Spacer()
-            Text("\(Int(contribution))")
+            Text(contribution.map { "\(Int($0))" } ?? "—")
                 .font(.system(size: 18, weight: .bold, design: .rounded))
                 .foregroundColor(tint)
         }

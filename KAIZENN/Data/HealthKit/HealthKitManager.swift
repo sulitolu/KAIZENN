@@ -164,6 +164,54 @@ class HealthKitManager: ObservableObject {
         }
     }
 
+    /// One value per day (daily average) over the last `days` days, chronological. Missing days omitted.
+    func fetchDailySeries(_ id: HKQuantityTypeIdentifier, unit: HKUnit, days: Int) async -> [Double] {
+        guard let type = HKQuantityType.quantityType(forIdentifier: id) else { return [] }
+        let cal = Calendar.current
+        let anchor = cal.startOfDay(for: Date())
+        let start = cal.date(byAdding: .day, value: -days, to: anchor)!
+        let pred = HKQuery.predicateForSamples(withStart: start, end: Date())
+        return await withCheckedContinuation { cont in
+            let q = HKStatisticsCollectionQuery(quantityType: type, quantitySamplePredicate: pred,
+                                                options: .discreteAverage, anchorDate: anchor,
+                                                intervalComponents: DateComponents(day: 1))
+            q.initialResultsHandler = { _, results, _ in
+                var values: [Double] = []
+                results?.enumerateStatistics(from: start, to: Date()) { stats, _ in
+                    if let v = stats.averageQuantity()?.doubleValue(for: unit) { values.append(v) }
+                }
+                cont.resume(returning: values)
+            }
+            store.execute(q)
+        }
+    }
+
+    /// Asleep hours per night for the last `nights` nights (each night = the 24h window ending that morning).
+    func fetchSleepHistory(nights: Int) async -> [Double] {
+        guard let type = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else { return [] }
+        let cal = Calendar.current
+        var out: [Double] = []
+        let asleep: Set<Int> = [HKCategoryValueSleepAnalysis.asleepREM.rawValue,
+                                HKCategoryValueSleepAnalysis.asleepCore.rawValue,
+                                HKCategoryValueSleepAnalysis.asleepDeep.rawValue,
+                                HKCategoryValueSleepAnalysis.asleepUnspecified.rawValue]
+        for offset in stride(from: nights, through: 1, by: -1) {
+            let morning = cal.startOfDay(for: cal.date(byAdding: .day, value: -(offset - 1), to: Date())!)
+            let prev = cal.date(byAdding: .hour, value: -24, to: morning)!
+            let pred = HKQuery.predicateForSamples(withStart: prev, end: morning)
+            let hours: Double = await withCheckedContinuation { cont in
+                let q = HKSampleQuery(sampleType: type, predicate: pred, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { _, samples, _ in
+                    let secs = (samples as? [HKCategorySample])?.filter { asleep.contains($0.value) }
+                        .reduce(0.0) { $0 + $1.endDate.timeIntervalSince($1.startDate) } ?? 0
+                    cont.resume(returning: secs / 3600)
+                }
+                self.store.execute(q)
+            }
+            if hours > 0 { out.append(hours) }
+        }
+        return out
+    }
+
     func fetchRecentWorkouts(limit: Int = 20) async -> [WorkoutSession] {
         let sort = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
         return await withCheckedContinuation { cont in

@@ -201,6 +201,11 @@ enum L {
         "dashboard.readiness.gameReady": ["en": "GAME READY",  "ja": "試合準備完了"],
         "dashboard.readiness.build":  ["en": "BUILD DAY",      "ja": "強化日"],
         "dashboard.readiness.recovery": ["en": "RECOVERY DAY", "ja": "回復日"],
+        "readiness.primed":   ["en": "PRIMED",   "ja": "絶好調"],
+        "readiness.ready":    ["en": "READY",    "ja": "良好"],
+        "readiness.moderate": ["en": "MODERATE", "ja": "普通"],
+        "readiness.caution":  ["en": "CAUTION",  "ja": "注意"],
+        "readiness.recover":  ["en": "RECOVER",  "ja": "回復優先"],
         "dashboard.edge.sleep": [
             "en": "Your edge: target 8hrs sleep tonight.",
             "ja": "あなたの強み：今夜は8時間の睡眠を目指しましょう。",
