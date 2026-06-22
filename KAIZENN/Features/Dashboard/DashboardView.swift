@@ -28,66 +28,39 @@ struct DashboardView: View {
     private var acuteLoad: Double { loadStore.acuteLoad }
     private var sport: SportProfile { appState.userProfile.sportProfile }
 
-    // MARK: - Pillar scores
-    private var sleepScore: Double {
-        min(sleepHours / 8.0, 1.0) * 100
+    // MARK: - Readiness (delegated to ReadinessEngine)
+    private var readinessInputs: ReadinessInputs {
+        ReadinessInputs(
+            sleepHours: sleepHours,
+            acwr: acwr,
+            consumedCalories: consumedCalories,
+            calorieTarget: Double(calorieTarget),
+            proteinConsumed: nutritionStore.dailyNutrition(for: Date()).totalProteinG,
+            proteinTarget: Double(appState.userProfile.macroTargets.proteinG),
+            hrvLatestMs: healthKitManager.hrvLatestMs,
+            hrvBaselineMs: healthKitManager.hrvBaselineMs
+        )
     }
 
-    private var loadScore: Double {
-        guard acwr != 0 else { return 75 }
-        let range: ClosedRange<Double> = 0.8...1.3
-        if range.contains(acwr) { return 100 }
-        let delta = acwr < range.lowerBound
-            ? range.lowerBound - acwr
-            : acwr - range.upperBound
-        return max(0, 100 - (delta * 100))
-    }
+    private var readinessBreakdown: ReadinessBreakdown { ReadinessEngine.breakdown(for: readinessInputs) }
 
-    private var fuelScore: Double {
-        let proteinTarget = Double(appState.userProfile.macroTargets.proteinG)
-        guard calorieTarget > 0, proteinTarget > 0 else { return 50 }
-        let calorieRatio = min(consumedCalories / Double(calorieTarget), 1.0)
-        let proteinConsumed = nutritionStore.dailyNutrition(for: Date()).totalProteinG
-        let proteinRatio = min(proteinConsumed / proteinTarget, 1.0)
-        return (calorieRatio * 0.5 + proteinRatio * 0.5) * 100
-    }
+    var readinessScore: Int { readinessBreakdown.score }
 
-    // HRV vs personal baseline: at/above baseline scores well, below penalises.
-    private var hrvAvailable: Bool { healthKitManager.hrvLatestMs != nil }
-
-    private var hrvScore: Double {
-        guard let latest = healthKitManager.hrvLatestMs else { return 75 }
-        guard let base = healthKitManager.hrvBaselineMs, base > 0 else { return 75 }
-        let ratio = latest / base
-        return min(max(75 + (ratio - 1.0) * 150, 0), 100)
-    }
-
-    // MARK: - Readiness
-    // Four pillars at 25% each once HRV data exists; until then, sleep/load/fuel.
-    var readinessScore: Int {
-        if hrvAvailable {
-            return Int(sleepScore * 0.25 + loadScore * 0.25 + fuelScore * 0.25 + hrvScore * 0.25)
-        }
-        return Int(sleepScore * 0.33 + loadScore * 0.33 + fuelScore * 0.34)
-    }
+    // Sub-scores kept as thin shims for edgePrompt + the fuel pillar tile.
+    private var sleepScore: Double { readinessBreakdown.sleepScore }
+    private var loadScore: Double { readinessBreakdown.loadScore }
+    private var fuelScore: Double { readinessBreakdown.fuelScore }
 
     private var readinessLabel: String {
-        switch readinessScore {
-        case 80...:   return L.t("dashboard.readiness.peak", lang)
-        case 60..<80: return L.t("dashboard.readiness.gameReady", lang)
-        case 40..<60: return L.t("dashboard.readiness.build", lang)
-        default:      return L.t("dashboard.readiness.recovery", lang)
+        switch readinessBreakdown.label {
+        case .peak:      return L.t("dashboard.readiness.peak", lang)
+        case .gameReady: return L.t("dashboard.readiness.gameReady", lang)
+        case .build:     return L.t("dashboard.readiness.build", lang)
+        case .recovery:  return L.t("dashboard.readiness.recovery", lang)
         }
     }
 
-    private var readinessColor: Color {
-        switch readinessScore {
-        case 80...: return Color(hex: "5EFFB7")
-        case 60..<80: return Color(hex: "7C6FFF")
-        case 40..<60: return Color(hex: "FFB347")
-        default: return Color(hex: "FF6B8A")
-        }
-    }
+    private var readinessColor: Color { readinessBreakdown.label.color }
 
     private var edgePrompt: String {
         if sleepScore < 60 {
