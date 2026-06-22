@@ -74,20 +74,8 @@ struct ReadinessDailyView: View {
     @EnvironmentObject var readinessBaseline: ReadinessBaselineProvider
 
     private var inputs: ReadinessInputs {
-        ReadinessInputs(
-            hrvLnSDNNToday: readinessBaseline.hrvLnSDNNToday,
-            restingHRToday: healthKitManager.heartRateResting,
-            sleepHoursLast: healthKitManager.sleepHoursLast > 0 ? healthKitManager.sleepHoursLast : nil,
-            sleepDebtHours: readinessBaseline.sleepDebtHours,
-            sleepRegularitySD: readinessBaseline.sleepRegularitySD,
-            acuteLoad: loadStore.acuteLoad,
-            chronicLoad: loadStore.chronicLoad,
-            consumedCalories: nutritionStore.dailyNutrition(for: Date()).totalCalories,
-            calorieTarget: Double(appState.userProfile.dailyCalorieTarget),
-            proteinConsumed: nutritionStore.dailyNutrition(for: Date()).totalProteinG,
-            proteinTarget: Double(appState.userProfile.macroTargets.proteinG),
-            baseline: readinessBaseline.baseline
-        )
+        readinessBaseline.inputs(health: healthKitManager, loadStore: loadStore,
+                                 nutrition: nutritionStore, profile: appState.userProfile)
     }
     private var b: ReadinessBreakdown { ReadinessEngine.breakdown(for: inputs) }
 

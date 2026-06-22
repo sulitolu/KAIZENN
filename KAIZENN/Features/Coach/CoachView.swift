@@ -14,10 +14,18 @@ struct CoachView: View {
     @EnvironmentObject var loadStore: LoadStore
 
     @StateObject private var coach = KAICoach()
+    @StateObject private var readinessBaseline = ReadinessBaselineProvider()
     @State private var chatMessages: [ChatMessage] = []
     @State private var userInput = ""
     @State private var isThinking = false
     @State private var activeAction: CoachActionType?
+
+    // Single source of truth for the score: Kai reads the same ReadinessEngine as Home.
+    private var readiness: ReadinessBreakdown {
+        ReadinessEngine.breakdown(for: readinessBaseline.inputs(
+            health: healthKitManager, loadStore: loadStore,
+            nutrition: nutritionStore, profile: appState.userProfile))
+    }
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -68,6 +76,7 @@ struct CoachView: View {
             )
             loadChatHistory()
         }
+        .task { await readinessBaseline.refresh(health: healthKitManager) }
         .sheet(item: $activeAction) { action in
             switch action {
             case .logMeal:      AddFoodView(mealType: .current)
@@ -184,31 +193,25 @@ struct CoachView: View {
     }
 
     // MARK: Weekly Report
+    // Readiness card — reads the SAME ReadinessEngine as Home (one source of truth, no parallel score).
     private var weeklyReportCard: some View {
-        KCard(elevated: true) {
+        let r = readiness
+        return KCard(elevated: true) {
             VStack(alignment: .leading, spacing: KTheme.Spacing.md) {
                 HStack {
-                    Text("Weekly Report")
+                    Text("Readiness")
                         .font(KTheme.Typography.headingSmall)
                         .foregroundColor(KTheme.Colors.textPrimary)
                     Spacer()
-                    KBadge(
-                        text: coach.weeklyScore > 75 ? "On Track" : "Keep Going",
-                        color: coach.weeklyScore > 75 ? KTheme.Colors.success : KTheme.Colors.accentAmber
-                    )
+                    KBadge(text: r.isCalibrating ? "Calibrating" : r.label.displayText,
+                           color: r.label.color)
                 }
 
                 HStack(spacing: KTheme.Spacing.xl) {
                     ZStack {
-                        KProgressRing(
-                            progress: Double(coach.weeklyScore),
-                            total: 100,
-                            size: 90,
-                            lineWidth: 8,
-                            color: scoreColor(coach.weeklyScore)
-                        )
+                        KProgressRing(progress: Double(r.score), total: 100, size: 90, lineWidth: 8, color: r.label.color)
                         VStack(spacing: 0) {
-                            Text("\(coach.weeklyScore)")
+                            Text("\(r.score)")
                                 .font(KTheme.Typography.headingLarge)
                                 .foregroundColor(KTheme.Colors.textPrimary)
                             Text("/ 100")
@@ -218,21 +221,30 @@ struct CoachView: View {
                     }
 
                     VStack(alignment: .leading, spacing: KTheme.Spacing.sm) {
-                        ForEach(coach.scoreBreakdown) { item in
-                            HStack {
-                                Circle().fill(item.color).frame(width: 8, height: 8)
-                                Text(item.label)
-                                    .font(KTheme.Typography.caption)
-                                    .foregroundColor(KTheme.Colors.textSecondary)
-                                Spacer()
-                                Text("\(item.score)/\(item.maxScore)")
-                                    .font(KTheme.Typography.label)
-                                    .foregroundColor(KTheme.Colors.textPrimary)
-                            }
-                        }
+                        readinessPillarRow("Recovery", r.recovery, KTheme.Colors.accentSecondary)
+                        readinessPillarRow("Sleep",    r.sleep,    KTheme.Colors.accentPrimary)
+                        readinessPillarRow("Strain",   r.strain,   KTheme.Colors.accentTertiary)
+                        readinessPillarRow("Fuel",     r.fuel,     KTheme.Colors.accentAmber)
                     }
                 }
+
+                Text(r.isCalibrating ? "Calibrating — learning your baseline" : "Scored vs your own baseline")
+                    .font(KTheme.Typography.caption)
+                    .foregroundColor(KTheme.Colors.textTertiary)
             }
+        }
+    }
+
+    private func readinessPillarRow(_ label: String, _ value: Double?, _ color: Color) -> some View {
+        HStack {
+            Circle().fill(color).frame(width: 8, height: 8)
+            Text(label)
+                .font(KTheme.Typography.caption)
+                .foregroundColor(KTheme.Colors.textSecondary)
+            Spacer()
+            Text(value.map { "\(Int($0))" } ?? "—")
+                .font(KTheme.Typography.label)
+                .foregroundColor(KTheme.Colors.textPrimary)
         }
     }
 
@@ -529,8 +541,6 @@ class KAICoach: ObservableObject {
     @Published var primaryAction: String? = nil
     @Published var primaryActionType: CoachActionType? = nil
     @Published var recommendations: [Recommendation] = []
-    @Published var weeklyScore: Int = 0
-    @Published var scoreBreakdown: [ScoreItem] = []
 
     struct Recommendation: Identifiable {
         let id = UUID()
@@ -542,14 +552,6 @@ class KAICoach: ObservableObject {
         var actionLabel: String? = nil
         var actionType: CoachActionType? = nil
         enum Priority { case high, medium, low }
-    }
-
-    struct ScoreItem: Identifiable {
-        let id = UUID()
-        let label: String
-        let score: Int
-        let maxScore: Int
-        let color: Color
     }
 
     static let quickPrompts = [
@@ -573,7 +575,7 @@ class KAICoach: ObservableObject {
 
         // Generate insight
         if sleepHours < 6 {
-            dailyInsight = "You're running on \(String(format: "%.1f", sleepHours)) hours of sleep. Prioritize rest tonight — sleep is when your body rebuilds muscle and resets hunger hormones."
+            dailyInsight = "You're running on \(String(format: "%.1f", sleepHours)) hours of sleep. Prioritize rest tonight — sleep is when your body adapts to training and your nervous system recovers."
             primaryAction = "Schedule 8 hours tonight"
             primaryActionType = .addSleepTask
         } else if stepsToday < 3000 {
@@ -598,16 +600,16 @@ class KAICoach: ObservableObject {
         var recs: [Recommendation] = []
 
         if health.sleepHoursLast < 7 {
-            recs.append(Recommendation(title: "Optimize Sleep", description: "Sleep 7-9 hours to maximize fat loss, muscle recovery, and hormone balance. Set a consistent bedtime.", icon: "moon.stars.fill", color: KTheme.Colors.accentPrimary, priority: .high, actionLabel: "Schedule wind-down", actionType: .addSleepTask))
+            recs.append(Recommendation(title: "Optimize Sleep", description: "Sleep 7-9 hours to maximize recovery, training adaptation, and hormone balance. Set a consistent bedtime.", icon: "moon.stars.fill", color: KTheme.Colors.accentPrimary, priority: .high, actionLabel: "Schedule wind-down", actionType: .addSleepTask))
         }
         if stepsToday < 7500 {
-            recs.append(Recommendation(title: "Hit 10K Steps", description: "Daily walking is the most underrated fat-loss tool. It's low-stress and burns significant calories without spiking cortisol.", icon: "figure.walk", color: KTheme.Colors.accentTertiary, priority: .high, actionLabel: "Log a walk", actionType: .logWalk))
+            recs.append(Recommendation(title: "Move More Today", description: "Easy daily movement is an underrated recovery tool — low-intensity activity boosts blood flow and aids recovery without adding training stress.", icon: "figure.walk", color: KTheme.Colors.accentTertiary, priority: .high, actionLabel: "Log a walk", actionType: .logWalk))
         }
         if todayNutrition.totalProteinG < Double(profile.macroTargets.proteinG) * 0.7 {
-            recs.append(Recommendation(title: "Increase Protein Intake", description: "You're under your protein target. Protein keeps you full, preserves muscle during weight loss, and has the highest thermic effect.", icon: "fork.knife", color: KTheme.Colors.accentSecondary, priority: .high, actionLabel: "Log a meal", actionType: .logMeal))
+            recs.append(Recommendation(title: "Increase Protein Intake", description: "You're under your protein target. Protein drives muscle repair and training adaptation — aim to spread it across the day.", icon: "fork.knife", color: KTheme.Colors.accentSecondary, priority: .high, actionLabel: "Log a meal", actionType: .logMeal))
         }
         if activity.totalWorkoutsThisWeek < 3 {
-            recs.append(Recommendation(title: "Strength Train 3x/Week", description: "Building muscle increases your resting metabolic rate, meaning you burn more calories doing nothing. Even 30 minutes counts.", icon: "dumbbell.fill", color: KTheme.Colors.accentAmber, priority: .medium, actionLabel: "Log a workout", actionType: .logWorkout))
+            recs.append(Recommendation(title: "Strength Train 3x/Week", description: "Resistance work builds the strength and resilience that carry into performance and reduce injury risk. Even 30 minutes counts.", icon: "dumbbell.fill", color: KTheme.Colors.accentAmber, priority: .medium, actionLabel: "Log a workout", actionType: .logWorkout))
         }
         if let change = weightChange, change > 1.5 {
             recs.append(Recommendation(title: "Moderate Deficit", description: "You're losing weight fast — which can cause muscle loss. Aim for 0.5-1kg/week. Eat more protein and add resistance training.", icon: "scalemass.fill", color: KTheme.Colors.warning, priority: .high, actionLabel: "Log a workout", actionType: .logWorkout))
@@ -620,25 +622,8 @@ class KAICoach: ObservableObject {
         }
 
         recommendations = recs
-
-        // Score calculation
-        var nutritionScore = 0
-        if todayNutrition.totalCalories > 0 { nutritionScore += 15 }
-        if todayNutrition.totalProteinG >= Double(profile.macroTargets.proteinG) * 0.8 { nutritionScore += 10 }
-        if nutrition.waterConsumedMl(for: Date()) >= 2000 { nutritionScore += 5 }
-
-        let activityScore = min(30, (stepsToday / 333) + (health.todayExerciseMinutes > 30 ? 10 : 0))
-        let habitScoreVal = Int(habitProgress * 20)
-        let sleepScore = sleepHours >= 7 ? 20 : sleepHours >= 6 ? 10 : 0
-
-        weeklyScore = min(100, nutritionScore + activityScore + habitScoreVal + sleepScore)
-
-        scoreBreakdown = [
-            ScoreItem(label: "Nutrition", score: nutritionScore, maxScore: 30, color: KTheme.Colors.accentSecondary),
-            ScoreItem(label: "Activity",  score: activityScore,  maxScore: 30, color: KTheme.Colors.accentTertiary),
-            ScoreItem(label: "Habits",    score: habitScoreVal,  maxScore: 20, color: KTheme.Colors.accentAmber),
-            ScoreItem(label: "Sleep",     score: sleepScore,     maxScore: 20, color: KTheme.Colors.accentPrimary),
-        ]
+        // The readiness score now comes from ReadinessEngine (see CoachView.readiness) — Kai no
+        // longer computes a separate, contradictory score.
     }
 
     func answer(question: String, profile: UserProfile, nutrition: NutritionStore,

@@ -31,24 +31,11 @@ struct DashboardView: View {
     private var sport: SportProfile { appState.userProfile.sportProfile }
 
     // MARK: - Readiness (delegated to ReadinessEngine v2, baseline-relative)
-    private var readinessInputs: ReadinessInputs {
-        ReadinessInputs(
-            hrvLnSDNNToday: readinessBaseline.hrvLnSDNNToday,
-            restingHRToday: healthKitManager.heartRateResting,
-            sleepHoursLast: healthKitManager.sleepHoursLast > 0 ? healthKitManager.sleepHoursLast : nil,
-            sleepDebtHours: readinessBaseline.sleepDebtHours,
-            sleepRegularitySD: readinessBaseline.sleepRegularitySD,
-            acuteLoad: loadStore.acuteLoad,
-            chronicLoad: loadStore.chronicLoad,
-            consumedCalories: consumedCalories,
-            calorieTarget: Double(calorieTarget),
-            proteinConsumed: nutritionStore.dailyNutrition(for: Date()).totalProteinG,
-            proteinTarget: Double(appState.userProfile.macroTargets.proteinG),
-            baseline: readinessBaseline.baseline
-        )
+    private var readinessBreakdown: ReadinessBreakdown {
+        ReadinessEngine.breakdown(for: readinessBaseline.inputs(
+            health: healthKitManager, loadStore: loadStore,
+            nutrition: nutritionStore, profile: appState.userProfile))
     }
-
-    private var readinessBreakdown: ReadinessBreakdown { ReadinessEngine.breakdown(for: readinessInputs) }
 
     var readinessScore: Int { readinessBreakdown.score }
 

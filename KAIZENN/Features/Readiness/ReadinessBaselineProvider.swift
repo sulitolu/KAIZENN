@@ -33,4 +33,25 @@ final class ReadinessBaselineProvider: ObservableObject {
             sleepNeed: need
         )
     }
+
+    /// Build the engine inputs from the stores + current baselines. One place so Home, the
+    /// readiness report, and the Coach tab all score identically (single source of truth).
+    func inputs(health: HealthKitManager, loadStore: LoadStore,
+                nutrition: NutritionStore, profile: UserProfile) -> ReadinessInputs {
+        let today = nutrition.dailyNutrition(for: Date())
+        return ReadinessInputs(
+            hrvLnSDNNToday: hrvLnSDNNToday,
+            restingHRToday: health.heartRateResting,
+            sleepHoursLast: health.sleepHoursLast > 0 ? health.sleepHoursLast : nil,
+            sleepDebtHours: sleepDebtHours,
+            sleepRegularitySD: sleepRegularitySD,
+            acuteLoad: loadStore.acuteLoad,
+            chronicLoad: loadStore.chronicLoad,
+            consumedCalories: today.totalCalories,
+            calorieTarget: Double(profile.dailyCalorieTarget),
+            proteinConsumed: today.totalProteinG,
+            proteinTarget: Double(profile.macroTargets.proteinG),
+            baseline: baseline
+        )
+    }
 }
