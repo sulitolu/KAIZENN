@@ -19,6 +19,7 @@ struct DashboardView: View {
     @State private var showProfile = false
     @State private var showSettings = false
     @State private var showWeightHistory = false
+    @State private var showReadinessReport = false
 
     // MARK: - Raw values
     private var sleepHours: Double { healthKitManager.sleepHoursLast }
@@ -153,6 +154,14 @@ struct DashboardView: View {
         .sheet(isPresented: $showSettings) {
             SettingsView()
         }
+        .sheet(isPresented: $showReadinessReport) {
+            ReadinessReportView()
+                .environmentObject(appState)
+                .environmentObject(healthKitManager)
+                .environmentObject(nutritionStore)
+                .environmentObject(loadStore)
+                .environmentObject(weightStore)
+        }
         .sheet(isPresented: $showWeightHistory) {
             WeightView()
                 .environmentObject(weightStore)
@@ -282,12 +291,12 @@ struct DashboardView: View {
 
     // MARK: - Score Hero Card
     private var scoreHeroCard: some View {
-        // The top row (score + ring) navigates to Coach. It's a SEPARATE button from
-        // the pillar tiles below — nesting them inside one outer Button made the
+        // The top row (score + ring) opens the Readiness Report. It's a SEPARATE button
+        // from the pillar tiles below — nesting them inside one outer Button made the
         // pillars' own destinations (Load→Hub, Fuel→Nutrition) unreachable.
         VStack(spacing: 11) {
             Button {
-                navigate(to: .coach)
+                showReadinessReport = true
             } label: {
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 2) {
