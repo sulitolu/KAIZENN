@@ -29,6 +29,7 @@
 		8B96EA90586A664726888B8A /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB3876B349BED91B0D93DAFF /* RootView.swift */; };
 		8C2832FA151648DE8EF36451 /* LoadStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E868E1A4C35548A0AF1BF44F /* LoadStore.swift */; };
 		9AE8EBB19366BE4866A2D39A /* ScheduleModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F0D44BEF7DD9E0ECC9090 /* ScheduleModels.swift */; };
+		9E83E42B410682BF4C540808 /* ReadinessEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DA2E8E540D5D178DF69C5A /* ReadinessEngine.swift */; };
 		A0CCA717A90BC88D63EAB5E8 /* ActivityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454E071F81DB7F28A76C3D8F /* ActivityStore.swift */; };
 		A385AEA5DE38382CD65DAC61 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93877A8ED2CE9EBE2CD5B717 /* ScheduleView.swift */; };
 		A55E846C7D9C11F5872AACFA /* KAIZENNApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499F2B3DA0EBD4484B821FBA /* KAIZENNApp.swift */; };
@@ -53,6 +54,7 @@
 		E122309DF0C240A4AE53BC4F /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6744AA49E02464781C4373C /* BarcodeScannerView.swift */; };
 		E2247B3EBA845E97050D7102 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917FF61075306FED050C78AC /* DashboardView.swift */; };
 		E31920300A97E130DA9FE108 /* NutritionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3486F76CEDC4116165842329 /* NutritionModels.swift */; };
+		E798A40EFD4BFC2815BC9F04 /* ReadinessEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EBE2F78097B007BB73911C9 /* ReadinessEngineTests.swift */; };
 		F0A1B2C3D4E5F6A7B8C9D0E1 /* TrainingMenuScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6789012345678 /* TrainingMenuScanView.swift */; };
 		F3A4B5C6D7E8F9A0B1C2D3E4 /* GPSImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B5C6D7E8F9A0B1C2D3E4F5 /* GPSImportView.swift */; };
 		F5F8306DA9EA43C58185E446 /* OpenFoodFactsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8607429885DD49118322ECBA /* OpenFoodFactsService.swift */; };
@@ -88,6 +90,7 @@
 		3486F76CEDC4116165842329 /* NutritionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionModels.swift; sourceTree = "<group>"; };
 		3515F086ED3D1C85E9065024 /* KAIZENN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KAIZENN.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A8F2C1D9E4B5067A1C2D3E4 /* KAIZENNWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KAIZENNWatch.entitlements; sourceTree = "<group>"; };
+		3EBE2F78097B007BB73911C9 /* ReadinessEngineTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReadinessEngineTests.swift; path = KAIZENNTests/ReadinessEngineTests.swift; sourceTree = SOURCE_ROOT; };
 		43746BB905634F97B3497D38 /* GPSSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSSession.swift; sourceTree = "<group>"; };
 		454E071F81DB7F28A76C3D8F /* ActivityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityStore.swift; sourceTree = "<group>"; };
 		499F2B3DA0EBD4484B821FBA /* KAIZENNApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KAIZENNApp.swift; sourceTree = "<group>"; };
@@ -134,6 +137,7 @@
 		D6F3E886B51FBE741DF09E57 /* AppAttestManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppAttestManager.swift; path = Networking/AppAttestManager.swift; sourceTree = "<group>"; };
 		DBDA3236A3DD82FE4245CA7E /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		E2F3A4B5C6D7E8F9A0B1C2D3 /* WearableHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WearableHubView.swift; sourceTree = "<group>"; };
+		E3DA2E8E540D5D178DF69C5A /* ReadinessEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReadinessEngine.swift; path = KAIZENN/Features/Readiness/ReadinessEngine.swift; sourceTree = SOURCE_ROOT; };
 		E868E1A4C35548A0AF1BF44F /* LoadStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadStore.swift; sourceTree = "<group>"; };
 		E8F9A0B1C2D3E4F5A6B7C8D9 /* CatapultParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatapultParser.swift; sourceTree = "<group>"; };
 		F26164ACA6E2669428B3C7B3 /* ClaudeServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClaudeServiceTests.swift; sourceTree = "<group>"; };
@@ -175,6 +179,7 @@
 				0CF0179A2CC647EB8C32269C /* Coach */,
 				75FB77641E054F81ADC184B3 /* Onboarding */,
 				C18162A1A58447A7B36A086D /* Profile */,
+				AC730DB8886BFA311B2534D9 /* Readiness */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -292,6 +297,14 @@
 			path = Notifications;
 			sourceTree = "<group>";
 		};
+		AC730DB8886BFA311B2534D9 /* Readiness */ = {
+			isa = PBXGroup;
+			children = (
+				E3DA2E8E540D5D178DF69C5A /* ReadinessEngine.swift */,
+			);
+			name = Readiness;
+			sourceTree = SOURCE_ROOT;
+		};
 		B2D4E6F8A1C34B7D9E0F1A2B /* Connectivity */ = {
 			isa = PBXGroup;
 			children = (
@@ -366,9 +379,10 @@
 				BEEF000000000000000000F5 /* CatapultParserTests.swift */,
 				BEEF000000000000000000F6 /* LoadStoreTests.swift */,
 				F26164ACA6E2669428B3C7B3 /* ClaudeServiceTests.swift */,
+				3EBE2F78097B007BB73911C9 /* ReadinessEngineTests.swift */,
 			);
 			path = KAIZENNTests;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		CDB672A5B963039BE9FC9603 /* KAIZENN */ = {
 			isa = PBXGroup;
@@ -621,6 +635,7 @@
 				4342C66E6102EAB1E32F7F1E /* ProxyConfig.swift in Sources */,
 				805B6A7768104E6700107F70 /* AppAttestManager.swift in Sources */,
 				7CC3CC76DDD9713EBCA04328 /* SettingsView.swift in Sources */,
+				9E83E42B410682BF4C540808 /* ReadinessEngine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -635,6 +650,7 @@
 				FACE000000000000000000B5 /* CatapultParserTests.swift in Sources */,
 				FACE000000000000000000B6 /* LoadStoreTests.swift in Sources */,
 				4D41CA20C98165484C57B400 /* ClaudeServiceTests.swift in Sources */,
+				E798A40EFD4BFC2815BC9F04 /* ReadinessEngineTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
