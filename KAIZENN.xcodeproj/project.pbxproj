@@ -22,6 +22,7 @@
 		6105612DBCF6B316335CE476 /* AddFoodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1505C1567225A39F15208143 /* AddFoodView.swift */; };
 		626F30D58C3445F29E2F0BDE /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEF3FD01726B46F7ADBE8A4E /* NotificationManager.swift */; };
 		654C21FF9D12EF059A9C835B /* LogWeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C9B84C7FB7A36D458D9FF7 /* LogWeightView.swift */; };
+		66D5EF9C8C8195C928FF8368 /* ReadinessBaselineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F1C5485AE3111A7148AC2C /* ReadinessBaselineTests.swift */; };
 		7039CE9C1C224420879389AE /* GPSSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43746BB905634F97B3497D38 /* GPSSession.swift */; };
 		70D5940D7218B4D0C2F38E32 /* NutritionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B12905602A54541D803EDE4 /* NutritionView.swift */; };
 		74C12F28F3F5DA47E83164EE /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60BB56C71F6FE206357FBC5B /* MainTabView.swift */; };
@@ -34,6 +35,7 @@
 		A0CCA717A90BC88D63EAB5E8 /* ActivityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454E071F81DB7F28A76C3D8F /* ActivityStore.swift */; };
 		A385AEA5DE38382CD65DAC61 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93877A8ED2CE9EBE2CD5B717 /* ScheduleView.swift */; };
 		A55E846C7D9C11F5872AACFA /* KAIZENNApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499F2B3DA0EBD4484B821FBA /* KAIZENNApp.swift */; };
+		A75E1FF7D8D46D6B98DE3F29 /* ReadinessBaseline.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4987AED5A5D9A5F741039B /* ReadinessBaseline.swift */; };
 		AE25D2ADB9303051068EFB7C /* WatchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA5063ABCB9D6C330FDC0C81 /* WatchKit.framework */; };
 		B3B1E2166CCE182C164F3526 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1926D9960C83E0D3B20705E /* HealthKitManager.swift */; };
 		B5C6D7E8F9A0B1C2D3E4F5A6 /* StrengthLoggerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D7E8F9A0B1C2D3E4F5A6B7 /* StrengthLoggerView.swift */; };
@@ -82,6 +84,7 @@
 /* Begin PBXFileReference section */
 		001F0D44BEF7DD9E0ECC9090 /* ScheduleModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleModels.swift; sourceTree = "<group>"; };
 		02B4E9E7F645566F6EC8259C /* AddTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
+		10F1C5485AE3111A7148AC2C /* ReadinessBaselineTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReadinessBaselineTests.swift; path = KAIZENNTests/ReadinessBaselineTests.swift; sourceTree = SOURCE_ROOT; };
 		1505C1567225A39F15208143 /* AddFoodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodView.swift; sourceTree = "<group>"; };
 		1A21A92B383EFD6E625BACD1 /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1C226AC67400A8E7FD5F6509 /* WeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightView.swift; sourceTree = "<group>"; };
@@ -124,6 +127,7 @@
 		B80BAD712FE4DDE100269068 /* File.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = File.txt; sourceTree = "<group>"; };
 		BA5063ABCB9D6C330FDC0C81 /* WatchKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchKit.framework; path = System/Library/Frameworks/WatchKit.framework; sourceTree = SDKROOT; };
 		BB3876B349BED91B0D93DAFF /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		BD4987AED5A5D9A5F741039B /* ReadinessBaseline.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReadinessBaseline.swift; path = KAIZENN/Features/Readiness/ReadinessBaseline.swift; sourceTree = SOURCE_ROOT; };
 		BEEF000000000000000000F1 /* UserProfileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileTests.swift; sourceTree = "<group>"; };
 		BEEF000000000000000000F2 /* StrengthSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthSessionTests.swift; sourceTree = "<group>"; };
 		BEEF000000000000000000F3 /* GPSSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSSessionTests.swift; sourceTree = "<group>"; };
@@ -304,6 +308,7 @@
 			children = (
 				E3DA2E8E540D5D178DF69C5A /* ReadinessEngine.swift */,
 				7AA17586E346D7FD3A99EB4A /* ReadinessReportView.swift */,
+				BD4987AED5A5D9A5F741039B /* ReadinessBaseline.swift */,
 			);
 			name = Readiness;
 			sourceTree = SOURCE_ROOT;
@@ -383,6 +388,7 @@
 				BEEF000000000000000000F6 /* LoadStoreTests.swift */,
 				F26164ACA6E2669428B3C7B3 /* ClaudeServiceTests.swift */,
 				3EBE2F78097B007BB73911C9 /* ReadinessEngineTests.swift */,
+				10F1C5485AE3111A7148AC2C /* ReadinessBaselineTests.swift */,
 			);
 			path = KAIZENNTests;
 			sourceTree = SOURCE_ROOT;
@@ -640,6 +646,7 @@
 				7CC3CC76DDD9713EBCA04328 /* SettingsView.swift in Sources */,
 				9E83E42B410682BF4C540808 /* ReadinessEngine.swift in Sources */,
 				3D7E0FA367412974CCCFB823 /* ReadinessReportView.swift in Sources */,
+				A75E1FF7D8D46D6B98DE3F29 /* ReadinessBaseline.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -655,6 +662,7 @@
 				FACE000000000000000000B6 /* LoadStoreTests.swift in Sources */,
 				4D41CA20C98165484C57B400 /* ClaudeServiceTests.swift in Sources */,
 				E798A40EFD4BFC2815BC9F04 /* ReadinessEngineTests.swift in Sources */,
+				66D5EF9C8C8195C928FF8368 /* ReadinessBaselineTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
