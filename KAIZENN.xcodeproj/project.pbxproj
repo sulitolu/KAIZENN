@@ -15,6 +15,7 @@
 		1A2B3C4D5E6F7A8B9C0D1E2F /* SportProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B3C4D5E6F7A8B9C0D1E2F3A /* SportProfile.swift */; };
 		207B1054BC1640A290B31727 /* FoodPhotoScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32A5E2F875C4A01ABF14654 /* FoodPhotoScanView.swift */; };
 		2F4C501FD3324042C681505E /* ActivityModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BF6A101ADB86CED296D47B /* ActivityModels.swift */; };
+		334121B3B24C702D1A304A11 /* CoachActionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C03483DCAD73AF1E893D661 /* CoachActionEngine.swift */; };
 		3D7E0FA367412974CCCFB823 /* ReadinessReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA17586E346D7FD3A99EB4A /* ReadinessReportView.swift */; };
 		4342C66E6102EAB1E32F7F1E /* ProxyConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0200E6305302558E6CB980C /* ProxyConfig.swift */; };
 		4D41CA20C98165484C57B400 /* ClaudeServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26164ACA6E2669428B3C7B3 /* ClaudeServiceTests.swift */; };
@@ -23,6 +24,7 @@
 		6105612DBCF6B316335CE476 /* AddFoodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1505C1567225A39F15208143 /* AddFoodView.swift */; };
 		626F30D58C3445F29E2F0BDE /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEF3FD01726B46F7ADBE8A4E /* NotificationManager.swift */; };
 		654C21FF9D12EF059A9C835B /* LogWeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6C9B84C7FB7A36D458D9FF7 /* LogWeightView.swift */; };
+		65555E59D4F84D2CEC8A643A /* CoachActionEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C38A60943F0E7701F1FBE2 /* CoachActionEngineTests.swift */; };
 		66D5EF9C8C8195C928FF8368 /* ReadinessBaselineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F1C5485AE3111A7148AC2C /* ReadinessBaselineTests.swift */; };
 		7039CE9C1C224420879389AE /* GPSSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43746BB905634F97B3497D38 /* GPSSession.swift */; };
 		70D5940D7218B4D0C2F38E32 /* NutritionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B12905602A54541D803EDE4 /* NutritionView.swift */; };
@@ -104,6 +106,7 @@
 		4D815DD2BB41FEA1DA45DC65 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		60B3AAC2E60EF20542835FBA /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
 		60BB56C71F6FE206357FBC5B /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		64C38A60943F0E7701F1FBE2 /* CoachActionEngineTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CoachActionEngineTests.swift; path = KAIZENNTests/CoachActionEngineTests.swift; sourceTree = SOURCE_ROOT; };
 		657D6919B2ABE2F8B5FEB5AC /* KAIZENNWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KAIZENNWatchApp.swift; sourceTree = "<group>"; };
 		6A473374B40C1F5DD3B764F6 /* WeightStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightStore.swift; sourceTree = "<group>"; };
 		6B12905602A54541D803EDE4 /* NutritionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionView.swift; sourceTree = "<group>"; };
@@ -116,6 +119,7 @@
 		917FF61075306FED050C78AC /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		91BF6A101ADB86CED296D47B /* ActivityModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityModels.swift; sourceTree = "<group>"; };
 		93877A8ED2CE9EBE2CD5B717 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
+		9C03483DCAD73AF1E893D661 /* CoachActionEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CoachActionEngine.swift; path = KAIZENN/Features/Coach/CoachActionEngine.swift; sourceTree = SOURCE_ROOT; };
 		9D0A0AEA590D4DB0BD445B4C /* StrengthSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthSession.swift; sourceTree = "<group>"; };
 		9E6C56295BB4682F8D01931C /* NutritionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionStore.swift; sourceTree = "<group>"; };
 		9F19765D068E4A8698F6FC0F /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
@@ -217,6 +221,8 @@
 				CAFE000000000000000000A2 /* KAIZENNTests */,
 				BF7A2D27A78D590BDEF15AF2 /* Products */,
 				B85152D62FDF93D9002044DD /* Recovered References */,
+				9C03483DCAD73AF1E893D661 /* CoachActionEngine.swift */,
+				64C38A60943F0E7701F1FBE2 /* CoachActionEngineTests.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -651,6 +657,7 @@
 				3D7E0FA367412974CCCFB823 /* ReadinessReportView.swift in Sources */,
 				A75E1FF7D8D46D6B98DE3F29 /* ReadinessBaseline.swift in Sources */,
 				10FD4B352EC8700EAA547D5A /* ReadinessBaselineProvider.swift in Sources */,
+				334121B3B24C702D1A304A11 /* CoachActionEngine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -667,6 +674,7 @@
 				4D41CA20C98165484C57B400 /* ClaudeServiceTests.swift in Sources */,
 				E798A40EFD4BFC2815BC9F04 /* ReadinessEngineTests.swift in Sources */,
 				66D5EF9C8C8195C928FF8368 /* ReadinessBaselineTests.swift in Sources */,
+				65555E59D4F84D2CEC8A643A /* CoachActionEngineTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
