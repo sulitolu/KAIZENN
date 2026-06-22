@@ -139,7 +139,90 @@ struct ReadinessDailyView: View {
     }
 }
 
-// Placeholder body — fleshed out in Task 5.
+struct Sparkline: View {
+    let values: [Double]
+    var tint: Color
+    var body: some View {
+        GeometryReader { geo in
+            let maxV = (values.max() ?? 1)
+            let minV = (values.min() ?? 0)
+            let span = max(maxV - minV, 0.0001)
+            HStack(alignment: .bottom, spacing: 3) {
+                ForEach(Array(values.enumerated()), id: \.offset) { _, v in
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(tint.opacity(0.85))
+                        .frame(height: max(4, CGFloat((v - minV) / span) * geo.size.height))
+                        .frame(maxWidth: .infinity)
+                }
+            }
+        }
+        .frame(height: 44)
+    }
+}
+
 struct ReadinessWeeklyView: View {
-    var body: some View { Text("Weekly").foregroundColor(.white) }
+    @EnvironmentObject var nutritionStore: NutritionStore
+    @EnvironmentObject var weightStore: WeightStore
+    @EnvironmentObject var loadStore: LoadStore
+
+    private var calorieSeries: [Double] { nutritionStore.weeklyCalories().map { $0.1 } }
+    private var weightSeries: [Double] { weightStore.trendLine(lastDays: 7) }
+
+    private var loadSeries: [Double] {
+        let cal = Calendar.current
+        return (0..<7).reversed().map { offset in
+            let day = cal.date(byAdding: .day, value: -offset, to: Date())!
+            return loadStore.gpsSessions
+                .filter { cal.isDate($0.date, inSameDayAs: day) }
+                .reduce(0) { $0 + $1.sessionLoad }
+        }
+    }
+
+    var body: some View {
+        VStack(spacing: KTheme.Spacing.md) {
+            summaryCard
+            trendCard("Fuel — 7-day calories", series: calorieSeries, tint: KTheme.Colors.accentAmber, empty: "No nutrition logged this week")
+            trendCard("Training load — 7 days", series: loadSeries, tint: KTheme.Colors.accentPrimary, empty: "No sessions this week")
+            trendCard("Weight trend", series: weightSeries, tint: KTheme.Colors.accentTertiary, empty: "No weight entries yet")
+            Text("Sleep, HRV and a full readiness trend arrive with HealthKit history (next update).")
+                .font(.system(size: 11))
+                .foregroundColor(KTheme.Colors.textTertiary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private var summaryCard: some View {
+        let sessions = loadSeries.filter { $0 > 0 }.count
+        let avgCal = calorieSeries.isEmpty ? 0 : Int(calorieSeries.reduce(0, +) / Double(calorieSeries.count))
+        let wChange = weightStore.weightChange(lastDays: 7)
+        return HStack(spacing: KTheme.Spacing.md) {
+            summaryStat("\(sessions)", "sessions")
+            summaryStat(avgCal == 0 ? "—" : "\(avgCal)", "avg kcal")
+            summaryStat(wChange == nil ? "—" : String(format: "%+.1f", wChange!), "kg Δ")
+        }
+        .padding(KTheme.Spacing.md)
+        .background(RoundedRectangle(cornerRadius: 16).fill(KTheme.Colors.card))
+    }
+
+    private func summaryStat(_ value: String, _ label: String) -> some View {
+        VStack(spacing: 2) {
+            Text(value).font(.system(size: 20, weight: .heavy)).foregroundColor(KTheme.Colors.textPrimary)
+            Text(label).font(.system(size: 11)).foregroundColor(KTheme.Colors.textTertiary)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private func trendCard(_ title: String, series: [Double], tint: Color, empty: String) -> some View {
+        VStack(alignment: .leading, spacing: KTheme.Spacing.sm) {
+            Text(title).font(.system(size: 13, weight: .semibold)).foregroundColor(KTheme.Colors.textSecondary)
+            if series.contains(where: { $0 > 0 }) {
+                Sparkline(values: series, tint: tint)
+            } else {
+                Text(empty).font(.system(size: 12)).foregroundColor(KTheme.Colors.textTertiary).frame(height: 44)
+            }
+        }
+        .padding(KTheme.Spacing.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(RoundedRectangle(cornerRadius: 16).fill(KTheme.Colors.card))
+    }
 }
