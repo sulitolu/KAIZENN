@@ -41,6 +41,8 @@ final class HealthIngestionServiceTests: XCTestCase {
         let day = Date(timeIntervalSince1970: 1_700_000_000)
         source.throwingMetric = .hrvSDNN
         source.values[.restingHR] = [DailyMetricSample(date: day, value: 53)]
+        source.workoutList = [WorkoutSampleDTO(uuid: "W1", type: "running", start: day,
+            durationMinutes: 30, activeEnergy: 320, distanceMeters: 6000, source: "Watch")]
 
         let service = HealthIngestionService(store: store, source: source)
         await service.syncNow(days: 14)
@@ -48,5 +50,6 @@ final class HealthIngestionServiceTests: XCTestCase {
         let snaps = store.snapshots(since: Date(timeIntervalSince1970: 0))
         XCTAssertEqual(snaps.first?.restingHR, 53)   // RHR survived despite HRV throwing
         XCTAssertNil(snaps.first?.hrvSDNN)
+        XCTAssertEqual(store.workouts(since: Date(timeIntervalSince1970: 0)).count, 1)   // workout pull survived too
     }
 }
