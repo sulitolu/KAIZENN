@@ -72,6 +72,9 @@
 		FACE000000000000000000B5 /* CatapultParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEEF000000000000000000F5 /* CatapultParserTests.swift */; };
 		FACE000000000000000000B6 /* LoadStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEEF000000000000000000F6 /* LoadStoreTests.swift */; };
 		FDCBD33150BD2B4CBE73FBB2 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C88617FE27799E67B29F6DF /* HealthKit.framework */; };
+		HS00000000000000000000004 /* HealthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = HS00000000000000000000001 /* HealthModels.swift */; };
+		HS00000000000000000000005 /* HealthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = HS00000000000000000000002 /* HealthStore.swift */; };
+		HS00000000000000000000006 /* HealthStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HS00000000000000000000003 /* HealthStoreTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -157,6 +160,9 @@
 		F6C9B84C7FB7A36D458D9FF7 /* LogWeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogWeightView.swift; sourceTree = "<group>"; };
 		FC4FC53957394ECAB54AE795 /* KAIZENN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KAIZENN.entitlements; sourceTree = "<group>"; };
 		FEF3FD01726B46F7ADBE8A4E /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		HS00000000000000000000001 /* HealthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthModels.swift; sourceTree = "<group>"; };
+		HS00000000000000000000002 /* HealthStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthStore.swift; sourceTree = "<group>"; };
+		HS00000000000000000000003 /* HealthStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthStoreTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -230,11 +236,21 @@
 			isa = PBXGroup;
 			children = (
 				E295DE54846A44509230DB44 /* HealthKit */,
+				HS00000000000000000000007 /* HealthStore */,
 				D075C4EF47CE4475A6838AF1 /* Models */,
 				EA97F9D1EAFC49ECA1FEE425 /* Persistence */,
 				C157EB0D083C46568A7AF404 /* Network */,
 			);
 			path = Data;
+			sourceTree = "<group>";
+		};
+		HS00000000000000000000007 /* HealthStore */ = {
+			isa = PBXGroup;
+			children = (
+				HS00000000000000000000001 /* HealthModels.swift */,
+				HS00000000000000000000002 /* HealthStore.swift */,
+			);
+			path = HealthStore;
 			sourceTree = "<group>";
 		};
 		75FB77641E054F81ADC184B3 /* Onboarding */ = {
@@ -398,6 +414,7 @@
 				F26164ACA6E2669428B3C7B3 /* ClaudeServiceTests.swift */,
 				3EBE2F78097B007BB73911C9 /* ReadinessEngineTests.swift */,
 				10F1C5485AE3111A7148AC2C /* ReadinessBaselineTests.swift */,
+				HS00000000000000000000003 /* HealthStoreTests.swift */,
 			);
 			path = KAIZENNTests;
 			sourceTree = SOURCE_ROOT;
@@ -658,6 +675,8 @@
 				A75E1FF7D8D46D6B98DE3F29 /* ReadinessBaseline.swift in Sources */,
 				10FD4B352EC8700EAA547D5A /* ReadinessBaselineProvider.swift in Sources */,
 				334121B3B24C702D1A304A11 /* CoachActionEngine.swift in Sources */,
+				HS00000000000000000000004 /* HealthModels.swift in Sources */,
+				HS00000000000000000000005 /* HealthStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -675,6 +694,7 @@
 				E798A40EFD4BFC2815BC9F04 /* ReadinessEngineTests.swift in Sources */,
 				66D5EF9C8C8195C928FF8368 /* ReadinessBaselineTests.swift in Sources */,
 				65555E59D4F84D2CEC8A643A /* CoachActionEngineTests.swift in Sources */,
+				HS00000000000000000000006 /* HealthStoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
