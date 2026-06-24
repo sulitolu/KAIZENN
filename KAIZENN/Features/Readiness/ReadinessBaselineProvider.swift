@@ -34,6 +34,13 @@ final class ReadinessBaselineProvider: ObservableObject {
         )
     }
 
+    func refresh(from store: HealthStore) {
+        let cutoff = Calendar.current.date(byAdding: .day, value: -60, to: Date()) ?? Date()
+        let snaps = store.snapshots(since: cutoff)
+        baseline = BaselineCalculator.baseline(from: snaps)
+        hrvLnSDNNToday = BaselineCalculator.latestHRVLnSDNN(from: snaps)
+    }
+
     /// Build the engine inputs from the stores + current baselines. One place so Home, the
     /// readiness report, and the Coach tab all score identically (single source of truth).
     func inputs(health: HealthKitManager, loadStore: LoadStore,

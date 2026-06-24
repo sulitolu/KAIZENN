@@ -14,7 +14,7 @@ struct CoachView: View {
     @EnvironmentObject var loadStore: LoadStore
 
     @StateObject private var coach = KAICoach()
-    @StateObject private var readinessBaseline = ReadinessBaselineProvider()
+    @EnvironmentObject var readinessBaseline: ReadinessBaselineProvider
     @State private var chatMessages: [ChatMessage] = []
     @State private var userInput = ""
     @State private var isThinking = false

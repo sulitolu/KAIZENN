@@ -45,6 +45,11 @@ final class BaselineCalculatorTests: XCTestCase {
         XCTAssertEqual(v ?? 0, log(75), accuracy: 1e-9)
     }
 
+    func test_signalBaseline_identicalValues_floorsSD() {
+        let b = BaselineCalculator.signalBaseline([5, 5, 5])
+        XCTAssertEqual(b?.sd ?? 0, 1e-6, accuracy: 0)
+    }
+
     func test_latestHRVLnSDNN_allNilIsNil() {
         let snaps = [
             snap(1, hrv: nil, rhr: 52, sleepMin: 420),

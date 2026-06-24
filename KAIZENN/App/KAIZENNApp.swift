@@ -10,6 +10,8 @@ struct KAIZENNApp: App {
     @StateObject private var scheduleStore = ScheduleStore()
     @StateObject private var activityStore = ActivityStore()
     @StateObject private var loadStore = LoadStore()
+    @StateObject private var healthStore = HealthStore()
+    @StateObject private var baselineProvider = ReadinessBaselineProvider()
 
     private let connectivity = WatchConnectivityManager.shared
     private let notifications = NotificationManager.shared
@@ -30,6 +32,8 @@ struct KAIZENNApp: App {
                 .environmentObject(scheduleStore)
                 .environmentObject(activityStore)
                 .environmentObject(loadStore)
+                .environmentObject(healthStore)
+                .environmentObject(baselineProvider)
                 .preferredColorScheme(.dark)
                 .task {
                     await notifications.requestPermission()

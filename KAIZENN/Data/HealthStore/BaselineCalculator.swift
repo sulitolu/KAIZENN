@@ -14,7 +14,7 @@ enum BaselineCalculator {
         } else {
             sd = 0
         }
-        return SignalBaseline(mean: mean, sd: sd, n: n)
+        return SignalBaseline(mean: mean, sd: max(sd, 1e-6), n: n)
     }
 
     /// Build rolling baselines from the most-recent `window` snapshots, skipping gap days.

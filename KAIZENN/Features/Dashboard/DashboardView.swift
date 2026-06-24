@@ -20,7 +20,7 @@ struct DashboardView: View {
     @State private var showSettings = false
     @State private var showWeightHistory = false
     @State private var showReadinessReport = false
-    @StateObject private var readinessBaseline = ReadinessBaselineProvider()
+    @EnvironmentObject var readinessBaseline: ReadinessBaselineProvider
 
     // MARK: - Raw values
     private var sleepHours: Double { healthKitManager.sleepHoursLast }
