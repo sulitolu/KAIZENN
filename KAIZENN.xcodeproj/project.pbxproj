@@ -75,6 +75,8 @@
 		HS00000000000000000000004 /* HealthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = HS00000000000000000000001 /* HealthModels.swift */; };
 		HS00000000000000000000005 /* HealthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = HS00000000000000000000002 /* HealthStore.swift */; };
 		HS00000000000000000000006 /* HealthStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HS00000000000000000000003 /* HealthStoreTests.swift */; };
+		BC00000000000000000000001 /* BaselineCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC00000000000000000000002 /* BaselineCalculator.swift */; };
+		BC00000000000000000000003 /* BaselineCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC00000000000000000000004 /* BaselineCalculatorTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -163,6 +165,8 @@
 		HS00000000000000000000001 /* HealthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthModels.swift; sourceTree = "<group>"; };
 		HS00000000000000000000002 /* HealthStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthStore.swift; sourceTree = "<group>"; };
 		HS00000000000000000000003 /* HealthStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthStoreTests.swift; sourceTree = "<group>"; };
+		BC00000000000000000000002 /* BaselineCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaselineCalculator.swift; sourceTree = "<group>"; };
+		BC00000000000000000000004 /* BaselineCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaselineCalculatorTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -249,6 +253,7 @@
 			children = (
 				HS00000000000000000000001 /* HealthModels.swift */,
 				HS00000000000000000000002 /* HealthStore.swift */,
+				BC00000000000000000000002 /* BaselineCalculator.swift */,
 			);
 			path = HealthStore;
 			sourceTree = "<group>";
@@ -415,6 +420,7 @@
 				3EBE2F78097B007BB73911C9 /* ReadinessEngineTests.swift */,
 				10F1C5485AE3111A7148AC2C /* ReadinessBaselineTests.swift */,
 				HS00000000000000000000003 /* HealthStoreTests.swift */,
+				BC00000000000000000000004 /* BaselineCalculatorTests.swift */,
 			);
 			path = KAIZENNTests;
 			sourceTree = SOURCE_ROOT;
@@ -677,6 +683,7 @@
 				334121B3B24C702D1A304A11 /* CoachActionEngine.swift in Sources */,
 				HS00000000000000000000004 /* HealthModels.swift in Sources */,
 				HS00000000000000000000005 /* HealthStore.swift in Sources */,
+				BC00000000000000000000001 /* BaselineCalculator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -695,6 +702,7 @@
 				66D5EF9C8C8195C928FF8368 /* ReadinessBaselineTests.swift in Sources */,
 				65555E59D4F84D2CEC8A643A /* CoachActionEngineTests.swift in Sources */,
 				HS00000000000000000000006 /* HealthStoreTests.swift in Sources */,
+				BC00000000000000000000003 /* BaselineCalculatorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
