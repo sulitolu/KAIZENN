@@ -81,6 +81,7 @@
 		HI00000000000000000000002 /* HealthIngestionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = HI00000000000000000000005 /* HealthIngestionService.swift */; };
 		HI00000000000000000000003 /* HealthIngestionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HI00000000000000000000006 /* HealthIngestionServiceTests.swift */; };
 		LW000000000000000000001 /* LoadStoreWorkoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = LW000000000000000000002 /* LoadStoreWorkoutTests.swift */; };
+		BG00000000000000000000002 /* BackgroundSyncScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BG00000000000000000000001 /* BackgroundSyncScheduler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -174,6 +175,7 @@
 		HI00000000000000000000004 /* HealthDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataSource.swift; sourceTree = "<group>"; };
 		HI00000000000000000000005 /* HealthIngestionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthIngestionService.swift; sourceTree = "<group>"; };
 		HI00000000000000000000006 /* HealthIngestionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthIngestionServiceTests.swift; sourceTree = "<group>"; };
+		BG00000000000000000000001 /* BackgroundSyncScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundSyncScheduler.swift; sourceTree = "<group>"; };
 		LW000000000000000000002 /* LoadStoreWorkoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadStoreWorkoutTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -264,6 +266,7 @@
 				BC00000000000000000000002 /* BaselineCalculator.swift */,
 				HI00000000000000000000004 /* HealthDataSource.swift */,
 				HI00000000000000000000005 /* HealthIngestionService.swift */,
+				BG00000000000000000000001 /* BackgroundSyncScheduler.swift */,
 			);
 			path = HealthStore;
 			sourceTree = "<group>";
@@ -698,6 +701,7 @@
 				BC00000000000000000000001 /* BaselineCalculator.swift in Sources */,
 				HI00000000000000000000001 /* HealthDataSource.swift in Sources */,
 				HI00000000000000000000002 /* HealthIngestionService.swift in Sources */,
+				BG00000000000000000000002 /* BackgroundSyncScheduler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
