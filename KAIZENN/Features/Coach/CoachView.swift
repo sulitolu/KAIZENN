@@ -12,6 +12,7 @@ struct CoachView: View {
     @EnvironmentObject var scheduleStore: ScheduleStore
     @EnvironmentObject var activityStore: ActivityStore
     @EnvironmentObject var loadStore: LoadStore
+    @EnvironmentObject var healthStore: HealthStore
 
     @StateObject private var coach = KAICoach()
     @EnvironmentObject var readinessBaseline: ReadinessBaselineProvider
@@ -92,7 +93,7 @@ struct CoachView: View {
             )
             loadChatHistory()
         }
-        .task { await readinessBaseline.refresh(health: healthKitManager) }
+        .task { readinessBaseline.refresh(from: healthStore) }
         .sheet(item: $activeAction) { action in
             switch action {
             case .logMeal:      AddFoodView(mealType: .current)

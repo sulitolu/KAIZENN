@@ -35,14 +35,14 @@ final class BaselineCalculatorTests: XCTestCase {
         XCTAssertEqual(base.sleepHours?.mean ?? 0, 7.5, accuracy: 0.0001)     // (7+8)/2 hours
     }
 
-    func test_latestHRVLnSDNN_logOfAverageSDNN() {
+    func test_latestHRVLnSDNN_meanOfLogs() {
         let snaps = [
             snap(1, hrv: 50, rhr: nil, sleepMin: nil),
             snap(2, hrv: 100, rhr: nil, sleepMin: nil),
         ]
         let v = BaselineCalculator.latestHRVLnSDNN(from: snaps)
-        // ln of the AVERAGE SDNN (75), not the average of the lns
-        XCTAssertEqual(v ?? 0, log(75), accuracy: 1e-9)
+        // mean of ln(SDNN) values — matches the SignalBaseline computed over ln-transformed series
+        XCTAssertEqual(v ?? 0, (Foundation.log(50) + Foundation.log(100)) / 2, accuracy: 1e-9)
     }
 
     func test_signalBaseline_identicalValues_floorsSD() {

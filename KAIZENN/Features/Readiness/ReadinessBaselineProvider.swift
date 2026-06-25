@@ -1,7 +1,6 @@
 import Foundation
-import HealthKit
 
-/// Pulls HealthKit history and computes the rolling baselines the ReadinessEngine needs.
+/// Pulls durable HealthStore snapshots and computes the rolling baselines the ReadinessEngine needs.
 /// Keeps the engine pure: it owns the HealthKit dependency, the engine just consumes the result.
 @MainActor
 final class ReadinessBaselineProvider: ObservableObject {
@@ -10,35 +9,19 @@ final class ReadinessBaselineProvider: ObservableObject {
     @Published var sleepDebtHours: Double = 0
     @Published var sleepRegularitySD: Double?
 
-    func refresh(health: HealthKitManager) async {
-        let sdnn = await health.fetchDailySeries(.heartRateVariabilitySDNN,
-                                                 unit: .secondUnit(with: .milli), days: 60)
-        let lnSDNN = sdnn.filter { $0 > 0 }.map { Foundation.log($0) }
-        let rhr = await health.fetchDailySeries(.restingHeartRate,
-                                                unit: HKUnit.count().unitDivided(by: .minute()), days: 60).filter { $0 > 0 }
-        let sleep = await health.fetchSleepHistory(nights: 28)
-
-        let need = 8.0
-        let last7 = Array(lnSDNN.suffix(7))
-        hrvLnSDNNToday = last7.isEmpty ? nil : last7.reduce(0, +) / Double(last7.count)
-
-        let last14 = Array(sleep.suffix(14))
-        sleepDebtHours = last14.reduce(0.0) { $0 + max(need - $1, 0) }
-        sleepRegularitySD = SignalBaseline.from(last14, minN: 3)?.sd
-
-        baseline = ReadinessBaseline(
-            hrvLnSDNN: SignalBaseline.from(lnSDNN),
-            restingHR: SignalBaseline.from(rhr),
-            sleepHours: SignalBaseline.from(sleep),
-            sleepNeed: need
-        )
-    }
-
     func refresh(from store: HealthStore) {
         let cutoff = Calendar.current.date(byAdding: .day, value: -60, to: Date()) ?? Date()
         let snaps = store.snapshots(since: cutoff)
         baseline = BaselineCalculator.baseline(from: snaps)
         hrvLnSDNNToday = BaselineCalculator.latestHRVLnSDNN(from: snaps)
+
+        // Sleep debt + regularity from durable history (last 14 nights with sleep data),
+        // same math as the retired refresh(health:) — only the source changed.
+        let need = baseline.sleepNeed   // 8.0
+        let nightlyHours = snaps.sorted { $0.date > $1.date }.prefix(14)
+            .compactMap { $0.sleepDurationMinutes.map { $0 / 60.0 } }
+        sleepDebtHours = nightlyHours.reduce(0.0) { $0 + max(need - $1, 0) }
+        sleepRegularitySD = SignalBaseline.from(nightlyHours, minN: 3)?.sd
     }
 
     /// Build the engine inputs from the stores + current baselines. One place so Home, the

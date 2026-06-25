@@ -32,9 +32,14 @@ struct KAIZENNApp: App {
         // provider; hop to the main actor for the @MainActor work so the morning
         // sync recomputes readiness baselines.
         let provider = _baselineProvider.wrappedValue
+        let loadStore = _loadStore.wrappedValue
         BackgroundSyncScheduler.register {
             await svc.syncNow()
-            await MainActor.run { provider.refresh(from: store) }
+            await MainActor.run {
+                provider.refresh(from: store)
+                let acwrCutoff = Calendar.current.date(byAdding: .day, value: -28, to: Date()) ?? Date()
+                loadStore.setHealthWorkouts(store.workouts(since: acwrCutoff))
+            }
         }
     }
 
@@ -59,8 +64,10 @@ struct KAIZENNApp: App {
                 }
                 .task {
                     await healthKitManager.requestAuthorization()
-                    await ingestion.syncNow()
+                    await ingestion.syncNow(days: 60)
                     baselineProvider.refresh(from: healthStore)
+                    let acwrCutoff = Calendar.current.date(byAdding: .day, value: -28, to: Date()) ?? Date()
+                    loadStore.setHealthWorkouts(healthStore.workouts(since: acwrCutoff))
                     BackgroundSyncScheduler.schedule()
                 }
                 .onChange(of: scheduleStore.habits) { _, habits in

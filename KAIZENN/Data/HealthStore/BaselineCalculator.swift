@@ -29,11 +29,12 @@ enum BaselineCalculator {
             sleepHours: signalBaseline(sleepHrs))
     }
 
-    /// ln of the average SDNN over the last `days` snapshots (today's signal for the engine).
+    /// mean(ln SDNN) over the last `days` snapshots (today's signal for the engine).
+    /// Uses mean-of-logs to match the SignalBaseline over ln-transformed values (avoids Jensen's inequality bias).
     static func latestHRVLnSDNN(from snapshots: [DailyHealthSnapshot], days: Int = 7) -> Double? {
         let recent = snapshots.sorted { $0.date > $1.date }.prefix(days)
-        let vals = recent.compactMap { $0.hrvSDNN }.filter { $0 > 0 }
-        guard !vals.isEmpty else { return nil }
-        return Foundation.log(vals.reduce(0, +) / Double(vals.count))
+        let lns = recent.compactMap { $0.hrvSDNN }.filter { $0 > 0 }.map { Foundation.log($0) }
+        guard !lns.isEmpty else { return nil }
+        return lns.reduce(0, +) / Double(lns.count)
     }
 }
