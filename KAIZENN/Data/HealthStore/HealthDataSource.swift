@@ -31,15 +31,6 @@ protocol HealthDataSource {
 final class HealthKitDataSource: HealthDataSource {
     private let store = HKHealthStore()
 
-    /// Mirrors HealthStore.dayKey — duplicated here to avoid calling
-    /// the @MainActor-isolated HealthStore.dayKey from a non-isolated context.
-    private static func dayKey(for date: Date) -> String {
-        let f = DateFormatter()
-        f.calendar = Calendar.current
-        f.dateFormat = "yyyy-MM-dd"
-        return f.string(from: date)
-    }
-
     func dailyValues(_ metric: HealthMetric, days: Int) async throws -> [DailyMetricSample] {
         switch metric {
         case .hrvSDNN:      return try await dailyQuantity(.heartRateVariabilitySDNN,
@@ -103,11 +94,11 @@ final class HealthKitDataSource: HealthDataSource {
         var perDay: [String: Double] = [:]
         var dateForKey: [String: Date] = [:]
         for s in samples where asleep.contains(s.value) {
-            let key = Self.dayKey(for: s.endDate)
+            let key = HealthStore.dayKey(for: s.endDate)
             perDay[key, default: 0] += s.endDate.timeIntervalSince(s.startDate) / 60.0
             dateForKey[key] = cal.startOfDay(for: s.endDate)
         }
-        return perDay.map { DailyMetricSample(date: dateForKey[$0.key]!, value: $0.value) }
+        return perDay.map { DailyMetricSample(date: dateForKey[$0.key] ?? cal.startOfDay(for: Date()), value: $0.value) }
     }
 
     func workouts(since: Date) async throws -> [WorkoutSampleDTO] {

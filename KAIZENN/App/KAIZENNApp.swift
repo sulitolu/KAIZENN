@@ -28,11 +28,13 @@ struct KAIZENNApp: App {
         }
 
         // Register the daily background sync handler at launch (Apple requires
-        // registration before launch completes). Capture svc and store; hop to
-        // the main actor for @MainActor-isolated work.
+        // registration before launch completes). Capture the shared store + svc +
+        // provider; hop to the main actor for the @MainActor work so the morning
+        // sync recomputes readiness baselines.
+        let provider = _baselineProvider.wrappedValue
         BackgroundSyncScheduler.register {
             await svc.syncNow()
-            await MainActor.run { store.objectWillChange.send() }
+            await MainActor.run { provider.refresh(from: store) }
         }
     }
 

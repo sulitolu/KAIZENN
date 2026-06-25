@@ -18,11 +18,18 @@ final class HealthStore: ObservableObject {
         }
     }
 
-    static func dayKey(for date: Date) -> String {
+    // Configured once and only ever read (string(from:)) — safe to share across
+    // isolation domains, so dayKey(for:) can be nonisolated.
+    nonisolated private static let dayKeyFormatter: DateFormatter = {
         let f = DateFormatter()
         f.calendar = Calendar.current
+        f.locale = Locale(identifier: "en_US_POSIX")
         f.dateFormat = "yyyy-MM-dd"
-        return f.string(from: date)
+        return f
+    }()
+
+    nonisolated static func dayKey(for date: Date) -> String {
+        dayKeyFormatter.string(from: date)
     }
 
     func upsertSnapshot(date: Date, _ mutate: (DailyHealthSnapshot) -> Void) {
