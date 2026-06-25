@@ -4,6 +4,7 @@ import Combine
 class LoadStore: ObservableObject {
     @Published private(set) var gpsSessions: [GPSSession] = []
     @Published private(set) var strengthSessions: [StrengthSession] = []
+    @Published private(set) var healthWorkouts: [WorkoutRecord] = []
     @Published private(set) var acuteLoad: Double = 0
     @Published private(set) var chronicLoad: Double = 0
     @Published private(set) var acwr: Double = 0
@@ -39,6 +40,11 @@ class LoadStore: ObservableObject {
         recalculate()
     }
 
+    func setHealthWorkouts(_ workouts: [WorkoutRecord]) {
+        healthWorkouts = workouts
+        recalculate()
+    }
+
     // MARK: Calculations
 
     private func recalculate() {
@@ -53,13 +59,25 @@ class LoadStore: ObservableObject {
 
         let gpsAcute = gpsSessions.filter { $0.date >= cutoff7 }.map(\.sessionLoad).reduce(0, +)
         let strengthAcute = strengthSessions.filter { $0.date >= cutoff7 }.map(\.sessionLoad).reduce(0, +)
-        acuteLoad = gpsAcute + strengthAcute
+        acuteLoad = gpsAcute + strengthAcute + nonDuplicateWorkoutLoad(since: cutoff7)
 
         let gpsChronic28 = gpsSessions.filter { $0.date >= cutoff28 }.map(\.sessionLoad).reduce(0, +)
         let strengthChronic28 = strengthSessions.filter { $0.date >= cutoff28 }.map(\.sessionLoad).reduce(0, +)
-        chronicLoad = (gpsChronic28 + strengthChronic28) / 4
+        chronicLoad = (gpsChronic28 + strengthChronic28 + nonDuplicateWorkoutLoad(since: cutoff28)) / 4
 
         acwr = chronicLoad > 0 ? acuteLoad / chronicLoad : 0
+    }
+
+    /// A HealthKit workout counts toward load only if it does NOT overlap a manual
+    /// session (±30 min of start). Manual sessions always win (richer GPS/load data).
+    private func nonDuplicateWorkoutLoad(since cutoff: Date) -> Double {
+        let window: TimeInterval = 30 * 60
+        let manualDates = gpsSessions.map(\.date) + strengthSessions.map(\.date)
+        return healthWorkouts
+            .filter { $0.start >= cutoff }
+            .filter { w in !manualDates.contains { abs($0.timeIntervalSince(w.start)) <= window } }
+            .map { $0.activeEnergy / 100 }
+            .reduce(0, +)
     }
 
     // MARK: Persistence

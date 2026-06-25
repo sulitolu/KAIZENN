@@ -20,7 +20,8 @@ struct DashboardView: View {
     @State private var showSettings = false
     @State private var showWeightHistory = false
     @State private var showReadinessReport = false
-    @StateObject private var readinessBaseline = ReadinessBaselineProvider()
+    @EnvironmentObject var readinessBaseline: ReadinessBaselineProvider
+    @EnvironmentObject var healthStore: HealthStore
 
     // MARK: - Raw values
     private var sleepHours: Double { healthKitManager.sleepHoursLast }
@@ -117,11 +118,11 @@ struct DashboardView: View {
         .background(KTheme.Colors.background.ignoresSafeArea())
         .task {
             await healthKitManager.fetchAllTodayData()
-            await readinessBaseline.refresh(health: healthKitManager)
+            readinessBaseline.refresh(from: healthStore)
         }
         .refreshable {
             await healthKitManager.fetchAllTodayData()
-            await readinessBaseline.refresh(health: healthKitManager)
+            readinessBaseline.refresh(from: healthStore)
         }
         .sheet(isPresented: $showLogMeal) {
             FoodPhotoScanView(mealType: .snack)

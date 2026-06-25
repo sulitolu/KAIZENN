@@ -20,6 +20,10 @@
 	<string>KAIZENN uses motion data to automatically track your activity and count your steps throughout the day.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>KAIZENN uses your camera to scan food barcodes and quickly log nutrition information.</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.kaizenn.healthsync</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
